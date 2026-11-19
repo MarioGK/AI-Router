@@ -1,0 +1,72 @@
+package dashboard
+
+templ loginPage(f frame, next string, enabled, rejected bool) {
+	@document(f) {
+		<main class="flex min-h-screen flex-col items-center justify-center px-4 py-12">
+			<div class="w-full max-w-sm">
+				<div class="mb-8 flex flex-col items-center gap-4 text-center">
+					@logo("size-10")
+					<div>
+						<h1 class="text-lg font-semibold tracking-tight">Sign in to ai-router</h1>
+						if enabled {
+							<p class="mt-1 text-[13px] text-fg-3">Use your dashboard username and password.</p>
+						}
+					</div>
+				</div>
+				if enabled {
+					<form method="post" action="/dashboard/login" class="rounded-xl border border-line bg-surface p-6">
+						<input type="hidden" name="next" value={ next }/>
+						<label for="username" class="text-[13px] font-medium text-fg-2">Username</label>
+						<input
+							id="username"
+							name="username"
+							type="text"
+							required
+							autofocus
+							autocomplete="username"
+							spellcheck="false"
+							class={ "mt-2 h-10 w-full rounded-lg border bg-canvas px-3 text-[13px] text-fg focus:border-fg-3 focus:outline-none",
+								templ.KV("border-critical/60", rejected), templ.KV("border-line", !rejected) }
+							if rejected {
+								aria-invalid="true"
+								aria-describedby="credentials-error"
+							}
+						/>
+						<label for="password" class="mt-4 block text-[13px] font-medium text-fg-2">Password</label>
+						<div class="relative mt-2">
+							<span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-fg-3">
+								@icon("key", "size-4")
+							</span>
+							<input
+								id="password"
+								name="password"
+								type="password"
+								required
+								autocomplete="current-password"
+								spellcheck="false"
+								class={ "h-10 w-full rounded-lg border bg-canvas pr-3 pl-9 text-[13px] text-fg focus:border-fg-3 focus:outline-none",
+									templ.KV("border-critical/60", rejected), templ.KV("border-line", !rejected) }
+								if rejected {
+									aria-invalid="true"
+									aria-describedby="credentials-error"
+								}
+							/>
+						</div>
+						if rejected {
+							<p id="credentials-error" class="mt-2 flex items-center gap-1.5 text-xs text-fg-2" role="alert">
+								<span class="text-critical">
+									@icon("alert", "size-3.5")
+								</span>
+								Invalid username or password.
+							</p>
+						}
+						<button type="submit" class="mt-5 h-10 w-full rounded-lg bg-fg text-[13px] font-semibold text-canvas hover:opacity-90">Sign in</button>
+					</form>
+					<p class="mt-6 text-center text-xs text-fg-3">A session lasts 12 hours on this browser.</p>
+				} else {
+					<p class="rounded-xl border border-line bg-surface p-6 text-center text-[13px] text-fg-2">Dashboard sign-in is unavailable. Ask the router operator to enable it.</p>
+				}
+			</div>
+		</main>
+	}
+}

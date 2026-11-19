@@ -1,0 +1,3233 @@
+{
+  "date": "2026-10-01",
+  "corpus_cases": 72,
+  "baseline_repetitions": 2,
+  "after_repetitions": 2,
+  "reserved_cases": 17,
+  "training_cases": 51,
+  "frozen_cases": 68,
+  "excluded_unstable_cases": 4,
+  "runs": {
+    "before": {
+      "settings": {
+        "options": {
+          "parallel": 6,
+          "repeat": 2,
+          "format": "json",
+          "reference": "luna",
+          "target_decider": "jev",
+          "score": "final",
+          "min_accuracy": 0
+        },
+        "run_timeout_ms": 1800000,
+        "decide_timeout_ms": 120000,
+        "doubt": "pair",
+        "escalation_threshold": 0.1,
+        "strip_tags": [
+          "system-reminder",
+          "environment_context",
+          "user_instructions"
+        ],
+        "state_max_chars": 12000,
+        "retired": [
+          "gpt-6-sol",
+          "claude-sonnet-5-5"
+        ],
+        "candidates": [
+          {
+            "id": "deepseek-flash",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "glm-5.3",
+            "vision": false,
+            "default_effort": "xhigh",
+            "accepted_efforts": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 0.25
+          },
+          {
+            "id": "gpt-6.1-sol",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "claude-opus-5-5",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 1
+          }
+        ],
+        "deciders": [
+          {
+            "name": "jev",
+            "type": "systemone",
+            "model": "jev-latest",
+            "timeout_ms": 60000
+          },
+          {
+            "name": "luna",
+            "type": "llm",
+            "model": "gpt-6-luna",
+            "timeout_ms": 60000
+          }
+        ],
+        "prices_usd_per_million_tokens": {
+          "claude-haiku-4-5-20251001": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.1,
+            "cache_write": 1.25
+          },
+          "claude-opus-5-5": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5
+          },
+          "deepseek-flash": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.006,
+            "cache_write": 0
+          },
+          "glm-5.3": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write": 0
+          },
+          "gpt-6.1-sol": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5
+          }
+        },
+        "cost": {
+          "enabled": true,
+          "miss": 3,
+          "window_seconds": 2592000,
+          "weight": 20,
+          "estimate_source": "typical_task_prior",
+          "typical_tokens": {
+            "input": 200000,
+            "output": 40000,
+            "cache_read": 2000000,
+            "cache_write": 0
+          },
+          "task_estimates": [
+            {
+              "model": "deepseek-flash",
+              "level": "low",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "medium",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "high",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "xhigh",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "glm-5.3",
+              "level": "low",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "medium",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "high",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "xhigh",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "low",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "medium",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "high",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "xhigh",
+              "cost_usd": 1
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "low",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "medium",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "high",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "xhigh",
+              "cost_usd": 2
+            }
+          ]
+        }
+      },
+      "metrics": [
+        {
+          "decider": "jev",
+          "planned": 144,
+          "unique_cases": 72,
+          "started": 144,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 139,
+          "accuracy": 0.9652777777777778,
+          "choice_correct": 138,
+          "choice_accuracy": 0.9583333333333334,
+          "labelled": 144,
+          "level_correct": 140,
+          "level_accuracy": 0.9722222222222222,
+          "missing_depth": 0,
+          "joint_correct": 135,
+          "joint_accuracy": 0.9375,
+          "choice_joint_correct": 134,
+          "choice_joint_accuracy": 0.9305555555555556,
+          "escalated": 11,
+          "under_routed": 0,
+          "over_routed": 5,
+          "other_misses": 0,
+          "latency_samples": 144,
+          "p50_ms": 293.758374,
+          "p95_ms": 607.60505,
+          "calls": 155,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1.0763888888888888,
+          "known_usage_calls": 155,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 357931,
+          "reported_output_tokens": 12839,
+          "complete_usage_input_tokens": 357931,
+          "complete_usage_output_tokens": 12839,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 11,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0.0763888888888889,
+          "pair_known_usage_calls": 11,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 14567,
+          "reported_pair_output_tokens": 513,
+          "complete_pair_usage_input_tokens": 14567,
+          "complete_pair_usage_output_tokens": 513,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2392.064516129032,
+          "mean_reported_tokens_per_known_pair": 1370.909090909091,
+          "amortized_reported_tokens_per_started": 2574.7916666666665,
+          "amortized_reported_pair_tokens_per_started": 104.72222222222223,
+          "repeated_cases": 72,
+          "stable_model_cases": 71,
+          "model_stability": 0.9861111111111112,
+          "joint_repeated_cases": 72,
+          "stable_joint_cases": 71,
+          "joint_stability": 0.9861111111111112,
+          "robust_correct_cases": 69,
+          "unique_case_robust_accuracy": 0.9583333333333334,
+          "group_macro_accuracy": 0.9681140350877193,
+          "weakest_group_accuracy": 0.875,
+          "group_macro_joint_accuracy": 0.954780701754386,
+          "weakest_group_joint_accuracy": 0.875,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 16,
+              "correct": 14,
+              "accuracy": 0.875,
+              "choice_correct": 12,
+              "choice_accuracy": 0.75,
+              "labelled": 16,
+              "level_correct": 16,
+              "level_accuracy": 1,
+              "joint_correct": 14,
+              "joint_accuracy": 0.875,
+              "choice_joint_correct": 12,
+              "choice_joint_accuracy": 0.75
+            },
+            {
+              "name": "difficult",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 16,
+              "choice_accuracy": 0.8888888888888888,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 16,
+              "choice_joint_accuracy": 0.8888888888888888
+            },
+            {
+              "name": "priority",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 18,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "quick",
+              "planned": 38,
+              "correct": 37,
+              "accuracy": 0.9736842105263158,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 37,
+              "joint_accuracy": 0.9736842105263158,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 50,
+              "choice_accuracy": 1,
+              "labelled": 50,
+              "level_correct": 46,
+              "level_accuracy": 0.92,
+              "joint_correct": 44,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 46,
+              "choice_joint_accuracy": 0.92
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 4,
+              "correct": 4,
+              "accuracy": 1,
+              "choice_correct": 4,
+              "choice_accuracy": 1,
+              "labelled": 4,
+              "level_correct": 4,
+              "level_accuracy": 1,
+              "joint_correct": 4,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 4,
+              "choice_joint_accuracy": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 22,
+              "correct": 22,
+              "accuracy": 1,
+              "choice_correct": 20,
+              "choice_accuracy": 0.9090909090909091,
+              "labelled": 22,
+              "level_correct": 22,
+              "level_accuracy": 1,
+              "joint_correct": 22,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 20,
+              "choice_joint_accuracy": 0.9090909090909091
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 38,
+              "correct": 37,
+              "accuracy": 0.9736842105263158,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 37,
+              "joint_accuracy": 0.9736842105263158,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 50,
+              "choice_accuracy": 1,
+              "labelled": 50,
+              "level_correct": 46,
+              "level_accuracy": 0.92,
+              "joint_correct": 44,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 46,
+              "choice_joint_accuracy": 0.92
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 34,
+              "correct": 32,
+              "accuracy": 0.9411764705882353,
+              "choice_correct": 30,
+              "choice_accuracy": 0.8823529411764706,
+              "labelled": 34,
+              "level_correct": 34,
+              "level_accuracy": 1,
+              "joint_correct": 32,
+              "joint_accuracy": 0.9411764705882353,
+              "choice_joint_correct": 30,
+              "choice_joint_accuracy": 0.8823529411764706
+            }
+          ]
+        },
+        {
+          "decider": "luna",
+          "planned": 144,
+          "unique_cases": 72,
+          "started": 144,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 142,
+          "accuracy": 0.9861111111111112,
+          "choice_correct": 142,
+          "choice_accuracy": 0.9861111111111112,
+          "labelled": 144,
+          "level_correct": 135,
+          "level_accuracy": 0.9375,
+          "missing_depth": 0,
+          "joint_correct": 135,
+          "joint_accuracy": 0.9375,
+          "choice_joint_correct": 135,
+          "choice_joint_accuracy": 0.9375,
+          "escalated": 0,
+          "under_routed": 0,
+          "over_routed": 2,
+          "other_misses": 0,
+          "latency_samples": 144,
+          "p50_ms": 4753.155426,
+          "p95_ms": 8104.755375,
+          "calls": 144,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1,
+          "known_usage_calls": 144,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 322772,
+          "reported_output_tokens": 26523,
+          "complete_usage_input_tokens": 322772,
+          "complete_usage_output_tokens": 26523,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 0,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0,
+          "pair_known_usage_calls": 0,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 0,
+          "reported_pair_output_tokens": 0,
+          "complete_pair_usage_input_tokens": 0,
+          "complete_pair_usage_output_tokens": 0,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2425.659722222222,
+          "mean_reported_tokens_per_known_pair": 0,
+          "amortized_reported_tokens_per_started": 2425.659722222222,
+          "amortized_reported_pair_tokens_per_started": 0,
+          "repeated_cases": 72,
+          "stable_model_cases": 72,
+          "model_stability": 1,
+          "joint_repeated_cases": 72,
+          "stable_joint_cases": 68,
+          "joint_stability": 0.9444444444444444,
+          "robust_correct_cases": 71,
+          "unique_case_robust_accuracy": 0.9861111111111112,
+          "group_macro_accuracy": 0.9933333333333333,
+          "weakest_group_accuracy": 0.96,
+          "group_macro_joint_accuracy": 0.9462962962962963,
+          "weakest_group_joint_accuracy": 0.7777777777777778,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 16,
+              "correct": 16,
+              "accuracy": 1,
+              "choice_correct": 16,
+              "choice_accuracy": 1,
+              "labelled": 16,
+              "level_correct": 16,
+              "level_accuracy": 1,
+              "joint_correct": 16,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 16,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "difficult",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 18,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "priority",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 14,
+              "level_accuracy": 0.7777777777777778,
+              "joint_correct": 14,
+              "joint_accuracy": 0.7777777777777778,
+              "choice_joint_correct": 14,
+              "choice_joint_accuracy": 0.7777777777777778
+            },
+            {
+              "name": "quick",
+              "planned": 38,
+              "correct": 38,
+              "accuracy": 1,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 38,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 48,
+              "choice_accuracy": 0.96,
+              "labelled": 50,
+              "level_correct": 45,
+              "level_accuracy": 0.9,
+              "joint_correct": 45,
+              "joint_accuracy": 0.9,
+              "choice_joint_correct": 45,
+              "choice_joint_accuracy": 0.9
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 4,
+              "correct": 4,
+              "accuracy": 1,
+              "choice_correct": 4,
+              "choice_accuracy": 1,
+              "labelled": 4,
+              "level_correct": 4,
+              "level_accuracy": 1,
+              "joint_correct": 4,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 4,
+              "choice_joint_accuracy": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 22,
+              "correct": 22,
+              "accuracy": 1,
+              "choice_correct": 22,
+              "choice_accuracy": 1,
+              "labelled": 22,
+              "level_correct": 22,
+              "level_accuracy": 1,
+              "joint_correct": 22,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 22,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 38,
+              "correct": 38,
+              "accuracy": 1,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 38,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 48,
+              "choice_accuracy": 0.96,
+              "labelled": 50,
+              "level_correct": 45,
+              "level_accuracy": 0.9,
+              "joint_correct": 45,
+              "joint_accuracy": 0.9,
+              "choice_joint_correct": 45,
+              "choice_joint_accuracy": 0.9
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 34,
+              "correct": 34,
+              "accuracy": 1,
+              "choice_correct": 34,
+              "choice_accuracy": 1,
+              "labelled": 34,
+              "level_correct": 30,
+              "level_accuracy": 0.8823529411764706,
+              "joint_correct": 30,
+              "joint_accuracy": 0.8823529411764706,
+              "choice_joint_correct": 30,
+              "choice_joint_accuracy": 0.8823529411764706
+            }
+          ]
+        },
+        {
+          "decider": "chain(pair)",
+          "planned": 144,
+          "unique_cases": 72,
+          "started": 144,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 138,
+          "accuracy": 0.9583333333333334,
+          "choice_correct": 138,
+          "choice_accuracy": 0.9583333333333334,
+          "labelled": 144,
+          "level_correct": 139,
+          "level_accuracy": 0.9652777777777778,
+          "missing_depth": 0,
+          "joint_correct": 134,
+          "joint_accuracy": 0.9305555555555556,
+          "choice_joint_correct": 133,
+          "choice_joint_accuracy": 0.9236111111111112,
+          "escalated": 12,
+          "under_routed": 0,
+          "over_routed": 6,
+          "other_misses": 0,
+          "latency_samples": 144,
+          "p50_ms": 290.452177,
+          "p95_ms": 581.914079,
+          "calls": 156,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1.0833333333333333,
+          "known_usage_calls": 156,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 359122,
+          "reported_output_tokens": 12879,
+          "complete_usage_input_tokens": 359122,
+          "complete_usage_output_tokens": 12879,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 12,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0.08333333333333333,
+          "pair_known_usage_calls": 12,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 15758,
+          "reported_pair_output_tokens": 553,
+          "complete_pair_usage_input_tokens": 15758,
+          "complete_pair_usage_output_tokens": 553,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2384.621794871795,
+          "mean_reported_tokens_per_known_pair": 1359.25,
+          "amortized_reported_tokens_per_started": 2583.340277777778,
+          "amortized_reported_pair_tokens_per_started": 113.27083333333333,
+          "repeated_cases": 72,
+          "stable_model_cases": 72,
+          "model_stability": 1,
+          "joint_repeated_cases": 72,
+          "stable_joint_cases": 71,
+          "joint_stability": 0.9861111111111112,
+          "robust_correct_cases": 69,
+          "unique_case_robust_accuracy": 0.9583333333333334,
+          "group_macro_accuracy": 0.9637280701754385,
+          "weakest_group_accuracy": 0.875,
+          "group_macro_joint_accuracy": 0.9503947368421053,
+          "weakest_group_joint_accuracy": 0.875,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 16,
+              "correct": 14,
+              "accuracy": 0.875,
+              "choice_correct": 12,
+              "choice_accuracy": 0.75,
+              "labelled": 16,
+              "level_correct": 16,
+              "level_accuracy": 1,
+              "joint_correct": 14,
+              "joint_accuracy": 0.875,
+              "choice_joint_correct": 12,
+              "choice_joint_accuracy": 0.75
+            },
+            {
+              "name": "difficult",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 16,
+              "choice_accuracy": 0.8888888888888888,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 16,
+              "choice_joint_accuracy": 0.8888888888888888
+            },
+            {
+              "name": "priority",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 18,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "quick",
+              "planned": 38,
+              "correct": 36,
+              "accuracy": 0.9473684210526315,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 36,
+              "joint_accuracy": 0.9473684210526315,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 50,
+              "choice_accuracy": 1,
+              "labelled": 50,
+              "level_correct": 45,
+              "level_accuracy": 0.9,
+              "joint_correct": 44,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 45,
+              "choice_joint_accuracy": 0.9
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 4,
+              "correct": 4,
+              "accuracy": 1,
+              "choice_correct": 4,
+              "choice_accuracy": 1,
+              "labelled": 4,
+              "level_correct": 4,
+              "level_accuracy": 1,
+              "joint_correct": 4,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 4,
+              "choice_joint_accuracy": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 22,
+              "correct": 22,
+              "accuracy": 1,
+              "choice_correct": 20,
+              "choice_accuracy": 0.9090909090909091,
+              "labelled": 22,
+              "level_correct": 22,
+              "level_accuracy": 1,
+              "joint_correct": 22,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 20,
+              "choice_joint_accuracy": 0.9090909090909091
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 38,
+              "correct": 36,
+              "accuracy": 0.9473684210526315,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 36,
+              "joint_accuracy": 0.9473684210526315,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 50,
+              "choice_accuracy": 1,
+              "labelled": 50,
+              "level_correct": 45,
+              "level_accuracy": 0.9,
+              "joint_correct": 44,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 45,
+              "choice_joint_accuracy": 0.9
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 34,
+              "correct": 32,
+              "accuracy": 0.9411764705882353,
+              "choice_correct": 30,
+              "choice_accuracy": 0.8823529411764706,
+              "labelled": 34,
+              "level_correct": 34,
+              "level_accuracy": 1,
+              "joint_correct": 32,
+              "joint_accuracy": 0.9411764705882353,
+              "choice_joint_correct": 30,
+              "choice_joint_accuracy": 0.8823529411764706
+            }
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "reference": "luna",
+          "decider": "jev",
+          "planned": 144,
+          "unique_cases": 72,
+          "reference_errors": 0,
+          "decider_errors": 0,
+          "reference_cancelled": 0,
+          "decider_cancelled": 0,
+          "reference_not_started": 0,
+          "decider_not_started": 0,
+          "reference_missing_depth": 0,
+          "decider_missing_depth": 0,
+          "choice": {
+            "compared": 144,
+            "agreed": 136,
+            "agreement": 0.9444444444444444,
+            "coverage": 1
+          },
+          "task_depth": {
+            "compared": 144,
+            "agreed": 130,
+            "agreement": 0.9027777777777778,
+            "coverage": 1
+          },
+          "joint": {
+            "compared": 144,
+            "agreed": 124,
+            "agreement": 0.8611111111111112,
+            "coverage": 1
+          },
+          "final_model": {
+            "compared": 144,
+            "agreed": 141,
+            "agreement": 0.9791666666666666,
+            "coverage": 1
+          },
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 16,
+              "choice": {
+                "compared": 16,
+                "agreed": 12,
+                "agreement": 0.75,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 16,
+                "agreed": 16,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 16,
+                "agreed": 12,
+                "agreement": 0.75,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 16,
+                "agreed": 14,
+                "agreement": 0.875,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "difficult",
+              "planned": 18,
+              "choice": {
+                "compared": 18,
+                "agreed": 16,
+                "agreement": 0.8888888888888888,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 18,
+                "agreed": 17,
+                "agreement": 0.9444444444444444,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 18,
+                "agreed": 15,
+                "agreement": 0.8333333333333334,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 18,
+                "agreed": 18,
+                "agreement": 1,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "priority",
+              "planned": 18,
+              "choice": {
+                "compared": 18,
+                "agreed": 18,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 18,
+                "agreed": 14,
+                "agreement": 0.7777777777777778,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 18,
+                "agreed": 14,
+                "agreement": 0.7777777777777778,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 18,
+                "agreed": 18,
+                "agreement": 1,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "quick",
+              "planned": 38,
+              "choice": {
+                "compared": 38,
+                "agreed": 38,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 38,
+                "agreed": 38,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 38,
+                "agreed": 38,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 38,
+                "agreed": 37,
+                "agreement": 0.9736842105263158,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "routine",
+              "planned": 50,
+              "choice": {
+                "compared": 50,
+                "agreed": 48,
+                "agreement": 0.96,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 50,
+                "agreed": 43,
+                "agreement": 0.86,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 50,
+                "agreed": 43,
+                "agreement": 0.86,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 50,
+                "agreed": 50,
+                "agreement": 1,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 4,
+              "choice": {
+                "compared": 4,
+                "agreed": 4,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 4,
+                "agreed": 2,
+                "agreement": 0.5,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 4,
+                "agreed": 2,
+                "agreement": 0.5,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 4,
+                "agreed": 4,
+                "agreement": 1,
+                "coverage": 1
+              }
+            }
+          ]
+        },
+        {
+          "reference": "luna",
+          "decider": "chain(pair)",
+          "planned": 144,
+          "unique_cases": 72,
+          "reference_errors": 0,
+          "decider_errors": 0,
+          "reference_cancelled": 0,
+          "decider_cancelled": 0,
+          "reference_not_started": 0,
+          "decider_not_started": 0,
+          "reference_missing_depth": 0,
+          "decider_missing_depth": 0,
+          "choice": {
+            "compared": 144,
+            "agreed": 136,
+            "agreement": 0.9444444444444444,
+            "coverage": 1
+          },
+          "task_depth": {
+            "compared": 144,
+            "agreed": 131,
+            "agreement": 0.9097222222222222,
+            "coverage": 1
+          },
+          "joint": {
+            "compared": 144,
+            "agreed": 124,
+            "agreement": 0.8611111111111112,
+            "coverage": 1
+          },
+          "final_model": {
+            "compared": 144,
+            "agreed": 140,
+            "agreement": 0.9722222222222222,
+            "coverage": 1
+          },
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 16,
+              "choice": {
+                "compared": 16,
+                "agreed": 12,
+                "agreement": 0.75,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 16,
+                "agreed": 16,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 16,
+                "agreed": 12,
+                "agreement": 0.75,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 16,
+                "agreed": 14,
+                "agreement": 0.875,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "difficult",
+              "planned": 18,
+              "choice": {
+                "compared": 18,
+                "agreed": 16,
+                "agreement": 0.8888888888888888,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 18,
+                "agreed": 17,
+                "agreement": 0.9444444444444444,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 18,
+                "agreed": 15,
+                "agreement": 0.8333333333333334,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 18,
+                "agreed": 18,
+                "agreement": 1,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "priority",
+              "planned": 18,
+              "choice": {
+                "compared": 18,
+                "agreed": 18,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 18,
+                "agreed": 14,
+                "agreement": 0.7777777777777778,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 18,
+                "agreed": 14,
+                "agreement": 0.7777777777777778,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 18,
+                "agreed": 18,
+                "agreement": 1,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "quick",
+              "planned": 38,
+              "choice": {
+                "compared": 38,
+                "agreed": 38,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 38,
+                "agreed": 38,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 38,
+                "agreed": 38,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 38,
+                "agreed": 36,
+                "agreement": 0.9473684210526315,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "routine",
+              "planned": 50,
+              "choice": {
+                "compared": 50,
+                "agreed": 48,
+                "agreement": 0.96,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 50,
+                "agreed": 44,
+                "agreement": 0.88,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 50,
+                "agreed": 43,
+                "agreement": 0.86,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 50,
+                "agreed": 50,
+                "agreement": 1,
+                "coverage": 1
+              }
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 4,
+              "choice": {
+                "compared": 4,
+                "agreed": 4,
+                "agreement": 1,
+                "coverage": 1
+              },
+              "task_depth": {
+                "compared": 4,
+                "agreed": 2,
+                "agreement": 0.5,
+                "coverage": 1
+              },
+              "joint": {
+                "compared": 4,
+                "agreed": 2,
+                "agreement": 0.5,
+                "coverage": 1
+              },
+              "final_model": {
+                "compared": 4,
+                "agreed": 4,
+                "agreement": 1,
+                "coverage": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "routing-after": {
+      "settings": {
+        "options": {
+          "parallel": 6,
+          "repeat": 2,
+          "format": "json",
+          "target_decider": "jev",
+          "score": "final",
+          "no_chain": true,
+          "preferences": {
+            "priority": "auto"
+          },
+          "min_accuracy": 0
+        },
+        "run_timeout_ms": 1800000,
+        "decide_timeout_ms": 120000,
+        "doubt": "pair",
+        "escalation_threshold": 0.1,
+        "strip_tags": [
+          "system-reminder",
+          "environment_context",
+          "user_instructions"
+        ],
+        "state_max_chars": 12000,
+        "retired": [
+          "gpt-6-sol",
+          "claude-sonnet-5-5"
+        ],
+        "candidates": [
+          {
+            "id": "deepseek-flash",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "glm-5.3",
+            "vision": false,
+            "default_effort": "xhigh",
+            "accepted_efforts": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 0.25
+          },
+          {
+            "id": "gpt-6.1-sol",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "claude-opus-5-5",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 1
+          }
+        ],
+        "deciders": [
+          {
+            "name": "jev",
+            "type": "systemone",
+            "model": "jev-latest",
+            "timeout_ms": 60000
+          }
+        ],
+        "prices_usd_per_million_tokens": {
+          "claude-haiku-4-5-20251001": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.1,
+            "cache_write": 1.25
+          },
+          "claude-opus-5-5": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5
+          },
+          "deepseek-flash": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.006,
+            "cache_write": 0
+          },
+          "glm-5.3": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write": 0
+          },
+          "gpt-6.1-sol": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5
+          }
+        },
+        "cost": {
+          "enabled": true,
+          "miss": 3,
+          "window_seconds": 2592000,
+          "weight": 20,
+          "estimate_source": "typical_task_prior",
+          "typical_tokens": {
+            "input": 200000,
+            "output": 40000,
+            "cache_read": 2000000,
+            "cache_write": 0
+          },
+          "task_estimates": [
+            {
+              "model": "deepseek-flash",
+              "level": "low",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "medium",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "high",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "xhigh",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "glm-5.3",
+              "level": "low",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "medium",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "high",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "xhigh",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "low",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "medium",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "high",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "xhigh",
+              "cost_usd": 1
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "low",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "medium",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "high",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "xhigh",
+              "cost_usd": 2
+            }
+          ]
+        }
+      },
+      "metrics": [
+        {
+          "decider": "jev",
+          "planned": 144,
+          "unique_cases": 72,
+          "started": 144,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 140,
+          "accuracy": 0.9722222222222222,
+          "choice_correct": 141,
+          "choice_accuracy": 0.9791666666666666,
+          "labelled": 144,
+          "level_correct": 139,
+          "level_accuracy": 0.9652777777777778,
+          "missing_depth": 0,
+          "joint_correct": 136,
+          "joint_accuracy": 0.9444444444444444,
+          "choice_joint_correct": 137,
+          "choice_joint_accuracy": 0.9513888888888888,
+          "escalated": 3,
+          "under_routed": 0,
+          "over_routed": 4,
+          "other_misses": 0,
+          "latency_samples": 144,
+          "p50_ms": 292.356068,
+          "p95_ms": 433.283322,
+          "calls": 147,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1.0208333333333333,
+          "known_usage_calls": 147,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 371211,
+          "reported_output_tokens": 12490,
+          "complete_usage_input_tokens": 371211,
+          "complete_usage_output_tokens": 12490,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 3,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0.020833333333333332,
+          "pair_known_usage_calls": 3,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 4375,
+          "reported_pair_output_tokens": 151,
+          "complete_pair_usage_input_tokens": 4375,
+          "complete_pair_usage_output_tokens": 151,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2610.2108843537417,
+          "mean_reported_tokens_per_known_pair": 1508.6666666666667,
+          "amortized_reported_tokens_per_started": 2664.590277777778,
+          "amortized_reported_pair_tokens_per_started": 31.430555555555557,
+          "repeated_cases": 72,
+          "stable_model_cases": 72,
+          "model_stability": 1,
+          "joint_repeated_cases": 72,
+          "stable_joint_cases": 71,
+          "joint_stability": 0.9861111111111112,
+          "robust_correct_cases": 70,
+          "unique_case_robust_accuracy": 0.9722222222222222,
+          "group_macro_accuracy": 0.9725,
+          "weakest_group_accuracy": 0.875,
+          "group_macro_joint_accuracy": 0.9591666666666666,
+          "weakest_group_joint_accuracy": 0.875,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 16,
+              "correct": 14,
+              "accuracy": 0.875,
+              "choice_correct": 16,
+              "choice_accuracy": 1,
+              "labelled": 16,
+              "level_correct": 16,
+              "level_accuracy": 1,
+              "joint_correct": 14,
+              "joint_accuracy": 0.875,
+              "choice_joint_correct": 16,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "difficult",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 17,
+              "choice_accuracy": 0.9444444444444444,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 17,
+              "choice_joint_accuracy": 0.9444444444444444
+            },
+            {
+              "name": "priority",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 18,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "quick",
+              "planned": 38,
+              "correct": 38,
+              "accuracy": 1,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 38,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 48,
+              "choice_accuracy": 0.96,
+              "labelled": 50,
+              "level_correct": 45,
+              "level_accuracy": 0.9,
+              "joint_correct": 44,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 44,
+              "choice_joint_accuracy": 0.88
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 4,
+              "correct": 4,
+              "accuracy": 1,
+              "choice_correct": 4,
+              "choice_accuracy": 1,
+              "labelled": 4,
+              "level_correct": 4,
+              "level_accuracy": 1,
+              "joint_correct": 4,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 4,
+              "choice_joint_accuracy": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 22,
+              "correct": 22,
+              "accuracy": 1,
+              "choice_correct": 21,
+              "choice_accuracy": 0.9545454545454546,
+              "labelled": 22,
+              "level_correct": 22,
+              "level_accuracy": 1,
+              "joint_correct": 22,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 21,
+              "choice_joint_accuracy": 0.9545454545454546
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 38,
+              "correct": 38,
+              "accuracy": 1,
+              "choice_correct": 38,
+              "choice_accuracy": 1,
+              "labelled": 38,
+              "level_correct": 38,
+              "level_accuracy": 1,
+              "joint_correct": 38,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 38,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 50,
+              "correct": 48,
+              "accuracy": 0.96,
+              "choice_correct": 48,
+              "choice_accuracy": 0.96,
+              "labelled": 50,
+              "level_correct": 45,
+              "level_accuracy": 0.9,
+              "joint_correct": 44,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 44,
+              "choice_joint_accuracy": 0.88
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 34,
+              "correct": 32,
+              "accuracy": 0.9411764705882353,
+              "choice_correct": 34,
+              "choice_accuracy": 1,
+              "labelled": 34,
+              "level_correct": 34,
+              "level_accuracy": 1,
+              "joint_correct": 32,
+              "joint_accuracy": 0.9411764705882353,
+              "choice_joint_correct": 34,
+              "choice_joint_accuracy": 1
+            }
+          ]
+        }
+      ]
+    },
+    "training": {
+      "settings": {
+        "options": {
+          "parallel": 6,
+          "repeat": 3,
+          "format": "json",
+          "target_decider": "jev",
+          "score": "initial",
+          "no_chain": true,
+          "preferences": {
+            "priority": "auto"
+          },
+          "min_accuracy": 0
+        },
+        "run_timeout_ms": 1800000,
+        "decide_timeout_ms": 120000,
+        "doubt": "pair",
+        "escalation_threshold": 0.1,
+        "strip_tags": [
+          "system-reminder",
+          "environment_context",
+          "user_instructions"
+        ],
+        "state_max_chars": 12000,
+        "retired": [
+          "gpt-6-sol",
+          "claude-sonnet-5-5"
+        ],
+        "candidates": [
+          {
+            "id": "deepseek-flash",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "glm-5.3",
+            "vision": false,
+            "default_effort": "xhigh",
+            "accepted_efforts": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 0.25
+          },
+          {
+            "id": "gpt-6.1-sol",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "claude-opus-5-5",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 1
+          }
+        ],
+        "deciders": [
+          {
+            "name": "jev",
+            "type": "systemone",
+            "model": "jev-latest",
+            "timeout_ms": 60000
+          }
+        ],
+        "prices_usd_per_million_tokens": {
+          "claude-haiku-4-5-20251001": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.1,
+            "cache_write": 1.25
+          },
+          "claude-opus-5-5": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5
+          },
+          "deepseek-flash": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.006,
+            "cache_write": 0
+          },
+          "glm-5.3": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write": 0
+          },
+          "gpt-6.1-sol": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5
+          }
+        },
+        "cost": {
+          "enabled": true,
+          "miss": 3,
+          "window_seconds": 2592000,
+          "weight": 20,
+          "estimate_source": "typical_task_prior",
+          "typical_tokens": {
+            "input": 200000,
+            "output": 40000,
+            "cache_read": 2000000,
+            "cache_write": 0
+          },
+          "task_estimates": [
+            {
+              "model": "deepseek-flash",
+              "level": "low",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "medium",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "high",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "xhigh",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "glm-5.3",
+              "level": "low",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "medium",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "high",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "xhigh",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "low",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "medium",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "high",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "xhigh",
+              "cost_usd": 1
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "low",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "medium",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "high",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "xhigh",
+              "cost_usd": 2
+            }
+          ]
+        }
+      },
+      "metrics": [
+        {
+          "decider": "jev",
+          "planned": 153,
+          "unique_cases": 51,
+          "started": 153,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 153,
+          "accuracy": 1,
+          "choice_correct": 152,
+          "choice_accuracy": 0.9934640522875817,
+          "labelled": 153,
+          "level_correct": 150,
+          "level_accuracy": 0.9803921568627451,
+          "missing_depth": 0,
+          "joint_correct": 150,
+          "joint_accuracy": 0.9803921568627451,
+          "choice_joint_correct": 149,
+          "choice_joint_accuracy": 0.9738562091503268,
+          "escalated": 1,
+          "under_routed": 0,
+          "over_routed": 0,
+          "other_misses": 0,
+          "latency_samples": 153,
+          "p50_ms": 285.694717,
+          "p95_ms": 388.294451,
+          "calls": 154,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1.0065359477124183,
+          "known_usage_calls": 154,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 391437,
+          "reported_output_tokens": 13163,
+          "complete_usage_input_tokens": 391437,
+          "complete_usage_output_tokens": 13163,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 1,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0.006535947712418301,
+          "pair_known_usage_calls": 1,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 1497,
+          "reported_pair_output_tokens": 51,
+          "complete_pair_usage_input_tokens": 1497,
+          "complete_pair_usage_output_tokens": 51,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2627.2727272727275,
+          "mean_reported_tokens_per_known_pair": 1548,
+          "amortized_reported_tokens_per_started": 2644.4444444444443,
+          "amortized_reported_pair_tokens_per_started": 10.117647058823529,
+          "repeated_cases": 51,
+          "stable_model_cases": 51,
+          "model_stability": 1,
+          "joint_repeated_cases": 51,
+          "stable_joint_cases": 51,
+          "joint_stability": 1,
+          "robust_correct_cases": 51,
+          "unique_case_robust_accuracy": 1,
+          "group_macro_accuracy": 1,
+          "weakest_group_accuracy": 1,
+          "group_macro_joint_accuracy": 0.9761904761904763,
+          "weakest_group_joint_accuracy": 0.8571428571428571,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 18,
+              "level_accuracy": 1,
+              "joint_correct": 18,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 18,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "difficult",
+              "planned": 21,
+              "correct": 21,
+              "accuracy": 1,
+              "choice_correct": 20,
+              "choice_accuracy": 0.9523809523809523,
+              "labelled": 21,
+              "level_correct": 21,
+              "level_accuracy": 1,
+              "joint_correct": 21,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 20,
+              "choice_joint_accuracy": 0.9523809523809523
+            },
+            {
+              "name": "priority",
+              "planned": 21,
+              "correct": 21,
+              "accuracy": 1,
+              "choice_correct": 21,
+              "choice_accuracy": 1,
+              "labelled": 21,
+              "level_correct": 18,
+              "level_accuracy": 0.8571428571428571,
+              "joint_correct": 18,
+              "joint_accuracy": 0.8571428571428571,
+              "choice_joint_correct": 18,
+              "choice_joint_accuracy": 0.8571428571428571
+            },
+            {
+              "name": "quick",
+              "planned": 42,
+              "correct": 42,
+              "accuracy": 1,
+              "choice_correct": 42,
+              "choice_accuracy": 1,
+              "labelled": 42,
+              "level_correct": 42,
+              "level_accuracy": 1,
+              "joint_correct": 42,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 42,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 48,
+              "correct": 48,
+              "accuracy": 1,
+              "choice_correct": 48,
+              "choice_accuracy": 1,
+              "labelled": 48,
+              "level_correct": 48,
+              "level_accuracy": 1,
+              "joint_correct": 48,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 48,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 3,
+              "correct": 3,
+              "accuracy": 1,
+              "choice_correct": 3,
+              "choice_accuracy": 1,
+              "labelled": 3,
+              "level_correct": 3,
+              "level_accuracy": 1,
+              "joint_correct": 3,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 3,
+              "choice_joint_accuracy": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 24,
+              "correct": 24,
+              "accuracy": 1,
+              "choice_correct": 23,
+              "choice_accuracy": 0.9583333333333334,
+              "labelled": 24,
+              "level_correct": 24,
+              "level_accuracy": 1,
+              "joint_correct": 24,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 23,
+              "choice_joint_accuracy": 0.9583333333333334
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 42,
+              "correct": 42,
+              "accuracy": 1,
+              "choice_correct": 42,
+              "choice_accuracy": 1,
+              "labelled": 42,
+              "level_correct": 42,
+              "level_accuracy": 1,
+              "joint_correct": 42,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 42,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 48,
+              "correct": 48,
+              "accuracy": 1,
+              "choice_correct": 48,
+              "choice_accuracy": 1,
+              "labelled": 48,
+              "level_correct": 48,
+              "level_accuracy": 1,
+              "joint_correct": 48,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 48,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 39,
+              "correct": 39,
+              "accuracy": 1,
+              "choice_correct": 39,
+              "choice_accuracy": 1,
+              "labelled": 39,
+              "level_correct": 36,
+              "level_accuracy": 0.9230769230769231,
+              "joint_correct": 36,
+              "joint_accuracy": 0.9230769230769231,
+              "choice_joint_correct": 36,
+              "choice_joint_accuracy": 0.9230769230769231
+            }
+          ]
+        }
+      ]
+    },
+    "reserved": {
+      "settings": {
+        "options": {
+          "parallel": 6,
+          "repeat": 3,
+          "format": "json",
+          "target_decider": "jev",
+          "score": "initial",
+          "no_chain": true,
+          "preferences": {
+            "priority": "auto"
+          },
+          "min_accuracy": 0
+        },
+        "run_timeout_ms": 1800000,
+        "decide_timeout_ms": 120000,
+        "doubt": "pair",
+        "escalation_threshold": 0.1,
+        "strip_tags": [
+          "system-reminder",
+          "environment_context",
+          "user_instructions"
+        ],
+        "state_max_chars": 12000,
+        "retired": [
+          "gpt-6-sol",
+          "claude-sonnet-5-5"
+        ],
+        "candidates": [
+          {
+            "id": "deepseek-flash",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "glm-5.3",
+            "vision": false,
+            "default_effort": "xhigh",
+            "accepted_efforts": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 0.25
+          },
+          {
+            "id": "gpt-6.1-sol",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "claude-opus-5-5",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 1
+          }
+        ],
+        "deciders": [
+          {
+            "name": "jev",
+            "type": "systemone",
+            "model": "jev-latest",
+            "timeout_ms": 60000
+          }
+        ],
+        "prices_usd_per_million_tokens": {
+          "claude-haiku-4-5-20251001": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.1,
+            "cache_write": 1.25
+          },
+          "claude-opus-5-5": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5
+          },
+          "deepseek-flash": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.006,
+            "cache_write": 0
+          },
+          "glm-5.3": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write": 0
+          },
+          "gpt-6.1-sol": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5
+          }
+        },
+        "cost": {
+          "enabled": true,
+          "miss": 3,
+          "window_seconds": 2592000,
+          "weight": 20,
+          "estimate_source": "typical_task_prior",
+          "typical_tokens": {
+            "input": 200000,
+            "output": 40000,
+            "cache_read": 2000000,
+            "cache_write": 0
+          },
+          "task_estimates": [
+            {
+              "model": "deepseek-flash",
+              "level": "low",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "medium",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "high",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "xhigh",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "glm-5.3",
+              "level": "low",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "medium",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "high",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "xhigh",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "low",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "medium",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "high",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "xhigh",
+              "cost_usd": 1
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "low",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "medium",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "high",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "xhigh",
+              "cost_usd": 2
+            }
+          ]
+        }
+      },
+      "metrics": [
+        {
+          "decider": "jev",
+          "planned": 51,
+          "unique_cases": 17,
+          "started": 51,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 48,
+          "accuracy": 0.9411764705882353,
+          "choice_correct": 50,
+          "choice_accuracy": 0.9803921568627451,
+          "labelled": 51,
+          "level_correct": 42,
+          "level_accuracy": 0.8235294117647058,
+          "missing_depth": 0,
+          "joint_correct": 39,
+          "joint_accuracy": 0.7647058823529411,
+          "choice_joint_correct": 41,
+          "choice_joint_accuracy": 0.803921568627451,
+          "escalated": 4,
+          "under_routed": 0,
+          "over_routed": 3,
+          "other_misses": 0,
+          "latency_samples": 51,
+          "p50_ms": 290.704963,
+          "p95_ms": 596.969886,
+          "calls": 55,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1.0784313725490196,
+          "known_usage_calls": 55,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 135441,
+          "reported_output_tokens": 4568,
+          "complete_usage_input_tokens": 135441,
+          "complete_usage_output_tokens": 4568,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 4,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0.0784313725490196,
+          "pair_known_usage_calls": 4,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 5841,
+          "reported_pair_output_tokens": 201,
+          "complete_pair_usage_input_tokens": 5841,
+          "complete_pair_usage_output_tokens": 201,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2545.6181818181817,
+          "mean_reported_tokens_per_known_pair": 1510.5,
+          "amortized_reported_tokens_per_started": 2745.274509803922,
+          "amortized_reported_pair_tokens_per_started": 118.47058823529412,
+          "repeated_cases": 17,
+          "stable_model_cases": 17,
+          "model_stability": 1,
+          "joint_repeated_cases": 17,
+          "stable_joint_cases": 17,
+          "joint_stability": 1,
+          "robust_correct_cases": 16,
+          "unique_case_robust_accuracy": 0.9411764705882353,
+          "group_macro_accuracy": 0.9166666666666666,
+          "weakest_group_accuracy": 0.5,
+          "group_macro_joint_accuracy": 0.638888888888889,
+          "weakest_group_joint_accuracy": 0,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 6,
+              "correct": 3,
+              "accuracy": 0.5,
+              "choice_correct": 6,
+              "choice_accuracy": 1,
+              "labelled": 6,
+              "level_correct": 6,
+              "level_accuracy": 1,
+              "joint_correct": 3,
+              "joint_accuracy": 0.5,
+              "choice_joint_correct": 6,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "difficult",
+              "planned": 3,
+              "correct": 3,
+              "accuracy": 1,
+              "choice_correct": 2,
+              "choice_accuracy": 0.6666666666666666,
+              "labelled": 3,
+              "level_correct": 3,
+              "level_accuracy": 1,
+              "joint_correct": 3,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 2,
+              "choice_joint_accuracy": 0.6666666666666666
+            },
+            {
+              "name": "priority",
+              "planned": 6,
+              "correct": 6,
+              "accuracy": 1,
+              "choice_correct": 6,
+              "choice_accuracy": 1,
+              "labelled": 6,
+              "level_correct": 3,
+              "level_accuracy": 0.5,
+              "joint_correct": 3,
+              "joint_accuracy": 0.5,
+              "choice_joint_correct": 3,
+              "choice_joint_accuracy": 0.5
+            },
+            {
+              "name": "quick",
+              "planned": 15,
+              "correct": 15,
+              "accuracy": 1,
+              "choice_correct": 15,
+              "choice_accuracy": 1,
+              "labelled": 15,
+              "level_correct": 15,
+              "level_accuracy": 1,
+              "joint_correct": 15,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 15,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 18,
+              "correct": 18,
+              "accuracy": 1,
+              "choice_correct": 18,
+              "choice_accuracy": 1,
+              "labelled": 18,
+              "level_correct": 15,
+              "level_accuracy": 0.8333333333333334,
+              "joint_correct": 15,
+              "joint_accuracy": 0.8333333333333334,
+              "choice_joint_correct": 15,
+              "choice_joint_accuracy": 0.8333333333333334
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 3,
+              "correct": 3,
+              "accuracy": 1,
+              "choice_correct": 3,
+              "choice_accuracy": 1,
+              "labelled": 3,
+              "level_correct": 0,
+              "level_accuracy": 0,
+              "joint_correct": 0,
+              "joint_accuracy": 0,
+              "choice_joint_correct": 0,
+              "choice_joint_accuracy": 0
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 6,
+              "correct": 6,
+              "accuracy": 1,
+              "choice_correct": 5,
+              "choice_accuracy": 0.8333333333333334,
+              "labelled": 6,
+              "level_correct": 3,
+              "level_accuracy": 0.5,
+              "joint_correct": 3,
+              "joint_accuracy": 0.5,
+              "choice_joint_correct": 2,
+              "choice_joint_accuracy": 0.3333333333333333
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 15,
+              "correct": 15,
+              "accuracy": 1,
+              "choice_correct": 15,
+              "choice_accuracy": 1,
+              "labelled": 15,
+              "level_correct": 15,
+              "level_accuracy": 1,
+              "joint_correct": 15,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 15,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 15,
+              "correct": 15,
+              "accuracy": 1,
+              "choice_correct": 15,
+              "choice_accuracy": 1,
+              "labelled": 15,
+              "level_correct": 12,
+              "level_accuracy": 0.8,
+              "joint_correct": 12,
+              "joint_accuracy": 0.8,
+              "choice_joint_correct": 12,
+              "choice_joint_accuracy": 0.8
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 15,
+              "correct": 12,
+              "accuracy": 0.8,
+              "choice_correct": 15,
+              "choice_accuracy": 1,
+              "labelled": 15,
+              "level_correct": 12,
+              "level_accuracy": 0.8,
+              "joint_correct": 9,
+              "joint_accuracy": 0.6,
+              "choice_joint_correct": 12,
+              "choice_joint_accuracy": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "production": {
+      "settings": {
+        "options": {
+          "parallel": 6,
+          "repeat": 1,
+          "format": "json",
+          "target_decider": "jev",
+          "score": "final",
+          "no_chain": true,
+          "preferences": {
+            "priority": "auto"
+          },
+          "min_accuracy": 0
+        },
+        "run_timeout_ms": 1800000,
+        "decide_timeout_ms": 30000,
+        "doubt": "pair",
+        "escalation_threshold": 0.1,
+        "strip_tags": [
+          "system-reminder",
+          "environment_context",
+          "user_instructions"
+        ],
+        "state_max_chars": 12000,
+        "retired": [
+          "gpt-6-sol",
+          "claude-sonnet-5-5"
+        ],
+        "candidates": [
+          {
+            "id": "deepseek-flash",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "glm-5.3",
+            "vision": false,
+            "default_effort": "xhigh",
+            "accepted_efforts": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 0.25
+          },
+          {
+            "id": "gpt-6.1-sol",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high"
+            ],
+            "cost_factor": 1
+          },
+          {
+            "id": "claude-opus-5-5",
+            "vision": true,
+            "default_effort": "high",
+            "accepted_efforts": [
+              "high",
+              "xhigh"
+            ],
+            "cost_factor": 1
+          }
+        ],
+        "deciders": [
+          {
+            "name": "jev",
+            "type": "systemone",
+            "model": "jev-latest",
+            "timeout_ms": 5000
+          }
+        ],
+        "prices_usd_per_million_tokens": {
+          "claude-haiku-4-5-20251001": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.1,
+            "cache_write": 1.25
+          },
+          "claude-opus-5-5": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5
+          },
+          "deepseek-flash": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.006,
+            "cache_write": 0
+          },
+          "glm-5.3": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write": 0
+          },
+          "gpt-6.1-sol": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5
+          }
+        },
+        "cost": {
+          "enabled": true,
+          "miss": 3,
+          "window_seconds": 2592000,
+          "weight": 20,
+          "estimate_source": "typical_task_prior",
+          "typical_tokens": {
+            "input": 200000,
+            "output": 40000,
+            "cache_read": 2000000,
+            "cache_write": 0
+          },
+          "task_estimates": [
+            {
+              "model": "deepseek-flash",
+              "level": "low",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "medium",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "high",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "deepseek-flash",
+              "level": "xhigh",
+              "cost_usd": 0.12
+            },
+            {
+              "model": "glm-5.3",
+              "level": "low",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "medium",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "high",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "glm-5.3",
+              "level": "xhigh",
+              "cost_usd": 0.244
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "low",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "medium",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "high",
+              "cost_usd": 1
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "level": "xhigh",
+              "cost_usd": 1
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "low",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "medium",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "high",
+              "cost_usd": 2
+            },
+            {
+              "model": "claude-opus-5-5",
+              "level": "xhigh",
+              "cost_usd": 2
+            }
+          ]
+        }
+      },
+      "metrics": [
+        {
+          "decider": "jev",
+          "planned": 72,
+          "unique_cases": 72,
+          "started": 72,
+          "not_started": 0,
+          "cancelled": 0,
+          "completed": true,
+          "errors": 0,
+          "correct": 70,
+          "accuracy": 0.9722222222222222,
+          "choice_correct": 70,
+          "choice_accuracy": 0.9722222222222222,
+          "labelled": 72,
+          "level_correct": 69,
+          "level_accuracy": 0.9583333333333334,
+          "missing_depth": 0,
+          "joint_correct": 68,
+          "joint_accuracy": 0.9444444444444444,
+          "choice_joint_correct": 68,
+          "choice_joint_accuracy": 0.9444444444444444,
+          "escalated": 2,
+          "under_routed": 0,
+          "over_routed": 2,
+          "other_misses": 0,
+          "latency_samples": 72,
+          "p50_ms": 306.51137,
+          "p95_ms": 462.836357,
+          "calls": 74,
+          "failed_calls": 0,
+          "skipped_attempts": 0,
+          "calls_per_started": 1.0277777777777777,
+          "known_usage_calls": 74,
+          "unknown_usage_calls": 0,
+          "reported_input_tokens": 186327,
+          "reported_output_tokens": 6270,
+          "complete_usage_input_tokens": 186327,
+          "complete_usage_output_tokens": 6270,
+          "partial_usage_input_tokens": 0,
+          "partial_usage_output_tokens": 0,
+          "pair_calls": 2,
+          "failed_pairs": 0,
+          "pair_calls_per_started": 0.027777777777777776,
+          "pair_known_usage_calls": 2,
+          "pair_unknown_usage_calls": 0,
+          "reported_pair_input_tokens": 2909,
+          "reported_pair_output_tokens": 101,
+          "complete_pair_usage_input_tokens": 2909,
+          "complete_pair_usage_output_tokens": 101,
+          "partial_pair_usage_input_tokens": 0,
+          "partial_pair_usage_output_tokens": 0,
+          "mean_reported_tokens_per_known_call": 2602.662162162162,
+          "mean_reported_tokens_per_known_pair": 1505,
+          "amortized_reported_tokens_per_started": 2674.9583333333335,
+          "amortized_reported_pair_tokens_per_started": 41.80555555555556,
+          "repeated_cases": 0,
+          "stable_model_cases": 0,
+          "model_stability": 0,
+          "joint_repeated_cases": 0,
+          "stable_joint_cases": 0,
+          "joint_stability": 0,
+          "robust_correct_cases": 70,
+          "unique_case_robust_accuracy": 0.9722222222222222,
+          "group_macro_accuracy": 0.9725,
+          "weakest_group_accuracy": 0.875,
+          "group_macro_joint_accuracy": 0.9591666666666666,
+          "weakest_group_joint_accuracy": 0.875,
+          "groups": [
+            {
+              "name": "bounded",
+              "planned": 8,
+              "correct": 7,
+              "accuracy": 0.875,
+              "choice_correct": 8,
+              "choice_accuracy": 1,
+              "labelled": 8,
+              "level_correct": 8,
+              "level_accuracy": 1,
+              "joint_correct": 7,
+              "joint_accuracy": 0.875,
+              "choice_joint_correct": 8,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "difficult",
+              "planned": 9,
+              "correct": 9,
+              "accuracy": 1,
+              "choice_correct": 8,
+              "choice_accuracy": 0.8888888888888888,
+              "labelled": 9,
+              "level_correct": 9,
+              "level_accuracy": 1,
+              "joint_correct": 9,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 8,
+              "choice_joint_accuracy": 0.8888888888888888
+            },
+            {
+              "name": "priority",
+              "planned": 9,
+              "correct": 9,
+              "accuracy": 1,
+              "choice_correct": 9,
+              "choice_accuracy": 1,
+              "labelled": 9,
+              "level_correct": 9,
+              "level_accuracy": 1,
+              "joint_correct": 9,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 9,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "quick",
+              "planned": 19,
+              "correct": 19,
+              "accuracy": 1,
+              "choice_correct": 19,
+              "choice_accuracy": 1,
+              "labelled": 19,
+              "level_correct": 19,
+              "level_accuracy": 1,
+              "joint_correct": 19,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 19,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "routine",
+              "planned": 25,
+              "correct": 24,
+              "accuracy": 0.96,
+              "choice_correct": 24,
+              "choice_accuracy": 0.96,
+              "labelled": 25,
+              "level_correct": 22,
+              "level_accuracy": 0.88,
+              "joint_correct": 22,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 22,
+              "choice_joint_accuracy": 0.88
+            },
+            {
+              "name": "ui-substantial",
+              "planned": 2,
+              "correct": 2,
+              "accuracy": 1,
+              "choice_correct": 2,
+              "choice_accuracy": 1,
+              "labelled": 2,
+              "level_correct": 2,
+              "level_accuracy": 1,
+              "joint_correct": 2,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 2,
+              "choice_joint_accuracy": 1
+            }
+          ],
+          "tiers": [
+            {
+              "name": "claude-opus-5-5",
+              "planned": 11,
+              "correct": 11,
+              "accuracy": 1,
+              "choice_correct": 10,
+              "choice_accuracy": 0.9090909090909091,
+              "labelled": 11,
+              "level_correct": 11,
+              "level_accuracy": 1,
+              "joint_correct": 11,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 10,
+              "choice_joint_accuracy": 0.9090909090909091
+            },
+            {
+              "name": "deepseek-flash",
+              "planned": 19,
+              "correct": 19,
+              "accuracy": 1,
+              "choice_correct": 19,
+              "choice_accuracy": 1,
+              "labelled": 19,
+              "level_correct": 19,
+              "level_accuracy": 1,
+              "joint_correct": 19,
+              "joint_accuracy": 1,
+              "choice_joint_correct": 19,
+              "choice_joint_accuracy": 1
+            },
+            {
+              "name": "glm-5.3",
+              "planned": 25,
+              "correct": 24,
+              "accuracy": 0.96,
+              "choice_correct": 24,
+              "choice_accuracy": 0.96,
+              "labelled": 25,
+              "level_correct": 22,
+              "level_accuracy": 0.88,
+              "joint_correct": 22,
+              "joint_accuracy": 0.88,
+              "choice_joint_correct": 22,
+              "choice_joint_accuracy": 0.88
+            },
+            {
+              "name": "gpt-6.1-sol",
+              "planned": 17,
+              "correct": 16,
+              "accuracy": 0.9411764705882353,
+              "choice_correct": 17,
+              "choice_accuracy": 1,
+              "labelled": 17,
+              "level_correct": 17,
+              "level_accuracy": 1,
+              "joint_correct": 16,
+              "joint_accuracy": 0.9411764705882353,
+              "choice_joint_correct": 17,
+              "choice_joint_accuracy": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "files": {
+    "before.json.gz": {
+      "sha256": "464dfd6dcc4649e8af2ad6265b800c3cf6d94ba1390ff25ce590c7e9e1eee087",
+      "uncompressed_sha256": "ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3"
+    },
+    "routing-after.json.gz": {
+      "sha256": "850c14b4b3c54ff25ff0ba48f28892919fd4a7f17770359f2b0905c1d4b4570e",
+      "uncompressed_sha256": "d595206e2c1ba3302634dfcb301f7b6b20f6663d3bf28814c4ad41be80c6933c"
+    },
+    "training.json.gz": {
+      "sha256": "1b42cd5664a1b114cf63e03dad0f90f076a739c8766f21b6fc8a724e469ae516",
+      "uncompressed_sha256": "7d64ef8ca8dbe965d5f1ecd00ec49f4bce01641686e28488478b504a242178ae"
+    },
+    "reserved.json.gz": {
+      "sha256": "9f87fb2c45b9b047978c7fd15d2c837e483ce226995014b1f5c28e146ae3f54a",
+      "uncompressed_sha256": "3c124ce16a81788da439757ad69315294b525aab96b908ce4b3bb5ce2bd843aa"
+    },
+    "production.json.gz": {
+      "sha256": "5d34046e986c64dfe1493d17481d91063badd47106c144936a0309e1d8c83612",
+      "uncompressed_sha256": "7647d0ec1412f95694350a86146b7a47f7cce4444ab62b647219eb53015e3ddd"
+    }
+  },
+  "frozen_baseline": {
+    "train": {
+      "planned": 102,
+      "choice_correct": 96,
+      "final_correct": 101,
+      "depth_correct": 100,
+      "joint_correct": 94,
+      "choice_accuracy": 0.9411764705882353,
+      "final_accuracy": 0.9901960784313726,
+      "depth_accuracy": 0.9803921568627451,
+      "joint_accuracy": 0.9215686274509803
+    },
+    "eval": {
+      "planned": 34,
+      "choice_correct": 32,
+      "final_correct": 32,
+      "depth_correct": 26,
+      "joint_correct": 26,
+      "choice_accuracy": 0.9411764705882353,
+      "final_accuracy": 0.9411764705882353,
+      "depth_accuracy": 0.7647058823529411,
+      "joint_accuracy": 0.7647058823529411
+    }
+  },
+  "state_benchmarks": {
+    "backticks": {
+      "before": [
+        {
+          "ns": 3806459,
+          "bytes": 1142821,
+          "allocs": 20
+        },
+        {
+          "ns": 3256433,
+          "bytes": 1142761,
+          "allocs": 20
+        },
+        {
+          "ns": 2662397,
+          "bytes": 1142961,
+          "allocs": 20
+        }
+      ],
+      "after": [
+        {
+          "ns": 195789,
+          "bytes": 106930,
+          "allocs": 3
+        },
+        {
+          "ns": 190499,
+          "bytes": 106929,
+          "allocs": 3
+        },
+        {
+          "ns": 203646,
+          "bytes": 106929,
+          "allocs": 3
+        }
+      ]
+    },
+    "distinct_runs": {
+      "before": [
+        {
+          "ns": 1148971,
+          "bytes": 733532,
+          "allocs": 47
+        },
+        {
+          "ns": 1439422,
+          "bytes": 733355,
+          "allocs": 47
+        },
+        {
+          "ns": 1431740,
+          "bytes": 733457,
+          "allocs": 48
+        }
+      ],
+      "after": [
+        {
+          "ns": 95442,
+          "bytes": 432,
+          "allocs": 2
+        },
+        {
+          "ns": 101451,
+          "bytes": 432,
+          "allocs": 2
+        },
+        {
+          "ns": 106026,
+          "bytes": 432,
+          "allocs": 2
+        }
+      ]
+    },
+    "escaped_quotes": {
+      "before": [
+        {
+          "ns": 1960479,
+          "bytes": 747352,
+          "allocs": 33
+        },
+        {
+          "ns": 1987617,
+          "bytes": 747291,
+          "allocs": 34
+        },
+        {
+          "ns": 1983438,
+          "bytes": 747316,
+          "allocs": 34
+        }
+      ],
+      "after": [
+        {
+          "ns": 115602,
+          "bytes": 432,
+          "allocs": 2
+        },
+        {
+          "ns": 110084,
+          "bytes": 432,
+          "allocs": 2
+        },
+        {
+          "ns": 100836,
+          "bytes": 432,
+          "allocs": 2
+        }
+      ]
+    },
+    "wrapper_tildes": {
+      "before": [
+        {
+          "ns": 931339,
+          "bytes": 172,
+          "allocs": 7
+        },
+        {
+          "ns": 932359,
+          "bytes": 173,
+          "allocs": 7
+        },
+        {
+          "ns": 1097712,
+          "bytes": 173,
+          "allocs": 7
+        }
+      ],
+      "after": [
+        {
+          "ns": 904244,
+          "bytes": 136,
+          "allocs": 5
+        },
+        {
+          "ns": 934470,
+          "bytes": 136,
+          "allocs": 5
+        },
+        {
+          "ns": 951067,
+          "bytes": 136,
+          "allocs": 5
+        }
+      ]
+    }
+  },
+  "benchmark_binaries_sha256": {
+    "baseline": "c56ffd93ac78a0fc694760e1c70ac85b138871dd29e72ad03f7e45943f1d2c86",
+    "tuned": "5ed84172976a53aaaa8ce00c9fd39a4b876c37555ae220ae0d8eecad632c7ce9"
+  }
+}

@@ -1,0 +1,269 @@
+package dashboard
+
+import (
+	"strconv"
+	"time"
+
+	"github.com/MarioGK/AI-Router/internal/pin"
+)
+
+// badge names a model on a tint of its color.
+templ badge(model string) {
+	<span class={ "inline-flex max-w-full items-center gap-1.5 rounded-md px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-fg ring-1 ring-inset", tint(model) } title={ model }>
+		<span class={ "size-2 shrink-0 rounded-full", swatch(model) }></span>
+		<span class="truncate">{ model }</span>
+	</span>
+}
+
+// effortTag names, beside a model's badge, the reasoning effort it runs at
+// or a thread's reasoning level; nothing when empty.
+templ effortTag(effort, about string) {
+	if effort != "" {
+		<span class="inline-flex items-center gap-1 font-mono text-[11px] whitespace-nowrap text-fg-3" title={ about }>
+			@icon("gauge", "size-3")
+			{ effort }
+		</span>
+	}
+}
+
+// when shows a time relative to now, the absolute time on hover.
+templ when(t time.Time) {
+	if t.IsZero() {
+		<span class="text-fg-3">—</span>
+	} else {
+		<time datetime={ t.UTC().Format(time.RFC3339) } title={ stamp(t) } class="whitespace-nowrap">{ ago(t) }</time>
+	}
+}
+
+// status shows an upstream status by its color and code, with the error
+// on hover.
+templ status(code int, err string) {
+	<span class="inline-flex items-center gap-1.5 font-mono text-xs whitespace-nowrap" title={ err }>
+		<span class={ "size-1.5 shrink-0 rounded-full", statusDot(code) }></span>
+		{ statusText(code) }
+	</span>
+}
+
+// tag is a small neutral label.
+templ tag(text string) {
+	<span class="inline-flex items-center rounded border border-line px-1.5 py-px text-[11px] whitespace-nowrap text-fg-2">{ text }</span>
+}
+
+// marker is a tag with an icon and an explanation on hover.
+templ marker(glyph, text, about string) {
+	<span class="inline-flex items-center gap-1 rounded border border-line px-1.5 py-px text-[11px] whitespace-nowrap text-fg-2" title={ about }>
+		@icon(glyph, "size-3")
+		{ text }
+	</span>
+}
+
+// livePill shows whether a live stream is connected; text is the Datastar
+// expression of its words.
+templ livePill(text string) {
+	<span class="inline-flex items-center gap-2 text-xs font-medium text-fg-2">
+		<span class="relative flex size-2">
+			<span class="absolute inline-flex size-full animate-ping rounded-full bg-good opacity-50" data-show="$_live" style="display: none"></span>
+			<span class="relative inline-flex size-2 rounded-full bg-fg-3" data-class="{'bg-good': $_live, 'bg-fg-3': !$_live}"></span>
+		</span>
+		<span data-text={ text }>Connecting</span>
+	</span>
+}
+
+// pinFlags marks a pin that changed model since its decision.
+templ pinFlags(p pin.Pin) {
+	if p.FailedOver || p.Upgraded {
+		<span class="inline-flex items-center gap-1.5">
+			if p.FailedOver {
+				@marker("swap", "failover", "Failed over after its model failed; decided "+p.Decided+", now "+p.Model)
+			}
+			if p.Upgraded {
+				@marker("image", "vision", "Upgraded to a vision model when the thread carried images; decided "+p.Decided+", now "+p.Model)
+			}
+		</span>
+	}
+}
+
+// th is a table column heading.
+templ th(name, class string) {
+	<th scope="col" class={ "px-4 py-2.5 text-[11px] font-medium tracking-wide whitespace-nowrap text-fg-3 uppercase", class }>{ name }</th>
+}
+
+// requestHead heads a request table. Below md the table turns into a
+// list of stacked rows without a head.
+templ requestHead(cols requestColumns) {
+	<thead class="hidden border-b border-line md:table-header-group">
+		<tr>
+			@th("When", "")
+			if cols.Thread {
+				@th("Thread", "")
+			}
+			if cols.Kind {
+				@th("Kind", "")
+			}
+			@th("Model", "")
+			@th("Reason", "")
+			@th("Status", "")
+			@th("Latency", "text-right")
+			if cols.Queue {
+				@th("Queued", "text-right")
+			}
+			if cols.Cost {
+				@th("Cost", "text-right")
+			}
+			if cols.Task {
+				@th("Task cost", "text-right")
+			}
+			if cols.Error {
+				@th("Error", "")
+			}
+		</tr>
+	</thead>
+}
+
+// requestRows is the body of a request table; rows that just arrived
+// flash in.
+templ requestRows(id string, v requestTable, cols requestColumns, none string) {
+	<tbody id={ id } class="block divide-y divide-line md:table-row-group">
+		if v.Err != nil {
+			<tr class="block md:table-row">
+				<td colspan={ cols.span() } class="block p-4 md:table-cell">
+					@problem(v.Err)
+				</td>
+			</tr>
+		} else if len(v.Rows) == 0 {
+			<tr class="block md:table-row">
+				<td colspan={ cols.span() } class="block md:table-cell">
+					@blank("inbox", "No requests", none)
+				</td>
+			</tr>
+		}
+		for _, r := range v.Rows {
+			@requestRow(r, v.arrived(r), cols)
+		}
+	</tbody>
+}
+
+// requestRow is one request: a table row from md up, below it the model
+// and status over a line of details.
+templ requestRow(r pin.RequestLog, fresh bool, cols requestColumns) {
+	<tr
+		id={ "request-" + strconv.FormatInt(r.ID, 10) }
+		class={ "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2.5 hover:bg-raised/60 md:table-row md:p-0",
+			templ.KV("arrive", fresh) }
+	>
+		<td class="hidden px-4 py-1.5 text-fg-2 md:table-cell">
+			@when(r.At)
+		</td>
+		if cols.Thread {
+			<td class="hidden px-4 py-1.5 md:table-cell">
+				if r.Key != "" {
+					<a href={ threadURL(r.Key) } class="font-mono text-xs text-fg-2 hover:text-fg hover:underline" title={ r.Key }>{ shortKey(r.Key) }</a>
+				} else {
+					<span class="text-fg-3">—</span>
+				}
+			</td>
+		}
+		if cols.Kind {
+			<td class="hidden px-4 py-1.5 md:table-cell">
+				@tag(label(r.Kind))
+			</td>
+		}
+		<td class="min-w-0 md:px-4 md:py-1.5">
+			<span class="inline-flex max-w-full items-center gap-1.5 whitespace-nowrap">
+				if r.Requested != r.Model {
+					<span class="font-mono text-xs text-fg-3">{ r.Requested }</span>
+					@icon("arrow-right", "size-3 text-fg-3")
+				}
+				@badge(r.Model)
+				@effortTag(r.Effort, "Reasoning effort sent")
+				if r.Failover {
+					<span class="text-serious" title="Failed over to this model">
+						@icon("swap", "size-3.5")
+					</span>
+				}
+			</span>
+		</td>
+		<td class="hidden px-4 py-1.5 whitespace-nowrap text-fg-2 md:table-cell">{ label(r.Reason) }</td>
+		<td class="justify-self-end md:px-4 md:py-1.5">
+			@status(r.Status, r.Error)
+		</td>
+		<td class="hidden px-4 py-1.5 text-right font-mono text-xs whitespace-nowrap text-fg-2 tabular-nums md:table-cell">{ duration(r.Latency) }</td>
+		if cols.Queue {
+			<td class="hidden px-4 py-1.5 text-right font-mono text-xs whitespace-nowrap text-fg-2 tabular-nums md:table-cell" title="Time waiting for a concurrency slot, included in the latency">
+				if r.Queue > 0 {
+					{ duration(r.Queue) }
+				} else {
+					<span class="text-fg-3">—</span>
+				}
+			</td>
+		}
+		if cols.Cost {
+			<td class="hidden px-4 py-1.5 text-right font-mono text-xs whitespace-nowrap text-fg-2 tabular-nums md:table-cell" title={ tokenSummary(r.Tokens) }>
+				@requestCost(r)
+			</td>
+		}
+		if cols.Task {
+			<td class="hidden px-4 py-1.5 text-right font-mono text-xs whitespace-nowrap text-fg-2 tabular-nums md:table-cell" title="The thread's cost through this request">
+				if r.TaskCost > 0 {
+					{ money(r.TaskCost) }
+				} else {
+					<span class="text-fg-3">—</span>
+				}
+			</td>
+		}
+		if cols.Error {
+			<td class="hidden max-w-72 truncate px-4 py-1.5 text-xs text-fg-2 md:table-cell" title={ r.Error }>{ r.Error }</td>
+		}
+		<td class="col-span-2 min-w-0 space-y-0.5 text-xs text-fg-3 md:hidden">
+			<div class="flex flex-wrap items-center gap-x-1.5">
+				@when(r.At)
+				if cols.Kind {
+					@separated(label(r.Kind))
+				}
+				if !cols.Thread {
+					@separated(label(r.Reason))
+				}
+				@separated(duration(r.Latency))
+				if cols.Queue && r.Queue > 0 {
+					@separated("queued " + duration(r.Queue))
+				}
+				if cols.Cost && r.Priced {
+					@separated(money(r.Cost))
+				}
+				if cols.Task && r.TaskCost > 0 {
+					@separated("task " + money(r.TaskCost))
+				}
+			</div>
+			if cols.Thread {
+				<div class="flex flex-wrap items-center gap-x-1.5">
+					<span>{ label(r.Reason) }</span>
+					if r.Key != "" {
+						<span aria-hidden="true">·</span>
+						<a href={ threadURL(r.Key) } class="font-mono text-fg-2 underline-offset-2 hover:underline">{ shortKey(r.Key) }</a>
+					}
+				</div>
+			}
+			if r.Error != "" {
+				<div class="truncate text-fg-2">{ r.Error }</div>
+			}
+		</td>
+	</tr>
+}
+
+// requestCost is a request's list-price cost, its token count when the
+// model has no price, or a dash when the response reported no usage.
+templ requestCost(r pin.RequestLog) {
+	if r.Priced {
+		{ money(r.Cost) }
+	} else if r.Tokens.Total() > 0 {
+		<span class="text-fg-3">{ compact(int(r.Tokens.Total())) } tok</span>
+	} else {
+		<span class="text-fg-3">—</span>
+	}
+}
+
+// separated is a detail after a dot in a short line of details.
+templ separated(text string) {
+	<span aria-hidden="true">·</span>
+	<span class="whitespace-nowrap">{ text }</span>
+}

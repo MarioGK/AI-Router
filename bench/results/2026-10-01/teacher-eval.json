@@ -1,0 +1,327 @@
+{
+  "cases": [
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/api-field-for-frontend",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "The frontend team needs avatarUrl in /api/me. In handlers/me.go, add \"avatarUrl\": user.AvatarURL to the existing response map. The value is already loaded and has the right format. No query, schema or UI changes.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/dependency-pin",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Pin the requests dependency from 2.32.3 to 2.32.4 in requirements.txt; this repo has no lockfile or API changes to make.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/json-format",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Reformat testdata/order.json with two-space indentation and a final newline, preserving all keys and values.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/seed-literal",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "In db/seeds/dev.sql, correct the demo customer's city from \"San Paolo\" to \"São Paulo\" in the single INSERT literal.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/rest-endpoint",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add GET /api/orders/{id} to our Go service using the existing customers endpoint as the pattern. Implement the repository query, handler, 404 behavior and handler tests. The orders table already exists.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/pt-validation-no-rush",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Quando der, adicione validação de CPF no handler de cadastro do backend, com uma função auxiliar e testes de números válidos e inválidos. Use o formato de erro 422 que já temos. Não precisa mexer na tela.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/payment-retries",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add at most three attempts with exponential backoff to the payment client's GET status call for 429 and 503 responses. Honor cancellation, inject the delay for tests, and leave the POST charge path untouched.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/pt-bounded-data-migration",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Sem pressa: crie uma migration para adicionar timezone aos 200 usuários do banco interno, preencher com UTC e tornar a coluna NOT NULL. Atualize o model e o teste de persistência. Podemos parar o serviço para aplicar; não há sincronização nem compatibilidade com versões antigas.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/cache-dependency-invalidation",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Our TypeScript backend caches permission lookups inside each request. After a group membership changes within a batch, later operations reuse a stale result. Follow the known dependency chain from member to group to effective permissions, fix invalidation in the request-local cache, and test interleaved mutations and reads. No distributed cache, token changes or unknown isolation failure is involved. Planned maintenance.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/archive-path-containment",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Harden the Go archive importer against path traversal for the documented threat model: untrusted tar entries, a fresh private extraction directory and no concurrent filesystem writers. Work through normalized names, reject symlink and hardlink entries, enforce containment and test crafted archives. The gap is localized to pkg/archive; no broader security investigation is requested. This is scheduled hardening.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/rest-endpoint-today",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add GET /api/orders/{id} to our Go service using the existing customers endpoint as the pattern. Implement the repository query, handler, 404 behavior and handler tests. The orders table already exists. This must ship for today's partner integration deadline; prioritize fast completion.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/pt-validation-demo",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Precisamos da validação de CPF no handler de cadastro do backend para a demonstração de hoje. Implemente a função auxiliar e testes de números válidos e inválidos, usando nosso erro 422. É prioridade alta, precisamos terminar rápido. A tela será feita por outra pessoa.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/backend-sync-for-mobile",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "The mobile frontend team needs an offline-sync backend. Implement only server-side merge and persistence for nested documents with concurrent edits, tombstones and schema evolution. Design the protocol and migration from last-write-wins, with convergence tests. Another team owns the app.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "frontend/pt-urgent-color",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Urgente para a demo, troque só a cor do botão principal em web/src/Button.vue de verde para #2563eb.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/es-responsive-navbar",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Añade un menú desplegable móvil a web/src/Navbar.vue usando los estilos existentes. Debe funcionar por debajo de 768px, permitir navegación con teclado, cerrar con Escape y devolver el foco al botón. Añade pruebas de interacción. Es una tarea normal del siguiente sprint.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "ui-substantial",
+      "images": false,
+      "name": "frontend/new-analytics-page",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Build a new analytics page in web/src/pages: KPI cards, a date-range picker, two charts and a sortable table, following our design system. It must look polished on mobile and desktop, with loading and empty states. No backend changes; the API already exists.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/toast-notifications",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Create a toast notification component (success, error, info) that stacks, dismisses itself and is announced to screen readers, and use it for the save actions on the settings page.",
+      "reasoning": [
+        "medium"
+      ]
+    }
+  ]
+}

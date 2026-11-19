@@ -1,0 +1,865 @@
+# Labelled routing cases for `ai-router bench`. Policy (operator, 2026-09-29):
+#   quick, straightforward prompts and tiny explicit edits -> deepseek-flash
+#   simple-to-medium backend/frontend work that can wait -> glm-5.3
+#   higher priority or trickier bounded work -> gpt-6.1-sol (high effort)
+#   high difficulty and substantial UI changes -> claude-opus-5-5
+# Difficulty ladder: deepseek-flash, glm-5.3, gpt-6.1-sol, claude-opus-5-5.
+# Sonnet 5.5 is retired in favor of Sol. Urgency alone does not justify Opus;
+# difficult tasks and substantial UI changes stay on Opus even when urgent.
+# Prompt length and file count alone do not raise difficulty: mechanical
+# bulk work with clear rules stays on GLM when it can wait, or Sol when
+# higher priority. Routine UI components follow the same rule. Opus handles
+# difficult architecture, distributed/security/durability problems,
+# investigations across services, whole new pages and major UI redesigns.
+# Reasoning levels (operator, 2026-09-29) follow the depth of thinking, not
+# the model or urgency: tiny and mechanical edits, however large -> low;
+# everyday work with a clear path -> medium; bounded but tricky problems ->
+# high; open-ended design and unknown causes -> xhigh.
+# 72 cases; `expect` lists the acceptable models, usually one, and
+# `reasoning` the acceptable levels.
+# Groups describe routing boundaries rather than source paths; notes explain
+# the labels for reviewers without becoming part of the prompt.
+cases:
+  # Really small: explicit local fixes, including urgent and security changes.
+  - name: tiny/rename-local
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The named local variable and containing function make this an explicit mechanical
+      edit.
+    prompt: Rename the local variable cnt to count inside countRows in internal/report.go.
+  - name: tiny/pt-readme-typo
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The exact Portuguese typo and replacement are supplied in a named document
+      section.
+    prompt: Corrija só o erro de digitação "instalção" para "instalação" na seção de setup do README.md.
+  - name: tiny/doc-comment
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The target function and comment content are supplied without an API or behavior
+      change.
+    prompt: Add a doc comment to ParseDate in dates.go saying it accepts YYYY-MM-DD and returns UTC midnight or an error.
+  - name: tiny/urgent-config-port
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The urgency does not change a known literal replacement in one configuration file.
+    prompt: 'Urgent, our smoke test is blocked: change port 8080 to 9090 in configs/test.yaml; the server already uses 9090.'
+  - name: tiny/api-field-for-frontend
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The response field and already-loaded value are specified; no feature design or
+      investigation is needed.
+    prompt: >-
+      The frontend team needs avatarUrl in /api/me. In handlers/me.go, add
+      "avatarUrl": user.AvatarURL to the existing response map. The value is
+      already loaded and has the right format. No query, schema or UI changes.
+  - name: tiny/security-cookie-flag
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The security context does not add ambiguity to the specified production flag
+      change.
+    prompt: >-
+      Urgent security fix: change session_cookie_secure from false to
+      true in config/production.yaml. HTTPS termination is already configured;
+      keep the separate local development config as it is.
+  - name: tiny/dependency-pin
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The dependency and target version are fixed, with no lockfile or API work to
+      reconcile.
+    prompt: Pin the requests dependency from 2.32.3 to 2.32.4 in requirements.txt; this repo has no lockfile or API changes to make.
+  - name: tiny/ci-version
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      This is one named workflow version value with the test steps preserved.
+    prompt: Change the Go version in .github/workflows/test.yml from 1.27.0 to 1.27.1; leave the existing test steps alone.
+  - name: tiny/request-id-log
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The existing log call and local value are specified, so no tracing or logging
+      design is needed.
+    prompt: Add requestID to the existing slog.Info call at the start of HandleOrder in handlers/order.go; it is already a local string.
+  - name: tiny/known-off-by-one
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The failing line, correction and regression test are already identified.
+    prompt: >-
+      Fix paginate.py line 18: the next offset should be offset + limit,
+      not offset + limit + 1. The failing test test_next_page already checks
+      this; just make the correction and run it.
+  - name: tiny/pt-compose-port
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      Only the named host port changes; the container port and behavior are settled.
+    prompt: No compose.dev.yaml, troque só a porta do host do Postgres de 5432 para 5433; mantenha 5432 dentro do container.
+  - name: tiny/es-smoke-redirect
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The curl command needs one explicit option, with all other options preserved.
+    prompt: En scripts/smoke.sh, añade -L al curl existente para que siga la redirección de /health. No cambies las otras opciones.
+  - name: tiny/json-format
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      Formatting is fixed by indentation and newline rules, with no content decisions.
+    prompt: Reformat testdata/order.json with two-space indentation and a final newline, preserving all keys and values.
+  - name: tiny/ignore-build-output
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The two exact ignore entries are supplied and no tracked files need investigation.
+    prompt: Add /coverage.out and /dist/ to the root .gitignore; neither is tracked yet.
+  - name: tiny/trace-known-import
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The traceback supplies the cause and the requested standard-library import is the
+      entire fix.
+    prompt: |-
+      scripts/export_orders.py uses json.dumps but forgot to import json.
+      Please add that standard-library import alongside the existing imports.
+
+      Traceback (most recent call last):
+        File "scripts/export_orders.py", line 24, in main
+          output.write(json.dumps(order))
+      NameError: name 'json' is not defined
+
+      The export worked before the import cleanup. No other behavior needs to change.
+  - name: tiny/seed-literal
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      One known seed literal needs a supplied spelling correction.
+    prompt: In db/seeds/dev.sql, correct the demo customer's city from "San Paolo" to "São Paulo" in the single INSERT literal.
+
+  # GLM: simple-to-medium everyday and bulk work that can wait.
+  - name: everyday/rest-endpoint
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The existing endpoint pattern and table give this feature a clear implementation
+      path without urgency.
+    prompt: >-
+      Add GET /api/orders/{id} to our Go service using the existing customers
+      endpoint as the pattern. Implement the repository query, handler, 404
+      behavior and handler tests. The orders table already exists.
+  - name: everyday/many-unit-tests
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      Many tests do not add design difficulty when documented rules and a test pattern
+      are supplied.
+    prompt: |-
+      Write the missing unit tests for all 45 helpers in internal/invoice,
+      covering discounts, taxes, rounding and invalid inputs. The rules and
+      input/output examples are documented in each helper's comments.
+
+      Use the table-driven pattern already in money_test.go. This will be a
+      lot of repetitive cases, but we are not changing billing rules or
+      investigating discrepancies. Work through it over the next few days.
+  - name: everyday/module-refactor-no-rush
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      A small interface refactor and fake tests follow settled behavior and retry rules.
+    prompt: >-
+      No rush. Refactor internal/mail to accept a Sender interface, update its
+      three callers, and test sending failures with a fake. Keep the public
+      behavior and retry rules; this is just to make the module testable.
+  - name: everyday/pt-validation-no-rush
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      Backend validation follows the existing error convention and can wait for normal
+      scheduling.
+    prompt: >-
+      Quando der, adicione validação de CPF no handler de cadastro do backend,
+      com uma função auxiliar e testes de números válidos e inválidos. Use o
+      formato de erro 422 que já temos. Não precisa mexer na tela.
+  - name: everyday/profile-trace
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The traceback identifies the nullable-value failure and the fix can ship in a
+      regular release.
+    prompt: |-
+      Saving a profile without a phone number returns 500. Please trace the
+      optional value through api/profile.py and services/profile.py, fix it,
+      and add regression tests for omitted, null and valid phone numbers.
+
+      Traceback (most recent call last):
+        File "api/profile.py", line 41, in update
+          profile = service.update_profile(payload)
+        File "services/profile.py", line 88, in update_profile
+          phone = payload.get("phone").strip()
+      AttributeError: 'NoneType' object has no attribute 'strip'
+
+      This is reproducible locally; the database column is already nullable.
+      It can go into the next regular release.
+  - name: everyday/csv-import
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      A local import script uses established schema and duplicate rules without
+      production migration risk.
+    prompt: >-
+      Add a Python CLI script to import our supplier CSV into the existing
+      customers table. Validate headers, skip duplicate emails with ON CONFLICT,
+      report rejected rows and test it with a small fixture. These are local
+      development imports, not a production data migration.
+  - name: everyday/cli-dry-run
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The existing deployment plan is reused for a routine CLI feature, tests and
+      documentation.
+    prompt: Add --dry-run to cmd/deploy so it prints the existing deployment plan without applying it, with tests and a README example.
+  - name: everyday/payment-retries
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      Retry statuses, attempt count and cancellation requirements are settled for a
+      read-only client operation.
+    prompt: >-
+      Add at most three attempts with exponential backoff to the payment
+      client's GET status call for 429 and 503 responses. Honor cancellation,
+      inject the delay for tests, and leave the POST charge path untouched.
+  - name: everyday/compose-dev-env
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      A development container setup follows existing settings and migrations without
+      cluster design.
+    prompt: >-
+      Create a multi-stage Dockerfile and compose.dev.yaml for this Go API plus
+      Postgres. Add a health check, a database volume and instructions for running
+      the existing migrations locally. Follow the settings in config.example.yaml.
+  - name: everyday/ci-integration-tests
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      Existing tests and migrations are wired into a standard database-backed CI job.
+    prompt: >-
+      Extend .github/workflows/test.yml to run our existing Go integration tests
+      against a Postgres service. Wait for readiness, apply migrations, and upload
+      test logs on failure. No deployment or cluster changes are needed.
+  - name: everyday/large-mechanical-refactor
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [low]
+    note: >-
+      The large file count does not raise thinking depth for a fixed alias rewrite
+      without urgency.
+    prompt: |-
+      Across the 70 backend Go files in internal/handlers, rename the imported
+      package alias db to store and its qualified references. The import path
+      and APIs stay identical; don't rename local variables that happen to be db.
+
+      Use a syntax-aware rewrite and run the handler tests. This is a mechanical
+      cleanup with a fixed rule and no behavior change. No rush.
+  - name: everyday/backend-filter-for-frontend
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The frontend caller does not turn a routine backend filter into UI design work.
+    prompt: >-
+      The frontend team wants a status filter on GET /api/orders. Update only
+      the Go handler, SQL query and API tests to accept the three existing status
+      values, reject unknown ones and keep pagination working. They will handle
+      the React dropdown separately. This is normal backlog work.
+  - name: everyday/pt-bounded-data-migration
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The small internal migration can use downtime and a fixed backfill, avoiding
+      distributed rollout design.
+    prompt: >-
+      Sem pressa: crie uma migration para adicionar timezone aos 200 usuários
+      do banco interno, preencher com UTC e tornar a coluna NOT NULL. Atualize
+      o model e o teste de persistência. Podemos parar o serviço para aplicar;
+      não há sincronização nem compatibilidade com versões antigas.
+  - name: everyday/security-ownership-check
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium, high]
+    note: >-
+      An existing tenant filter and standard response pattern bound this unreleased
+      security change.
+    prompt: >-
+      Before we release the new invoices API, add our existing tenant filter
+      to GET /api/invoices/{id}'s repository query and test own-tenant,
+      other-tenant and missing invoices. Use our standard 404 for inaccessible
+      records. This endpoint is still local development work, with no deadline
+      or auth redesign needed.
+  - name: everyday/large-rule-based-migration
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [low, medium]
+    note: >-
+      The approved mapping preserves semantics, making this bulk migration recipe-driven
+      despite its size.
+    prompt: |-
+      Migrate the 120 Java backend handlers from Metrics.count(name, tags) to
+      telemetry.increment(name, tags) using docs/telemetry-mapping.md. Every
+      old name has an approved replacement, and the new library is already
+      installed with the same tag and error semantics.
+
+      Update imports, calls and test mocks throughout services/, then run
+      the existing suites. Do not change metric meaning or design an adapter.
+      This is a large migration with a complete recipe and no deadline.
+  - name: everyday/es-backend-validation
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The supplied date constraints and error pattern define everyday backend work for
+      the next sprint.
+    prompt: >-
+      Añade validación de rango de fechas a ReportsController.cs del backend:
+      inicio no puede superar fin ni abarcar más de 90 días. Sigue el formato
+      de errores existente y prueba los límites. El equipo de la interfaz
+      hará sus cambios aparte; esto va en el siguiente sprint normal.
+
+  # Slightly harder, bounded backend work; urgency is not required for this tier.
+  - name: harder/cursor-pagination
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      Bidirectional cursor predicates and concurrent inserts require tricky reasoning
+      within a settled API scope.
+    prompt: >-
+      Replace offset pagination in the Rust audit API with bidirectional keyset
+      pagination over (created_at, id). Work out predicates for both directions,
+      sign and validate cursors using our existing helper, and test equal
+      timestamps and inserts between page fetches. Keep the current filters
+      and schema; no UI or cross-service protocol changes. No rush.
+  - name: harder/nested-filter-parser
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      A settled grammar still requires a nontrivial parser and precise nested-expression
+      diagnostics.
+    prompt: >-
+      Extend the C# backend filter parser to support nested AND/OR groups,
+      quoted strings with escapes and NOT with the precedence in docs/filters.md.
+      The flat token splitter cannot handle nesting. Implement a parser with
+      source-position errors and tests for malformed nested expressions; keep
+      the existing evaluator. This is planned work, with the grammar settled.
+  - name: harder/stream-cancellation
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      The reproduced stuck send bounds the investigation, but error and closure races
+      need careful coordination.
+    prompt: |-
+      In internal/export/stream.go, cancellation can leave the producer blocked
+      on sending a row while the HTTP handler exits. We have a deterministic
+      reproduction in stream_cancel_test.go and know which send is stuck.
+
+      Rework coordination of the producer, encoder and handler so cancellation
+      closes the database iterator, preserves the first error and cannot race
+      with channel closure. Test disconnects during reads, sends and final flush.
+      Keep this within the export package; no service-wide redesign or deadline.
+  - name: harder/cache-dependency-invalidation
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      Interleaved mutations require subtle dependency reasoning inside one request-local
+      cache.
+    prompt: >-
+      Our TypeScript backend caches permission lookups inside each request.
+      After a group membership changes within a batch, later operations reuse
+      a stale result. Follow the known dependency chain from member to group
+      to effective permissions, fix invalidation in the request-local cache,
+      and test interleaved mutations and reads. No distributed cache, token
+      changes or unknown isolation failure is involved. Planned maintenance.
+  - name: harder/report-query-plan
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      The isolated bottleneck requires comparing query plans while preserving ties and
+      missing-row semantics.
+    prompt: >-
+      Tune the monthly report query in db/reports.sql. EXPLAIN shows its
+      correlated latest-status subquery scans order_events once per order.
+      Compare a window query and lateral join with an index, preserving ties
+      and missing statuses. Implement the best option with fixtures and a
+      representative benchmark. The bottleneck is isolated to this query;
+      we can schedule the additive index normally.
+  - name: harder/orm-transaction-semantics
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      Savepoints and exception translation require semantic reconciliation in four known
+      repository methods.
+    prompt: >-
+      Replace the legacy ORM in the Python returns module with SQLAlchemy.
+      Only four repository methods are involved, but nested savepoints and
+      exception translation differ: reconcile these against our documented
+      transaction contract and preserve rollback behavior with integration
+      tests. Other modules stay on the old ORM; no live data migration or
+      deadline. A search-and-replace will not preserve these semantics.
+  - name: harder/archive-path-containment
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      A localized archive threat model needs careful containment rules and crafted
+      security tests.
+    prompt: >-
+      Harden the Go archive importer against path traversal for the documented
+      threat model: untrusted tar entries, a fresh private extraction directory
+      and no concurrent filesystem writers. Work through normalized names,
+      reject symlink and hardlink entries, enforce containment and test crafted
+      archives. The gap is localized to pkg/archive; no broader security
+      investigation is requested. This is scheduled hardening.
+  - name: harder/pt-resumable-import
+    group: bounded
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    note: >-
+      The transaction design is settled, but quoted multiline records and crash
+      boundaries make offsets tricky.
+    prompt: >-
+      Adicione retomada ao importador Python de CSV de 20 GB. O desenho já está
+      decidido: cada lote e seu checkpoint vão na mesma transação Postgres,
+      a chave de negócio elimina duplicatas e um hash identifica o arquivo.
+      Implemente offsets seguros inclusive com campos entre aspas contendo
+      quebras de linha e teste falha antes e depois do commit. Há um único
+      processo; não precisamos de coordenação distribuída. Sem pressa.
+
+  # Urgent everyday and bulk work stays on Sol; urgency alone does not justify Opus.
+  - name: priority/rest-endpoint-today
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      The same routine endpoint moves to a faster tier because the partner integration
+      must ship today.
+    prompt: >-
+      Add GET /api/orders/{id} to our Go service using the existing customers
+      endpoint as the pattern. Implement the repository query, handler, 404
+      behavior and handler tests. The orders table already exists. This must
+      ship for today's partner integration deadline; prioritize fast completion.
+  - name: priority/unit-tests-release-blocker
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      A release deadline changes the model choice without adding complexity to settled
+      unit-test coverage.
+    prompt: >-
+      Today's release is blocked on missing unit tests for internal/invoice.
+      Cover the documented discounts, taxes, rounding and invalid inputs using
+      the existing table-driven test pattern. The implementation is settled;
+      get this routine coverage finished before the release window this afternoon.
+  - name: priority/profile-production-incident
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      Production urgency raises the model tier, while the supplied failing line keeps
+      reasoning routine.
+    prompt: |-
+      Profile updates are returning 500 in production when phone is omitted.
+      Treat this as the team's top priority and get a tested backend fix out now.
+
+      Traceback (most recent call last):
+        File "api/profile.py", line 41, in update
+          profile = service.update_profile(payload)
+        File "services/profile.py", line 88, in update_profile
+          phone = payload.get("phone").strip()
+      AttributeError: 'NoneType' object has no attribute 'strip'
+
+      Trace the optional value through both modules, define handling for omitted,
+      null and valid numbers consistently with the nullable database field,
+      and add regression tests. The UI and other services do not need changes.
+  - name: priority/pt-validation-demo
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      The routine validation feature has an explicit high-priority deadline for the
+      demonstration.
+    prompt: >-
+      Precisamos da validação de CPF no handler de cadastro do backend para
+      a demonstração de hoje. Implemente a função auxiliar e testes de números
+      válidos e inválidos, usando nosso erro 422. É prioridade alta, precisamos
+      terminar rápido. A tela será feita por outra pessoa.
+  - name: priority/large-mechanical-refactor-today
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [low]
+    note: >-
+      The branch freeze requires faster turnaround, while the fixed rewrite rule still
+      needs low reasoning.
+    prompt: |-
+      Across the 70 backend Go files in internal/handlers, rename the imported
+      package alias db to store and its qualified references. The import path
+      and APIs stay identical; don't rename local variables that happen to be db.
+
+      Use a syntax-aware rewrite and run the handler tests. The fixed-rule
+      cleanup must finish before today's branch freeze in two hours, so
+      prioritize turnaround even though the work is mechanical.
+  - name: priority/ci-tests-today
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      The settled CI task is the top-priority release blocker rather than an
+      infrastructure redesign.
+    prompt: >-
+      The release manager needs Postgres integration tests in CI before today's
+      release. Extend .github/workflows/test.yml with the database service,
+      readiness wait, existing migrations and failure log upload. The tests
+      already pass locally. This is the top-priority release task; no deployment
+      or cluster changes are required.
+  - name: priority/backend-filter-for-frontend
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      The blocked frontend launch adds urgency to an otherwise routine backend-only
+      filter.
+    prompt: >-
+      The frontend team is blocked for today's launch on a status filter for
+      GET /api/orders. Prioritize the Go handler, SQL query and API tests to
+      accept the three existing status values, reject unknown ones and preserve
+      pagination. Their React dropdown is already done; change only the backend.
+  - name: priority/cli-dry-run-today
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      The deployment deadline requires fast completion of a routine CLI feature.
+    prompt: Add --dry-run to cmd/deploy with tests and a README example before today's deployment; fast turnaround is the team's priority.
+
+  # Opus: the most complex work, regardless of urgency, file count or UI callers.
+  - name: complex/multi-region-design
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    note: >-
+      Consistency, fencing, partitions and migration decisions form an interdependent
+      distributed-system design.
+    prompt: |-
+      Plan and implement multi-region failover for the storage service in this
+      repo. Start with internal/replication and deploy/terraform; we currently
+      assume a single writer in one region.
+
+      Work out consistency, writer fencing, recovery after a network partition
+      and how to migrate existing clusters without losing acknowledged writes.
+      Include failure tests and a staged rollout. This is next quarter's work,
+      so latency of the implementation process isn't a concern.
+  - name: complex/scheduler-race
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    note: >-
+      An unreproduced ownership failure across nodes and commit paths requires open-
+      ended protocol investigation.
+    prompt: >-
+      Our Go scheduler rarely executes a job twice across nodes when lease
+      renewal, network partitions and worker shutdown overlap. We have no
+      reliable reproduction. Trace the scheduler, lease store and commit path,
+      determine which ownership invariant fails, and redesign the protocol
+      if necessary with deterministic failure tests. This is planned work.
+  - name: complex/auth-security-review
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    note: >-
+      Unknown isolation failures across authentication, workers and database roles
+      require deep trust-boundary analysis.
+    prompt: |-
+      Review the security of our multi-tenant authentication and session system
+      across api/auth, workers/tokens and the database roles. We suspect that
+      token refresh, impersonation and tenant switching interact incorrectly,
+      but don't yet have a reproduction. This is a planned review.
+
+      Trace trust boundaries, build exploit regression tests, fix any isolation
+      failures and plan a compatible token migration. Scope is server-side only.
+  - name: complex/urgent-cross-service-incident
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    note: >-
+      Unknown cross-service idempotency failure remains a difficult investigation even
+      with urgent containment.
+    prompt: |-
+      Production orders are being charged twice and we need containment in the
+      next hour. Trace the interaction between services/checkout, the payment
+      webhook handler and workers/reconcile; the duplicate charge happens only
+      when the provider times out but later delivers a success webhook.
+
+      We do not know which component breaks idempotency. Find a safe fix for
+      the retry race across those systems, test delayed and duplicate callbacks,
+      and give us a rollout and rollback plan. Do not touch the web UI.
+  - name: complex/it-urgent-deadlock
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    note: >-
+      Unknown interactions among locks, transactions, failover and shutdown demand deep
+      concurrency investigation.
+    prompt: >-
+      Urgente: il servizio Go dei pagamenti si blocca in produzione solo durante
+      failover del database e cancellazione dei job. La causa non è chiara;
+      studia l'interazione tra lock di internal/queue, transazioni di ledger e
+      callback di shutdown. Riproduci l'interleaving e correggi gli invarianti
+      di concorrenza con test deterministici. Serve contenimento entro un'ora.
+  - name: complex/backend-sync-for-mobile
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [high, xhigh]
+    note: >-
+      Convergence, tombstones and schema evolution require protocol design despite the
+      frontend owning the app.
+    prompt: >-
+      The mobile frontend team needs an offline-sync backend. Implement only
+      server-side merge and persistence for nested documents with concurrent
+      edits, tombstones and schema evolution. Design the protocol and migration
+      from last-write-wins, with convergence tests. Another team owns the app.
+  - name: complex/it-single-file-durability
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [high, xhigh]
+    note: >-
+      A single-file scope does not simplify commit-format design, crash safety and
+      durability invariants.
+    prompt: >-
+      In storage/wal.go, riprogetta il protocollo di commit per resistere a
+      scritture parziali e crash durante fsync. Il problema è in un solo file,
+      ma dobbiamo definire gli invarianti di durabilità, cambiare il formato
+      con compatibilità e verificare ogni punto di crash. Non c'è fretta.
+  - name: complex/dsl-type-inference
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    note: >-
+      Recursive modules and polymorphic recursion require deep language-design reasoning
+      to preserve soundness.
+    prompt: Redesign pkg/lang type inference for mutually recursive modules and polymorphic recursion, preserving soundness and useful cycle diagnostics through lowering and evaluation.
+
+  # Frontend by size and difficulty: only substantial UI work goes to Opus.
+  - name: frontend/button-label
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The exact button text and component are named, making this a tiny copy edit.
+    prompt: Change the signup button text in web/src/Signup.tsx from "Join" to "Get started".
+  - name: frontend/pt-urgent-color
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      A demo deadline does not raise the tier for one explicit style value in a named
+      component.
+    prompt: >-
+      Urgente para a demo, troque só a cor do botão principal em
+      web/src/Button.vue de verde para #2563eb.
+  - name: frontend/es-responsive-navbar
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      A mobile menu inside an existing component uses settled styles and standard
+      accessible interactions.
+    prompt: >-
+      Añade un menú desplegable móvil a web/src/Navbar.vue usando los estilos
+      existentes. Debe funcionar por debajo de 768px, permitir navegación con
+      teclado, cerrar con Escape y devolver el foco al botón. Añade pruebas
+      de interacción. Es una tarea normal del siguiente sprint.
+  - name: frontend/component-unit-tests
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      The existing component needs routine behavioral coverage rather than a UI
+      redesign.
+    prompt: Write unit tests for web/src/SearchBox.tsx covering keyboard selection, loading, empty results and Escape closing the dropdown.
+  - name: frontend/urgent-blank-checkout
+    group: priority
+    expect: [gpt-6.1-sol]
+    reasoning: [medium, high]
+    note: >-
+      The release deadline prioritizes a localized rendering failure with a supplied
+      stack trace.
+    prompt: |-
+      URGENT: checkout is blank after today's deploy. Please fix the React
+      page and add a regression test before the next release in 30 minutes.
+
+      TypeError: Cannot read properties of undefined (reading 'map')
+          at OrderSummary (web/src/checkout/OrderSummary.tsx:42:19)
+          at renderWithHooks (react-dom-client.development.js:5529:22)
+
+      The API response is correct; the crash starts when the cart is empty.
+  - name: frontend/state-architecture-no-rush
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [high, xhigh]
+    note: >-
+      Store boundaries, URL state, optimistic updates and hydration form a substantial
+      frontend architecture change.
+    prompt: |-
+      Redesign state management across our 80 React components. Inspect the
+      current context providers and prop drilling, decide store boundaries,
+      and migrate checkout, account and dashboard incrementally.
+
+      Preserve URL state, optimistic updates and SSR hydration. Add migration
+      tests and document the new architecture. No rush; the backend API stays
+      the same.
+  - name: frontend/fullstack-favorites
+    group: routine
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    note: >-
+      A complete persisted feature coordinates API, UI feedback and tests. The
+      operator policy now favors efficient Sol 6.1 completion even without urgency.
+    prompt: >-
+      Add favorite products end to end: a Postgres table, a Go API endpoint and
+      a heart toggle on web/src/ProductCard.tsx. Show pending and failed states
+      in the UI, persist the selection and cover the feature with tests.
+  - name: frontend/mechanical-component-migration
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [low]
+    note: >-
+      Existing replacements and a fixed prop mapping keep a large frontend migration
+      mechanical.
+    prompt: >-
+      Across the 60 React page files, replace imports of LegacyButton with
+      Button from packages/ui and map the old primary prop to variant="primary".
+      The replacement component already exists. This is a mechanical frontend
+      cleanup; run component tests and check keyboard focus. No rush.
+  - name: frontend/pt-hide-nav-page
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [low, medium]
+    note: >-
+      The request names a menu entry but requires finding its implementation before
+      making a routine UI change.
+    prompt: |-
+      Dashboard - Ocultar pagina "Query Subscription"
+
+      Ocultar opção do nav menu para que os usuarios não tenham acesso (apenas ocultar)
+  - name: frontend/remove-sidebar-link
+    group: quick
+    expect: [deepseek-flash]
+    reasoning: [low]
+    note: >-
+      The named link and source file make removal an exact edit, while the route remains
+      unchanged.
+    prompt: Remove the "Billing" link from web/src/components/Sidebar.tsx; keep the route itself.
+  - name: frontend/new-analytics-page
+    group: ui-substantial
+    expect: [claude-opus-5-5]
+    reasoning: [medium, high]
+    note: >-
+      A complete responsive page combines charts, controls, tables and polished states
+      into substantial UI work.
+    prompt: >-
+      Build a new analytics page in web/src/pages: KPI cards, a date-range
+      picker, two charts and a sortable table, following our design system.
+      It must look polished on mobile and desktop, with loading and empty
+      states. No backend changes; the API already exists.
+  - name: frontend/pt-redesign-onboarding
+    group: ui-substantial
+    expect: [claude-opus-5-5]
+    reasoning: [high]
+    note: >-
+      A four-screen visual and interaction redesign is substantial UI work with
+      accessibility requirements.
+    prompt: >-
+      Redesenhe o fluxo de onboarding (4 telas) com uma hierarquia visual nova,
+      transições sutis e estados vazios, seguindo o design system e garantindo
+      acessibilidade por teclado e leitor de tela.
+  # Everyday UI features that can wait, one component or part of a page: GLM.
+  - name: frontend/toast-notifications
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      A notification component and its use inside an existing page are everyday UI work.
+    prompt: >-
+      Create a toast notification component (success, error, info) that
+      stacks, dismisses itself and is announced to screen readers, and use it
+      for the save actions on the settings page.
+  - name: frontend/pt-upload-dropzone
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      One upload component inside an existing form is routine UI work without a priority
+      deadline.
+    prompt: >-
+      Criar um componente de upload com arrastar e soltar, pré-visualização
+      das imagens e barra de progresso para o formulário de produtos.
+  - name: frontend/project-empty-states
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      Empty and error states improve an existing list rather than redesigning a whole
+      page.
+    prompt: >-
+      The projects list looks broken when there are no projects or the API
+      fails. Give it proper empty and error states with room for an
+      illustration and a retry button.
+  - name: frontend/mobile-invoice-table
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    note: >-
+      A responsive presentation change to one table preserves established sorting and
+      selection behavior.
+    prompt: >-
+      Make the invoices table usable on phones: below 640px show each row as
+      a card, and keep sorting and the bulk-select checkbox working.

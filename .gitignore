@@ -1,0 +1,8 @@
+dist/
+coverage.out
+*.test
+/tmp/
+/tools/
+*.db
+*.db-wal
+*.db-shm

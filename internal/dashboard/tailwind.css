@@ -1,0 +1,180 @@
+/* Source of static/dashboard.css: run `make css` after changing the
+   templates or this file. */
+@import "tailwindcss" source(none);
+@source "./*.templ";
+@source "./*.go";
+
+@custom-variant light (&:where(.light, .light *));
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+/* Every color is a role; the roles take their values from the theme. */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-good: var(--good);
+  --color-warning: var(--warning);
+  --color-serious: var(--serious);
+  --color-critical: var(--critical);
+  --color-model-blue: var(--model-blue);
+  --color-model-orange: var(--model-orange);
+  --color-model-emerald: var(--model-emerald);
+  --color-model-violet: var(--model-violet);
+  --color-model-pink: var(--model-pink);
+  --color-model-yellow: var(--model-yellow);
+  --color-model-slate: var(--model-slate);
+}
+
+@layer base {
+  /* Dark is the default theme. Each model family keeps its hue in both
+     themes, stepped per theme; status colors never change. */
+  :root {
+    color-scheme: dark;
+    --canvas: #08090b;
+    --surface: #0e1013;
+    --raised: #16191e;
+    --line: #1f2329;
+    --line-strong: #2b3038;
+    --fg: #ececef;
+    --fg-2: #a4a8b0;
+    --fg-3: #7c808a;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --model-blue: #3b82f6;
+    --model-orange: #ea580c;
+    --model-emerald: #059669;
+    --model-violet: #a855f7;
+    --model-pink: #ec4899;
+    --model-yellow: #eab308;
+    --model-slate: #64748b;
+  }
+
+  .light {
+    color-scheme: light;
+    --canvas: #f6f7f9;
+    --surface: #ffffff;
+    --raised: #f1f2f5;
+    --line: #e3e5e9;
+    --line-strong: #d3d6dc;
+    --fg: #0d0e11;
+    --fg-2: #4d525c;
+    --fg-3: #6b7079;
+    --model-blue: #2563eb;
+    --model-violet: #9333ea;
+    --model-pink: #db2777;
+    --model-yellow: #d9b00b;
+  }
+
+  html {
+    background: var(--canvas);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--model-blue) 35%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--fg-3);
+    outline-offset: 2px;
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237c808a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+  }
+}
+
+/* A request that just arrived in a live table. */
+@keyframes arrive {
+  from {
+    background-color: color-mix(in oklab, var(--model-blue) 14%, transparent);
+  }
+}
+
+@utility arrive {
+  animation: arrive 1.8s ease-out;
+}
+
+/* Native controls keep routing settings usable without JavaScript. */
+.routing-editor:has(#routing-mode-auto:checked) .routing-fixed,
+.routing-editor:has(#routing-mode-fixed:checked) .routing-auto {
+  display: none;
+}
+.routing-choice-dot {
+  box-shadow: inset 0 0 0 3px var(--canvas);
+}
+.peer:checked + span .routing-choice-dot {
+  background: var(--fg);
+  border-color: var(--fg-3);
+}
+.routing-switch {
+  appearance: none;
+  width: 2.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--raised);
+  cursor: pointer;
+}
+.routing-switch::before {
+  content: "";
+  display: block;
+  width: .75rem;
+  height: .75rem;
+  margin: .1875rem;
+  border-radius: 50%;
+  background: var(--fg-3);
+}
+.routing-switch:checked {
+  background: var(--fg);
+  border-color: var(--fg);
+}
+.routing-switch:checked::before {
+  transform: translateX(1rem);
+  background: var(--canvas);
+}
+.routing-switch:disabled {
+  cursor: default;
+}
+.routing-disabled {
+  display: none;
+}
+.routing-model:has(input[name="models"]:not(:checked)) .routing-disabled {
+  display: block;
+}
+.routing-tip {
+  display: none;
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+.routing-help:focus-within .routing-tip {
+  display: block;
+}
+@media (hover: hover) {
+  .routing-help:hover .routing-tip {
+    display: block;
+  }
+}
+.routing-help-dismissed .routing-tip {
+  display: none;
+}

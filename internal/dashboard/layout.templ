@@ -1,0 +1,244 @@
+package dashboard
+
+// document is the HTML document every page shares. The theme lives in a
+// signal that toggles the root's class; the server renders the stored one.
+templ document(f frame) {
+	<!DOCTYPE html>
+	<html
+		lang="en"
+		class={ templ.KV("light", f.Theme == "light") }
+		data-signals={ signals(map[string]any{"theme": f.Theme}) }
+		data-class:light="$theme == 'light'"
+	>
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="color-scheme" content="dark light"/>
+			<title>{ f.Title } · ai-router</title>
+			<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316191e'/%3E%3Cpath d='M8 16h6l4-6h6M14 16l4 6h6' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"/>
+			<link rel="stylesheet" href={ assetURL("dashboard.css") }/>
+			<script type="module" src={ assetURL("datastar.js") }></script>
+		</head>
+		<body class="min-h-screen bg-canvas font-sans text-sm text-fg antialiased">
+			{ children... }
+		</body>
+	</html>
+}
+
+// shell is the chrome of a signed-in page.
+templ shell(f frame) {
+	@document(f) {
+		<header class="border-b border-line bg-surface">
+			<div class="mx-auto flex h-14 max-w-screen-2xl items-center gap-2 px-3 sm:gap-8 sm:px-6 lg:px-8">
+				<a href="/dashboard" class="flex shrink-0 items-center gap-2.5 font-semibold tracking-tight" aria-label="ai-router">
+					@logo("size-7")
+					<span class="hidden sm:inline">ai-router</span>
+				</a>
+				<nav class="flex h-full min-w-0 items-center overflow-x-auto [scrollbar-width:none] sm:gap-1" aria-label="Dashboard">
+					@navLink("/dashboard", "Overview", f.Nav == navOverview)
+					@navLink("/dashboard/threads", "Threads", f.Nav == navThreads)
+					@navLink("/dashboard/decisions", "Decisions", f.Nav == navDecisions)
+					@navLink("/dashboard/logs", "Logs", f.Nav == navLogs)
+					@navLink("/dashboard/routing", "Routing", f.Nav == navRouting)
+				</nav>
+				<div class="ml-auto flex shrink-0 items-center sm:gap-1">
+					@themeToggle()
+					<form method="post" action="/dashboard/logout">
+						<button type="submit" class="flex h-8 items-center gap-2 rounded-md px-2 text-[13px] text-fg-2 hover:bg-raised hover:text-fg sm:px-2.5" title="Sign out">
+							@icon("log-out", "size-4")
+							<span class="hidden sm:inline">Sign out</span>
+						</button>
+					</form>
+				</div>
+			</div>
+		</header>
+		<main class="mx-auto w-full max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8">
+			{ children... }
+		</main>
+	}
+}
+
+templ navLink(href, name string, active bool) {
+	<a
+		href={ templ.SafeURL(href) }
+		class={ "relative flex h-full shrink-0 items-center px-1.5 text-[13px] font-medium sm:px-3",
+			templ.KV("text-fg after:absolute after:inset-x-1.5 after:bottom-0 sm:after:inset-x-3 after:h-0.5 after:rounded-full after:bg-fg", active),
+			templ.KV("text-fg-3 hover:text-fg", !active) }
+		if active {
+			aria-current="page"
+		}
+	>
+		{ name }
+	</a>
+}
+
+// themeToggle switches between the dark and light themes and remembers the
+// choice in a cookie.
+templ themeToggle() {
+	<button
+		type="button"
+		class="grid size-8 place-items-center rounded-md text-fg-2 hover:bg-raised hover:text-fg"
+		title="Switch theme"
+		aria-label="Switch between dark and light theme"
+		data-on:click="$theme = $theme == 'light' ? 'dark' : 'light'; @post('/dashboard/theme')"
+	>
+		@icon("sun", "size-4 light:hidden")
+		@icon("moon", "hidden size-4 light:block")
+	</button>
+}
+
+templ logo(size string) {
+	<span class={ "grid shrink-0 place-items-center rounded-lg bg-fg text-canvas", size }>
+		<svg viewBox="0 0 24 24" class="size-[62%]" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M3 12h6l4.5-7H21M9 12l4.5 7H21"></path>
+		</svg>
+	</span>
+}
+
+// heading opens a page: its title, a line about it and, on the right, the
+// page's controls.
+templ heading(title, about string) {
+	<div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+		<div class="min-w-0">
+			<h1 class="text-xl font-semibold tracking-tight">{ title }</h1>
+			<p class="mt-1 text-[13px] text-fg-3">{ about }</p>
+		</div>
+		{ children... }
+	</div>
+}
+
+// card is a flat panel.
+templ card(id, class string) {
+	<section id={ id } class={ "rounded-xl border border-line bg-surface", class }>
+		{ children... }
+	</section>
+}
+
+// cardHead titles a card, with its controls on the right.
+templ cardHead(title, about string) {
+	<div class="flex flex-wrap items-start justify-between gap-3 px-5 pt-5">
+		<div>
+			<h2 class="text-[13px] font-semibold">{ title }</h2>
+			if about != "" {
+				<p class="mt-0.5 text-xs text-fg-3">{ about }</p>
+			}
+		</div>
+		{ children... }
+	</div>
+}
+
+// problem reports a failed read of the history.
+templ problem(err error) {
+	<div class="flex items-start gap-3 rounded-lg border border-critical/30 bg-critical/10 px-4 py-3" role="alert">
+		<span class="mt-0.5 text-critical">
+			@icon("alert", "size-4")
+		</span>
+		<div class="min-w-0">
+			<div class="text-[13px] font-medium">The request history is unavailable</div>
+			<div class="mt-0.5 break-words text-xs text-fg-2">{ err.Error() }</div>
+		</div>
+	</div>
+}
+
+// blank is an empty state.
+templ blank(glyph, title, about string) {
+	<div class="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
+		<span class="mb-1 grid size-10 place-items-center rounded-full border border-line bg-raised text-fg-3">
+			@icon(glyph, "size-5")
+		</span>
+		<div class="text-[13px] font-medium">{ title }</div>
+		<div class="max-w-sm text-xs text-fg-3">{ about }</div>
+		{ children... }
+	</div>
+}
+
+// choice is a select bound to a signal; wiring adds the Datastar
+// attributes that react to a pick.
+templ choice(signal, all, current string, options []option, wiring templ.Attributes) {
+	<select
+		aria-label={ all }
+		data-bind={ signal }
+		{ wiring... }
+		class="h-8 rounded-md border border-line bg-surface pr-8 pl-3 text-[13px] text-fg hover:border-line-strong focus:border-fg-3 focus:outline-none"
+	>
+		<option value="">{ all }</option>
+		for _, o := range options {
+			<option value={ o.Value } selected?={ o.Value == current }>{ o.Label }</option>
+		}
+	</select>
+}
+
+// pick is a select of one of the options, bound to a signal.
+templ pick(signal, label, current string, options []option, wiring templ.Attributes) {
+	<select
+		aria-label={ label }
+		data-bind={ signal }
+		{ wiring... }
+		class="h-8 rounded-md border border-line bg-surface pr-8 pl-3 text-[13px] text-fg hover:border-line-strong focus:border-fg-3 focus:outline-none"
+	>
+		for _, o := range options {
+			<option value={ o.Value } selected?={ o.Value == current }>{ o.Label }</option>
+		}
+	</select>
+}
+
+// icon draws a line icon from the dashboard's set.
+templ icon(name, class string) {
+	<svg viewBox="0 0 24 24" class={ "shrink-0", class } fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		switch name {
+			case "sun":
+				<circle cx="12" cy="12" r="4"></circle>
+				<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+			case "moon":
+				<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+			case "log-out":
+				<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path>
+			case "alert":
+				<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0ZM12 9v4M12 17h.01"></path>
+			case "check":
+				<path d="M20 6 9 17l-5-5"></path>
+			case "x":
+				<path d="M18 6 6 18M6 6l12 12"></path>
+			case "arrow-right":
+				<path d="M5 12h14M13 6l6 6-6 6"></path>
+			case "arrow-up":
+				<path d="M12 19V5M6 11l6-6 6 6"></path>
+			case "chevron-left":
+				<path d="m15 18-6-6 6-6"></path>
+			case "chevron-right":
+				<path d="m9 18 6-6-6-6"></path>
+			case "swap":
+				<path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"></path>
+			case "image":
+				<rect x="3" y="3" width="18" height="18" rx="2"></rect>
+				<circle cx="9" cy="9" r="2"></circle>
+				<path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"></path>
+			case "spark":
+				<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path>
+			case "branch":
+				<circle cx="6" cy="6" r="2.5"></circle>
+				<circle cx="6" cy="18" r="2.5"></circle>
+				<circle cx="18" cy="8" r="2.5"></circle>
+				<path d="M6 8.5v7M18 10.5c0 4-4 4.5-9.5 6"></path>
+			case "question":
+				<circle cx="12" cy="12" r="9"></circle>
+				<path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"></path>
+			case "pause":
+				<path d="M9 5v14M15 5v14"></path>
+			case "play":
+				<path d="M7 4.5v15l12-7.5Z"></path>
+			case "inbox":
+				<path d="M22 12h-6l-2 3h-4l-2-3H2"></path>
+				<path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1Z"></path>
+			case "search":
+				<circle cx="11" cy="11" r="7"></circle>
+				<path d="m21 21-4.3-4.3"></path>
+			case "gauge":
+				<path d="m12 14 4-4"></path>
+				<path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
+			case "key":
+				<circle cx="7.5" cy="15.5" r="4.5"></circle>
+				<path d="m10.7 12.3 9.8-9.8M16 7l3 3M18.5 4.5l2 2"></path>
+		}
+	</svg>
+}

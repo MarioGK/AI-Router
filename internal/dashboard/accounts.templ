@@ -1,0 +1,196 @@
+package dashboard
+
+import (
+	"strconv"
+
+	"github.com/MarioGK/AI-Router/internal/accounts"
+	"github.com/MarioGK/AI-Router/internal/limit"
+	"github.com/MarioGK/AI-Router/internal/pin"
+)
+
+// accountsCard shows the quota of CLIProxy's subscription accounts, which
+// of them take new conversations and which models they leave out.
+templ accountsCard(v *accountsView) {
+	@card("accounts", "mt-4") {
+		@cardHead("Subscription accounts", "Included quota first, then available provider credits; exhausted accounts wait until their window resets") {
+			<span class="text-xs text-fg-3">
+				if !v.CheckedAt.IsZero() {
+					{ "Checked " }
+					@when(v.CheckedAt)
+				} else {
+					Not checked yet
+				}
+			</span>
+		}
+		if v.Err != "" {
+			<p class="mx-5 mt-3 rounded-md bg-raised px-3 py-2 font-mono text-xs break-words text-fg-2">{ v.Err }</p>
+		}
+		<div class="grid gap-x-8 gap-y-6 px-5 pt-4 pb-5 lg:grid-cols-2">
+			for _, group := range v.Groups {
+				<section class="min-w-0" aria-label={ group.Title + " accounts" }>
+					<div class="flex items-baseline justify-between gap-3">
+						<h3 class="text-[13px] font-semibold">{ group.Title }</h3>
+						<span class="text-xs text-fg-3 tabular-nums">{ number(group.Usable) } of { counted(len(group.Accounts), "account") } in rotation</span>
+					</div>
+					if len(group.Withheld) > 0 {
+						<p class="mt-2 flex flex-wrap items-center gap-1.5 rounded-md border border-critical/30 bg-critical/10 px-3 py-2 text-xs text-fg-2" role="status">
+							@icon("alert", "size-3.5 text-critical")
+							No account can serve these models, so new threads skip
+							for _, model := range group.Withheld {
+								@badge(model)
+							}
+						</p>
+					}
+					<ul class="mt-2 divide-y divide-line">
+						for _, a := range group.Accounts {
+							@accountRow(a)
+						}
+					</ul>
+				</section>
+			}
+		</div>
+	}
+}
+
+templ accountRow(a accounts.Account) {
+	<li class="py-3">
+		<div class="flex flex-wrap items-center gap-2">
+			<span class="min-w-0 truncate text-[13px] text-fg" title={ a.Name }>{ a.Email }</span>
+			if a.Plan != "" {
+				@tag(a.Plan)
+			}
+			<span class="ml-auto">
+				@accountState(a)
+			</span>
+		</div>
+		if windows := quotaWindows(a); len(windows) > 0 {
+			<div class="mt-2 grid gap-1.5">
+				for _, w := range windows {
+					<div class="grid grid-cols-[6.5rem_1fr_3rem_3.5rem] items-center gap-3 text-xs">
+						<span class="text-fg-3">{ windowLabel(w.Name) }</span>
+						<div class="h-1.5 rounded-full bg-raised">
+							<div class={ "h-full rounded-full", windowTone(w) } style={ width(min(w.Used, 1)) }></div>
+						</div>
+						<span class="text-right font-mono text-fg-2 tabular-nums">{ probability(w.Used) }</span>
+						<span class="text-right text-fg-3" title={ w.ResetsAt.Local().Format("Mon 2 Jan 15:04") }>{ until(w.ResetsAt) }</span>
+					</div>
+				}
+			</div>
+		}
+		@accountCredits(a)
+		if !a.Disabled {
+			<p class="mt-1.5 text-xs text-fg-3">
+				if a.Observed.IsZero() {
+					No quota seen yet: CLIProxy reads it from the responses the account serves
+				} else {
+					{ "Quota as of " }
+					@when(a.Observed)
+				}
+			</p>
+		}
+		if a.Err != "" {
+			<p class="mt-1.5 text-xs text-fg-3">Models unknown: { a.Err }</p>
+		}
+	</li>
+}
+
+// accountCredits shows provider-reported balance or extra-usage status without
+// inventing a currency or treating missing metadata as zero.
+templ accountCredits(a accounts.Account) {
+	<div class="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xs text-fg-3">
+		<span>
+			if a.Provider == accounts.Claude {
+				Extra usage:
+			} else {
+				Credits:
+			}
+		</span>
+		<span class="text-fg-2">
+			switch {
+				case !a.Credits.Known:
+					Not reported
+				case a.Credits.Unlimited:
+					Unlimited
+				case a.Credits.Balance != "":
+					{ a.Credits.Balance } credits remaining
+				case a.Credits.Available:
+					Available; balance not reported
+				default:
+					Unavailable; balance not reported
+			}
+		</span>
+		if a.Credits.Known && !a.Credits.Available && a.Credits.Balance != "" {
+			<span>Unavailable for requests</span>
+		}
+		if a.Credits.DisabledReason != "" {
+			<span>{ a.Credits.DisabledReason }</span>
+		}
+		if !a.Credits.Observed.IsZero() {
+			<span>
+				{ "As of " }
+				@when(a.Credits.Observed)
+			</span>
+		}
+	</div>
+}
+
+templ accountState(a accounts.Account) {
+	switch {
+		case a.Disabled:
+			@marker("x", "disabled", "Disabled in CLIProxy")
+		case a.Limited:
+			<span class="inline-flex items-center gap-1 rounded border border-critical/40 bg-critical/10 px-1.5 py-px text-[11px] whitespace-nowrap text-fg-2" title={ "CLIProxy priority " + itoaSigned(a.Priority) }>
+				@icon("pause", "size-3 text-critical")
+				at limit { until(a.Until) }
+			</span>
+		case a.UsesCredits():
+			<span class="inline-flex items-center gap-1 rounded border border-line px-1.5 py-px text-[11px] whitespace-nowrap text-fg-2" title={ "CLIProxy priority " + itoaSigned(a.Priority) }>
+				<span class="size-1.5 rounded-full bg-warning"></span>
+				credit-backed
+			</span>
+		default:
+			<span class="inline-flex items-center gap-1 rounded border border-line px-1.5 py-px text-[11px] whitespace-nowrap text-fg-2" title={ "CLIProxy priority " + itoaSigned(a.Priority) }>
+				<span class="size-1.5 rounded-full bg-good"></span>
+				in rotation
+			</span>
+	}
+}
+
+// limitsCard shows each concurrency gate: its adaptive cap, the requests
+// running and waiting, how long the day's requests waited and how often the
+// upstream throttled.
+templ limitsCard(gates []limit.Stats, waits map[string]pin.QueueWait) {
+	@card("limits", "") {
+		@cardHead("Concurrency", "Requests over a model's cap wait in line; a throttle shrinks the cap, which grows back by one a minute")
+		<ul class="divide-y divide-line px-5 pt-2 pb-3">
+			for _, g := range gates {
+				<li class="py-3">
+					<div class="flex flex-wrap items-center gap-2">
+						@badge(g.Model)
+						<span class="ml-auto font-mono text-xs text-fg-2 tabular-nums">{ strconv.Itoa(g.InFlight) } / { strconv.Itoa(g.Limit) } running</span>
+					</div>
+					<div class="mt-2 flex h-1.5 gap-0.5">
+						for slot := range g.Max {
+							<span class={ "flex-1 rounded-full", slotTone(g, slot) }></span>
+						}
+					</div>
+					<div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-fg-3">
+						<span>cap { strconv.Itoa(g.Limit) } of { strconv.Itoa(g.Max) }</span>
+						if g.Waiting > 0 {
+							<span class="text-fg-2">{ counted(g.Waiting, "request") } waiting</span>
+						}
+						if w := waits[g.Model]; w.Queued > 0 {
+							<span title="Of the requests in the last 24 hours that waited for a slot; included in their latency">queue wait avg { duration(w.Mean) }, p95 { duration(w.P95) } ({ strconv.Itoa(w.Queued) } of { strconv.Itoa(w.Requests) } requests, 24h)</span>
+						}
+						if g.Throttles > 0 {
+							<span>{ counted(int(g.Throttles), "throttle") }, last { ago(g.Throttled) }</span>
+						}
+						if g.Spill != "" {
+							<span>new threads spill to <span class="font-mono text-fg-2">{ g.Spill }</span> when full</span>
+						}
+					</div>
+				</li>
+			}
+		</ul>
+	}
+}

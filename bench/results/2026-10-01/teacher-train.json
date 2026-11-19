@@ -1,0 +1,973 @@
+{
+  "cases": [
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/rename-local",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Rename the local variable cnt to count inside countRows in internal/report.go.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/pt-readme-typo",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Corrija só o erro de digitação \"instalção\" para \"instalação\" na seção de setup do README.md.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/doc-comment",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add a doc comment to ParseDate in dates.go saying it accepts YYYY-MM-DD and returns UTC midnight or an error.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/urgent-config-port",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Urgent, our smoke test is blocked: change port 8080 to 9090 in configs/test.yaml; the server already uses 9090.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/security-cookie-flag",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Urgent security fix: change session_cookie_secure from false to true in config/production.yaml. HTTPS termination is already configured; keep the separate local development config as it is.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/ci-version",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Change the Go version in .github/workflows/test.yml from 1.27.0 to 1.27.1; leave the existing test steps alone.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/request-id-log",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add requestID to the existing slog.Info call at the start of HandleOrder in handlers/order.go; it is already a local string.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/known-off-by-one",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Fix paginate.py line 18: the next offset should be offset + limit, not offset + limit + 1. The failing test test_next_page already checks this; just make the correction and run it.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/pt-compose-port",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "No compose.dev.yaml, troque só a porta do host do Postgres de 5432 para 5433; mantenha 5432 dentro do container.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/es-smoke-redirect",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "En scripts/smoke.sh, añade -L al curl existente para que siga la redirección de /health. No cambies las otras opciones.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/ignore-build-output",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add /coverage.out and /dist/ to the root .gitignore; neither is tracked yet.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "tiny/trace-known-import",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "scripts/export_orders.py uses json.dumps but forgot to import json.\nPlease add that standard-library import alongside the existing imports.\n\nTraceback (most recent call last):\n  File \"scripts/export_orders.py\", line 24, in main\n    output.write(json.dumps(order))\nNameError: name 'json' is not defined\n\nThe export worked before the import cleanup. No other behavior needs to change.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/module-refactor-no-rush",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "No rush. Refactor internal/mail to accept a Sender interface, update its three callers, and test sending failures with a fake. Keep the public behavior and retry rules; this is just to make the module testable.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/profile-trace",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Saving a profile without a phone number returns 500. Please trace the\noptional value through api/profile.py and services/profile.py, fix it,\nand add regression tests for omitted, null and valid phone numbers.\n\nTraceback (most recent call last):\n  File \"api/profile.py\", line 41, in update\n    profile = service.update_profile(payload)\n  File \"services/profile.py\", line 88, in update_profile\n    phone = payload.get(\"phone\").strip()\nAttributeError: 'NoneType' object has no attribute 'strip'\n\nThis is reproducible locally; the database column is already nullable.\nIt can go into the next regular release.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/csv-import",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add a Python CLI script to import our supplier CSV into the existing customers table. Validate headers, skip duplicate emails with ON CONFLICT, report rejected rows and test it with a small fixture. These are local development imports, not a production data migration.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/cli-dry-run",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add --dry-run to cmd/deploy so it prints the existing deployment plan without applying it, with tests and a README example.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/compose-dev-env",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Create a multi-stage Dockerfile and compose.dev.yaml for this Go API plus Postgres. Add a health check, a database volume and instructions for running the existing migrations locally. Follow the settings in config.example.yaml.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/ci-integration-tests",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Extend .github/workflows/test.yml to run our existing Go integration tests against a Postgres service. Wait for readiness, apply migrations, and upload test logs on failure. No deployment or cluster changes are needed.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/large-mechanical-refactor",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Across the 70 backend Go files in internal/handlers, rename the imported\npackage alias db to store and its qualified references. The import path\nand APIs stay identical; don't rename local variables that happen to be db.\n\nUse a syntax-aware rewrite and run the handler tests. This is a mechanical\ncleanup with a fixed rule and no behavior change. No rush.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/backend-filter-for-frontend",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "The frontend team wants a status filter on GET /api/orders. Update only the Go handler, SQL query and API tests to accept the three existing status values, reject unknown ones and keep pagination working. They will handle the React dropdown separately. This is normal backlog work.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/security-ownership-check",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Before we release the new invoices API, add our existing tenant filter to GET /api/invoices/{id}'s repository query and test own-tenant, other-tenant and missing invoices. Use our standard 404 for inaccessible records. This endpoint is still local development work, with no deadline or auth redesign needed.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/large-rule-based-migration",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Migrate the 120 Java backend handlers from Metrics.count(name, tags) to\ntelemetry.increment(name, tags) using docs/telemetry-mapping.md. Every\nold name has an approved replacement, and the new library is already\ninstalled with the same tag and error semantics.\n\nUpdate imports, calls and test mocks throughout services/, then run\nthe existing suites. Do not change metric meaning or design an adapter.\nThis is a large migration with a complete recipe and no deadline.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "everyday/es-backend-validation",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Añade validación de rango de fechas a ReportsController.cs del backend: inicio no puede superar fin ni abarcar más de 90 días. Sigue el formato de errores existente y prueba los límites. El equipo de la interfaz hará sus cambios aparte; esto va en el siguiente sprint normal.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/cursor-pagination",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Replace offset pagination in the Rust audit API with bidirectional keyset pagination over (created_at, id). Work out predicates for both directions, sign and validate cursors using our existing helper, and test equal timestamps and inserts between page fetches. Keep the current filters and schema; no UI or cross-service protocol changes. No rush.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/nested-filter-parser",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Extend the C# backend filter parser to support nested AND/OR groups, quoted strings with escapes and NOT with the precedence in docs/filters.md. The flat token splitter cannot handle nesting. Implement a parser with source-position errors and tests for malformed nested expressions; keep the existing evaluator. This is planned work, with the grammar settled.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/stream-cancellation",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "In internal/export/stream.go, cancellation can leave the producer blocked\non sending a row while the HTTP handler exits. We have a deterministic\nreproduction in stream_cancel_test.go and know which send is stuck.\n\nRework coordination of the producer, encoder and handler so cancellation\ncloses the database iterator, preserves the first error and cannot race\nwith channel closure. Test disconnects during reads, sends and final flush.\nKeep this within the export package; no service-wide redesign or deadline.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/report-query-plan",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Tune the monthly report query in db/reports.sql. EXPLAIN shows its correlated latest-status subquery scans order_events once per order. Compare a window query and lateral join with an index, preserving ties and missing statuses. Implement the best option with fixtures and a representative benchmark. The bottleneck is isolated to this query; we can schedule the additive index normally.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/orm-transaction-semantics",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Replace the legacy ORM in the Python returns module with SQLAlchemy. Only four repository methods are involved, but nested savepoints and exception translation differ: reconcile these against our documented transaction contract and preserve rollback behavior with integration tests. Other modules stay on the old ORM; no live data migration or deadline. A search-and-replace will not preserve these semantics.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "bounded",
+      "images": false,
+      "name": "harder/pt-resumable-import",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Adicione retomada ao importador Python de CSV de 20 GB. O desenho já está decidido: cada lote e seu checkpoint vão na mesma transação Postgres, a chave de negócio elimina duplicatas e um hash identifica o arquivo. Implemente offsets seguros inclusive com campos entre aspas contendo quebras de linha e teste falha antes e depois do commit. Há um único processo; não precisamos de coordenação distribuída. Sem pressa.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/unit-tests-release-blocker",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Today's release is blocked on missing unit tests for internal/invoice. Cover the documented discounts, taxes, rounding and invalid inputs using the existing table-driven test pattern. The implementation is settled; get this routine coverage finished before the release window this afternoon.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/profile-production-incident",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Profile updates are returning 500 in production when phone is omitted.\nTreat this as the team's top priority and get a tested backend fix out now.\n\nTraceback (most recent call last):\n  File \"api/profile.py\", line 41, in update\n    profile = service.update_profile(payload)\n  File \"services/profile.py\", line 88, in update_profile\n    phone = payload.get(\"phone\").strip()\nAttributeError: 'NoneType' object has no attribute 'strip'\n\nTrace the optional value through both modules, define handling for omitted,\nnull and valid numbers consistently with the nullable database field,\nand add regression tests. The UI and other services do not need changes.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/large-mechanical-refactor-today",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Across the 70 backend Go files in internal/handlers, rename the imported\npackage alias db to store and its qualified references. The import path\nand APIs stay identical; don't rename local variables that happen to be db.\n\nUse a syntax-aware rewrite and run the handler tests. The fixed-rule\ncleanup must finish before today's branch freeze in two hours, so\nprioritize turnaround even though the work is mechanical.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/ci-tests-today",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "The release manager needs Postgres integration tests in CI before today's release. Extend .github/workflows/test.yml with the database service, readiness wait, existing migrations and failure log upload. The tests already pass locally. This is the top-priority release task; no deployment or cluster changes are required.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/backend-filter-for-frontend",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "The frontend team is blocked for today's launch on a status filter for GET /api/orders. Prioritize the Go handler, SQL query and API tests to accept the three existing status values, reject unknown ones and preserve pagination. Their React dropdown is already done; change only the backend.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "priority/cli-dry-run-today",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Add --dry-run to cmd/deploy with tests and a README example before today's deployment; fast turnaround is the team's priority.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/multi-region-design",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Plan and implement multi-region failover for the storage service in this\nrepo. Start with internal/replication and deploy/terraform; we currently\nassume a single writer in one region.\n\nWork out consistency, writer fencing, recovery after a network partition\nand how to migrate existing clusters without losing acknowledged writes.\nInclude failure tests and a staged rollout. This is next quarter's work,\nso latency of the implementation process isn't a concern.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/scheduler-race",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Our Go scheduler rarely executes a job twice across nodes when lease renewal, network partitions and worker shutdown overlap. We have no reliable reproduction. Trace the scheduler, lease store and commit path, determine which ownership invariant fails, and redesign the protocol if necessary with deterministic failure tests. This is planned work.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/auth-security-review",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Review the security of our multi-tenant authentication and session system\nacross api/auth, workers/tokens and the database roles. We suspect that\ntoken refresh, impersonation and tenant switching interact incorrectly,\nbut don't yet have a reproduction. This is a planned review.\n\nTrace trust boundaries, build exploit regression tests, fix any isolation\nfailures and plan a compatible token migration. Scope is server-side only.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/urgent-cross-service-incident",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Production orders are being charged twice and we need containment in the\nnext hour. Trace the interaction between services/checkout, the payment\nwebhook handler and workers/reconcile; the duplicate charge happens only\nwhen the provider times out but later delivers a success webhook.\n\nWe do not know which component breaks idempotency. Find a safe fix for\nthe retry race across those systems, test delayed and duplicate callbacks,\nand give us a rollout and rollback plan. Do not touch the web UI.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/it-urgent-deadlock",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Urgente: il servizio Go dei pagamenti si blocca in produzione solo durante failover del database e cancellazione dei job. La causa non è chiara; studia l'interazione tra lock di internal/queue, transazioni di ledger e callback di shutdown. Riproduci l'interleaving e correggi gli invarianti di concorrenza con test deterministici. Serve contenimento entro un'ora.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "complex/dsl-type-inference",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Redesign pkg/lang type inference for mutually recursive modules and polymorphic recursion, preserving soundness and useful cycle diagnostics through lowering and evaluation.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "frontend/button-label",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Change the signup button text in web/src/Signup.tsx from \"Join\" to \"Get started\".",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/component-unit-tests",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Write unit tests for web/src/SearchBox.tsx covering keyboard selection, loading, empty results and Escape closing the dropdown.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "gpt-6.1-sol"
+      ],
+      "group": "priority",
+      "images": false,
+      "name": "frontend/urgent-blank-checkout",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "URGENT: checkout is blank after today's deploy. Please fix the React\npage and add a regression test before the next release in 30 minutes.\n\nTypeError: Cannot read properties of undefined (reading 'map')\n    at OrderSummary (web/src/checkout/OrderSummary.tsx:42:19)\n    at renderWithHooks (react-dom-client.development.js:5529:22)\n\nThe API response is correct; the crash starts when the cart is empty.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "difficult",
+      "images": false,
+      "name": "frontend/state-architecture-no-rush",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Redesign state management across our 80 React components. Inspect the\ncurrent context providers and prop drilling, decide store boundaries,\nand migrate checkout, account and dashboard incrementally.\n\nPreserve URL state, optimistic updates and SSR hydration. Add migration\ntests and document the new architecture. No rush; the backend API stays\nthe same.",
+      "reasoning": [
+        "xhigh"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/pt-hide-nav-page",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Dashboard - Ocultar pagina \"Query Subscription\"\n\nOcultar opção do nav menu para que os usuarios não tenham acesso (apenas ocultar)",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "deepseek-flash"
+      ],
+      "group": "quick",
+      "images": false,
+      "name": "frontend/remove-sidebar-link",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Remove the \"Billing\" link from web/src/components/Sidebar.tsx; keep the route itself.",
+      "reasoning": [
+        "low"
+      ]
+    },
+    {
+      "expect": [
+        "claude-opus-5-5"
+      ],
+      "group": "ui-substantial",
+      "images": false,
+      "name": "frontend/pt-redesign-onboarding",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Redesenhe o fluxo de onboarding (4 telas) com uma hierarquia visual nova, transições sutis e estados vazios, seguindo o design system e garantindo acessibilidade por teclado e leitor de tela.",
+      "reasoning": [
+        "high"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/pt-upload-dropzone",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Criar um componente de upload com arrastar e soltar, pré-visualização das imagens e barra de progresso para o formulário de produtos.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/project-empty-states",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "The projects list looks broken when there are no projects or the API fails. Give it proper empty and error states with room for an illustration and a retry button.",
+      "reasoning": [
+        "medium"
+      ]
+    },
+    {
+      "expect": [
+        "glm-5.3"
+      ],
+      "group": "routine",
+      "images": false,
+      "name": "frontend/mobile-invoice-table",
+      "note": "Frozen luna primary choice and task depth; source report sha256 ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3.",
+      "offered": [
+        "deepseek-flash",
+        "glm-5.3",
+        "gpt-6.1-sol",
+        "claude-opus-5-5"
+      ],
+      "prompt": "Make the invoices table usable on phones: below 640px show each row as a card, and keep sorting and the bulk-select checkbox working.",
+      "reasoning": [
+        "medium"
+      ]
+    }
+  ]
+}

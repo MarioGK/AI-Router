@@ -1,0 +1,2436 @@
+{
+  "canonical_labels_modified": false,
+  "configured_teacher_models": [
+    "gpt-6-luna"
+  ],
+  "evaluation_scores": {
+    "cli_score": "initial",
+    "final_route_scores_are_separate": true,
+    "joint": "choice_joint_accuracy",
+    "model": "choice_accuracy"
+  },
+  "excluded_cases": 4,
+  "exclusions": [
+    {
+      "case": "everyday/many-unit-tests",
+      "reasons": [
+        "teacher model choice or task depth was unstable"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "case": "complex/it-single-file-durability",
+      "reasons": [
+        "teacher model choice or task depth was unstable"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "case": "frontend/fullstack-favorites",
+      "reasons": [
+        "teacher model choice or task depth was unstable"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "case": "frontend/mechanical-component-migration",
+      "reasons": [
+        "teacher model choice or task depth was unstable"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    }
+  ],
+  "included_cases": 68,
+  "observed_teacher_models": [
+    "gpt-6-luna"
+  ],
+  "report_sha256": "ef5d8d4ead3884df0e127f38ae2ed82884fda97b2ff88560884b50fdb2f408d3",
+  "schema_version": 1,
+  "source_schema_version": 2,
+  "sources": [
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/rename-local",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "0ea452ae588dbc18d739ac3e4d4a8041eab35c2ac1e87ba9c160cabb382a40e5"
+      ],
+      "request_digests": [
+        "0383a76c5c7988a9"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/pt-readme-typo",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "721aeeb8d34360531e1898553b685ab4e5650aa87958e71b5db6a0c25e66695d"
+      ],
+      "request_digests": [
+        "ca5789dae0b09db4"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/doc-comment",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "d67cc3ca97351f41cbd39765633fd19003392dc573fc45b6415989902569cd13"
+      ],
+      "request_digests": [
+        "616cd74a9d21fe30"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/urgent-config-port",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "984f787caafa5f32774dc14e5539a5524466b09bbc209d8154466d8f6748574b"
+      ],
+      "request_digests": [
+        "415ab7f91c36eb8c"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/api-field-for-frontend",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "2313fb725a0c7c7836444f5dacf8cea02ea0e8e5be229b46f1526fd367277286"
+      ],
+      "request_digests": [
+        "118a7fba48af54d5"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/security-cookie-flag",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "8230aba9cb7c5f108724e3d9cff60064d743918618efc6d833e4280273174a1e"
+      ],
+      "request_digests": [
+        "9f4766a52df9098b"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/dependency-pin",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "eab6562d957b43497342b0d1de286602eaa33f71ebd11106254c8e01916f0671"
+      ],
+      "request_digests": [
+        "9209671dca6fffd4"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/ci-version",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "932798bc8b1f2480528b2f403d83aef541193e52422a6e77d30ab94f1d4b3a27"
+      ],
+      "request_digests": [
+        "f6738499f67a42ce"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/request-id-log",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "c02bbc02c4a83e03fe23af6ae6ba93cc430d0cc962ff77fed316ba48bdb16652"
+      ],
+      "request_digests": [
+        "761bcc449dd88ee7"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/known-off-by-one",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "ba5158421d1352fb7decd8adae995316f235eb46ec57f24f2dfaebcf3715a578"
+      ],
+      "request_digests": [
+        "277a6372c11ca102"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/pt-compose-port",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "a9c74d349695d3b8c0f8e205ba53d7f6c232829b2cd263d624b0331869a109a4"
+      ],
+      "request_digests": [
+        "54de8bc4d47befe4"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/es-smoke-redirect",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "4f09732a3ca1d5df34a8e4610cdc9940b2de0b9ca412728fd16aa804f18cbc52"
+      ],
+      "request_digests": [
+        "2d7eec738d418c4f"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/json-format",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "1841db03dda30254256b44a5cf9f163180957b5023d6f7dde51d9cc4812c588b"
+      ],
+      "request_digests": [
+        "e7d36f946b631fdb"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/ignore-build-output",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "1a786e6d81c9199fc959903b9b375cd94e0de0ffdeae9f225ba3d2b3531cb817"
+      ],
+      "request_digests": [
+        "c63f49dabc45e3fc"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/trace-known-import",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "431cfe075f877c76238dc7de8dca29227aebf21a7daa34a02451ab6db0b98e8f"
+      ],
+      "request_digests": [
+        "8c4784e19dd0d992"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "tiny/seed-literal",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "2677344b7fb79edabda98bbfd4b9472e8fda06d45839f3f7f675aadbb9b55972"
+      ],
+      "request_digests": [
+        "6e8c6fa048331989"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/rest-endpoint",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "0e05ece0db546ee1095433a284bfd6ca81f3d0586f86b44e3def70c104193c5c"
+      ],
+      "request_digests": [
+        "fe887576d6638bed"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/module-refactor-no-rush",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "b0f6ea2bccf0a6e8d322ae50b49715a92c2fb089e7c9dd763d98c61e02221ed8"
+      ],
+      "request_digests": [
+        "c6e9dcd58ee2626b"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/pt-validation-no-rush",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "45f32a2f6c62b5bf47193315da8e2cccb2a8fcd322c83fa69b7197e6810da85f"
+      ],
+      "request_digests": [
+        "02c15311e353d64b"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/profile-trace",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "7fa16d649d1bd601d86aaaba7d93ef1f11493e16db535fb0d3d7b85c0ac85ab3"
+      ],
+      "request_digests": [
+        "dc8119e1a81ef5cc"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/csv-import",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "730739dd2f96ee38be56a3d24e81da4342a245ec812ee89e764abdb717a456f9"
+      ],
+      "request_digests": [
+        "3db0c7f1ac95a1c7"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/cli-dry-run",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "fc63751b3fccb39a99f063a00e969f150faec130fbdcacf13b61de7b9c3b1321"
+      ],
+      "request_digests": [
+        "e3d69f4e0dc8f490"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/payment-retries",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "ecd9deb51d41b2a5ee4ce1818462fa4bddd840d25fd7ebdf1c69e2d669e1e102"
+      ],
+      "request_digests": [
+        "0d11ab2d86eda87c"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/compose-dev-env",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "6c2bf858fb1d946b7f5e442111e4ccf1624cf388a30f48738802fd2aa62bf514"
+      ],
+      "request_digests": [
+        "b169bee94d5c11b1"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/ci-integration-tests",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "e788de70a9598253a30bc769533525e40b1b74ec13e9db013de4fd76838330b3"
+      ],
+      "request_digests": [
+        "ebb58246062d09e4"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "everyday/large-mechanical-refactor",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "919bc6af0a41204e8a80d2e5c7b028892a7f3953db3b86b373aaaea0fd383a45"
+      ],
+      "request_digests": [
+        "5235626a1daf3bcc"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/backend-filter-for-frontend",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "6ca7e03217d75b4830f3d51cff6d20adf9012ba820bf50dfba01697c15f3dbb1"
+      ],
+      "request_digests": [
+        "bb83fd67e809de8d"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/pt-bounded-data-migration",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "598acdea6aea8579398894fbad3897ba69d54b5b8a56cdfb94af5212f0448240"
+      ],
+      "request_digests": [
+        "a39eaf2320afa4e9"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium",
+        "high"
+      ],
+      "case": "everyday/security-ownership-check",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "b7e5585dbdbe41af9c4ecac4436a36b6a1bb6e4d90008ea4e26fbeae9d811d9f"
+      ],
+      "request_digests": [
+        "b002200aee4d5772"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "low",
+        "medium"
+      ],
+      "case": "everyday/large-rule-based-migration",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "f769cce6c49331d3b052e0b25a734ee4d961584ad6891bd2d4eeac4f37aa332d"
+      ],
+      "request_digests": [
+        "f030a9f404f49a57"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "everyday/es-backend-validation",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "99b57672cbf86ad1fde8247bf3b4889cbd64259c1fc795acd5906be7966be000"
+      ],
+      "request_digests": [
+        "333910967eadb302"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/cursor-pagination",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "2cb9c7156ad84b25a4fabe1cb8462bab48292b83f4757d5fac2ac5526a78261c"
+      ],
+      "request_digests": [
+        "15aafa913c6eaea2"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/nested-filter-parser",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "13ef227c0749af792f161de7a49aa1a0502e1aeb3b9a1b94631b757d24eb99d7"
+      ],
+      "request_digests": [
+        "851e1fe0e9aa20ad"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/stream-cancellation",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "fd841c7582874ce1cc6c0c3adcf662c10b87b416eff40bd7911bc73ae5ded043"
+      ],
+      "request_digests": [
+        "9865260a78ef057e"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/cache-dependency-invalidation",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "8d6593ef92684e4c14259c8ca8e986bc1e1be46a4331202436d019f1e98a8864"
+      ],
+      "request_digests": [
+        "03438f73f0781f7b"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/report-query-plan",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "84965b477c6316bec4b61eb40289f54b89670329c0698ce67d65661aea611684"
+      ],
+      "request_digests": [
+        "bc845033ec10e4e6"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/orm-transaction-semantics",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "fbdff89d0db89eada2479a05fcf166adf534cbb3fd33030b9d03d97b5d0f7fcb"
+      ],
+      "request_digests": [
+        "6d177f334456287b"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/archive-path-containment",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "c06ada4e5361f7fc4f4056e90bfbfea66f736a846dc69872e80109aa96b3f06c"
+      ],
+      "request_digests": [
+        "484e06a0f70d3239"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "harder/pt-resumable-import",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "c8b4bf28d852af0868d1f98113feed5e1da140e1556c4e784d6cd1a6aaa2ff74"
+      ],
+      "request_digests": [
+        "4509424851fce22c"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/rest-endpoint-today",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "7056db1bc351b24ea8520982d0c3920f23993fef3ac85d08276864522da70b36"
+      ],
+      "request_digests": [
+        "a3181ea17f20ba38"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/unit-tests-release-blocker",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "6956fbcbf1f4867838a38c486c1a2c20c4335160b746bfb3539fef666d038836"
+      ],
+      "request_digests": [
+        "a7135b69924fb0e6"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/profile-production-incident",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "8a33d4d62f539e39dfbc846f1e63761d5aaf9fc17194f83d71cf31e59df611a9"
+      ],
+      "request_digests": [
+        "049f8b0ad8cdf386"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/pt-validation-demo",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "8f6e557574e10d04fd399f5f6ef69467b9ab23bc0ac002ab17d5223f7a7edc76"
+      ],
+      "request_digests": [
+        "52bcf00d802285ff"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "priority/large-mechanical-refactor-today",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "1537b073c63adbe366beb4c1c9d48da6a12dfe2f069129a8890c88a1bbbb9551"
+      ],
+      "request_digests": [
+        "ab22ebbc17525637"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/ci-tests-today",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "e0f64851a2d967bd816198d1839d9483594a03eec973730dd06304db540d4608"
+      ],
+      "request_digests": [
+        "306da8ed9bf68929"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/backend-filter-for-frontend",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "ff43305249f19f9e40b4f20ceb3d74408873415992a3690aaa7533549ec4c027"
+      ],
+      "request_digests": [
+        "f58171a23cea416a"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "priority/cli-dry-run-today",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "631f14ae9311a8dd46f2f87fa774ff5012c9b0e14d5d159b0d410e6d484b4874"
+      ],
+      "request_digests": [
+        "01c086f96403bb47"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "xhigh"
+      ],
+      "case": "complex/multi-region-design",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "2ff467f3fed96cbca2bb934b1f68673a7f376645e8381cc68c412d347959aed3"
+      ],
+      "request_digests": [
+        "aa8f9223a4ceb146"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "xhigh"
+      ],
+      "case": "complex/scheduler-race",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "116994d37fba1eee5d02c7b1532a25c184522411e6020e29147992e0f25ea134"
+      ],
+      "request_digests": [
+        "1eb4c9357bedeba9"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "xhigh"
+      ],
+      "case": "complex/auth-security-review",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "4dc6522d45be381b4b3cf2b2c92972faab17ef4649b80327dbe62f36ee8b8d4d"
+      ],
+      "request_digests": [
+        "56b52b7438639435"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "xhigh"
+      ],
+      "case": "complex/urgent-cross-service-incident",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "ffe2ecf13ebe7fa6a20e42e73fdbf495a2c5d801f03713f0e9678f6ebcc0e7ae"
+      ],
+      "request_digests": [
+        "9166177086e89a03"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "xhigh"
+      ],
+      "case": "complex/it-urgent-deadlock",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "533423891d2d507cb979126911c41a5de1ddc2cd790c3dea0e76bec60fb7279e"
+      ],
+      "request_digests": [
+        "f7579933af90e6f2"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "high",
+        "xhigh"
+      ],
+      "case": "complex/backend-sync-for-mobile",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "cf26a369bf9ee137aa69a2425bc967e195a066b0e2da79ea20ff41502851ccf0"
+      ],
+      "request_digests": [
+        "241433d940fe126c"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "xhigh"
+      ],
+      "case": "complex/dsl-type-inference",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "0b5fd678ad9ed80d781b70f870dfab15746387e3bf959c1eb3048542f9060387"
+      ],
+      "request_digests": [
+        "e0245fd0d511c6a0"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "frontend/button-label",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "e14c807e72cc83a910b5879d1e760c9d76d38150c4018398a2aaaf1a31d1c47d"
+      ],
+      "request_digests": [
+        "32793f07395b823b"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "frontend/pt-urgent-color",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "c8eb7d86077d24cd45a63c8eaf314fb0fcc3d8375f4a9e2d8742a64fbc2ae386"
+      ],
+      "request_digests": [
+        "910a1c496f1b3b78"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "frontend/es-responsive-navbar",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "35453ef532d4cd4d088e1ad82bdc7191073c18c39c80cfbdc2a55dc390bc8a6c"
+      ],
+      "request_digests": [
+        "7a6131ed131be61e"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "frontend/component-unit-tests",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "650d195bfe11c8e42265bfa48cbd81ae630bc32f92ee8671828c41180d94346b"
+      ],
+      "request_digests": [
+        "ab5960bbf5fbe400"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "gpt-6.1-sol"
+      ],
+      "canonical_reasoning": [
+        "medium",
+        "high"
+      ],
+      "case": "frontend/urgent-blank-checkout",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "3d678f757d6c90f16fea5b963a903e1cd21f5ce1d668499fce6353523a84e89b"
+      ],
+      "request_digests": [
+        "72630c94b84b26e4"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "high",
+        "xhigh"
+      ],
+      "case": "frontend/state-architecture-no-rush",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "8f434c8cf59e55dae4dba82e9da8e7dd30212488875122d01715fb2fb2e9295d"
+      ],
+      "request_digests": [
+        "31a7168d46992771"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "low",
+        "medium"
+      ],
+      "case": "frontend/pt-hide-nav-page",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "73318a89dc9d93f293a81ff69efeed80f88f13eb289527875e75a709fa15211e"
+      ],
+      "request_digests": [
+        "d222e42b5e633312"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "deepseek-flash"
+      ],
+      "canonical_reasoning": [
+        "low"
+      ],
+      "case": "frontend/remove-sidebar-link",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "a50256d604edebc36941be3dba8082959dd569f86ea06a291f81a7c70a458894"
+      ],
+      "request_digests": [
+        "4a262743ef1fd70f"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "medium",
+        "high"
+      ],
+      "case": "frontend/new-analytics-page",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "0a7c5fec32c4907f131cc3d2b4582530ba4e30b4a02536b253f9eacd896ac9cf"
+      ],
+      "request_digests": [
+        "9f5c6df02487a95d"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "claude-opus-5-5"
+      ],
+      "canonical_reasoning": [
+        "high"
+      ],
+      "case": "frontend/pt-redesign-onboarding",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "bd81c8699ae361139a1b1b69026cf7b607b3cdd15aa2dcadbd6cc4a95f1abb11"
+      ],
+      "request_digests": [
+        "7b92e57c42e28724"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "frontend/toast-notifications",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "9cdc57f8198aa9c4d3dd63cd8bf697c0bedd2eeb3c6d3f347ca95f0c155acb8d"
+      ],
+      "request_digests": [
+        "d04e2c89277fa928"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "frontend/pt-upload-dropzone",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "9082765a1bb511efcd759b951fee0105dfbd7cc3da374519ea026f5d5e686da6"
+      ],
+      "request_digests": [
+        "c8cdb6f154c64ead"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "frontend/project-empty-states",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "5d369c340064b2f759e80901ad5a0c599b9c48feaa5ef03ef0aced3756c84b86"
+      ],
+      "request_digests": [
+        "7e3b863c8d1142db"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    },
+    {
+      "canonical_expect": [
+        "glm-5.3"
+      ],
+      "canonical_reasoning": [
+        "medium"
+      ],
+      "case": "frontend/mobile-invoice-table",
+      "configured_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "observed_teacher_models": [
+        "gpt-6-luna"
+      ],
+      "policy_fingerprints": [
+        "e28584d44f47"
+      ],
+      "policy_sha256": {
+        "e28584d44f47": "b823f327e7fddf4c6fa7c2254f9af6a553069d6e947c2a3d3f2b4b863e3e381f"
+      },
+      "prepared_state_sha256": [
+        "7d8fadb3edc944dd487a5c7358c0e22c5df3e35d1e1618a997647af04efa00b1"
+      ],
+      "request_digests": [
+        "08f30cd43ae80a63"
+      ],
+      "trials": [
+        1,
+        2
+      ]
+    }
+  ],
+  "split": {
+    "case_families": {
+      "complex/auth-security-review": "authentication-session-tenant-isolation-review",
+      "complex/backend-sync-for-mobile": "offline-document-sync-protocol",
+      "complex/dsl-type-inference": "recursive-module-type-inference",
+      "complex/it-urgent-deadlock": "payment-worker-failover-shutdown-deadlock",
+      "complex/multi-region-design": "storage-multi-region-failover-design",
+      "complex/scheduler-race": "distributed-job-lease-ownership-race",
+      "complex/urgent-cross-service-incident": "cross-service-payment-idempotency-incident",
+      "everyday/backend-filter-for-frontend": "order-status-api-filter",
+      "everyday/ci-integration-tests": "postgres-ci-integration-tests",
+      "everyday/cli-dry-run": "deployment-cli-dry-run",
+      "everyday/compose-dev-env": "go-postgres-development-containers",
+      "everyday/csv-import": "postgres-csv-import",
+      "everyday/es-backend-validation": "report-date-range-validation",
+      "everyday/large-mechanical-refactor": "go-symbol-renames",
+      "everyday/large-rule-based-migration": "mechanical-api-migration",
+      "everyday/module-refactor-no-rush": "mail-sender-interface-refactor",
+      "everyday/payment-retries": "payment-status-read-retries",
+      "everyday/profile-trace": "nullable-profile-phone-fix",
+      "everyday/pt-bounded-data-migration": "user-timezone-backfill",
+      "everyday/pt-validation-no-rush": "registration-cpf-validation",
+      "everyday/rest-endpoint": "order-details-endpoint",
+      "everyday/security-ownership-check": "invoice-tenant-query-filter",
+      "frontend/button-label": "signup-button-copy",
+      "frontend/component-unit-tests": "search-box-interaction-tests",
+      "frontend/es-responsive-navbar": "accessible-mobile-navigation-menu",
+      "frontend/mobile-invoice-table": "responsive-invoice-table",
+      "frontend/new-analytics-page": "responsive-analytics-page",
+      "frontend/project-empty-states": "projects-list-empty-error-states",
+      "frontend/pt-hide-nav-page": "sidebar-menu-entry-visibility",
+      "frontend/pt-redesign-onboarding": "accessible-onboarding-redesign",
+      "frontend/pt-upload-dropzone": "product-image-upload-component",
+      "frontend/pt-urgent-color": "primary-button-color",
+      "frontend/remove-sidebar-link": "sidebar-menu-entry-visibility",
+      "frontend/state-architecture-no-rush": "react-shared-state-architecture",
+      "frontend/toast-notifications": "accessible-settings-toast-notifications",
+      "frontend/urgent-blank-checkout": "empty-cart-checkout-rendering-fix",
+      "harder/archive-path-containment": "archive-extraction-path-containment",
+      "harder/cache-dependency-invalidation": "request-local-permission-cache-invalidation",
+      "harder/cursor-pagination": "bidirectional-audit-keyset-pagination",
+      "harder/nested-filter-parser": "nested-boolean-filter-parser",
+      "harder/orm-transaction-semantics": "returns-repository-orm-transaction-migration",
+      "harder/pt-resumable-import": "postgres-csv-import",
+      "harder/report-query-plan": "monthly-report-latest-status-query",
+      "harder/stream-cancellation": "export-stream-cancellation-coordination",
+      "priority/backend-filter-for-frontend": "order-status-api-filter",
+      "priority/ci-tests-today": "postgres-ci-integration-tests",
+      "priority/cli-dry-run-today": "deployment-cli-dry-run",
+      "priority/large-mechanical-refactor-today": "go-symbol-renames",
+      "priority/profile-production-incident": "nullable-profile-phone-fix",
+      "priority/pt-validation-demo": "registration-cpf-validation",
+      "priority/rest-endpoint-today": "order-details-endpoint",
+      "priority/unit-tests-release-blocker": "invoice-helper-unit-tests",
+      "tiny/api-field-for-frontend": "profile-avatar-response-field",
+      "tiny/ci-version": "go-workflow-version-pin",
+      "tiny/dependency-pin": "python-requests-version-pin",
+      "tiny/doc-comment": "date-parser-doc-comment",
+      "tiny/es-smoke-redirect": "health-check-redirect-following",
+      "tiny/ignore-build-output": "build-output-ignore-rules",
+      "tiny/json-format": "order-fixture-json-format",
+      "tiny/known-off-by-one": "offset-pagination-off-by-one",
+      "tiny/pt-compose-port": "postgres-development-host-port",
+      "tiny/pt-readme-typo": "readme-installation-typo",
+      "tiny/rename-local": "go-symbol-renames",
+      "tiny/request-id-log": "order-handler-request-id-log",
+      "tiny/security-cookie-flag": "secure-session-cookie-setting",
+      "tiny/seed-literal": "customer-seed-city-spelling",
+      "tiny/trace-known-import": "json-export-missing-import",
+      "tiny/urgent-config-port": "smoke-test-server-port"
+    },
+    "coverage": [
+      {
+        "both_sides_supported": true,
+        "eval_cases": 2,
+        "families": 8,
+        "kind": "group",
+        "label": "bounded",
+        "train_cases": 6
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 1,
+        "families": 8,
+        "kind": "group",
+        "label": "difficult",
+        "train_cases": 7
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 2,
+        "families": 9,
+        "kind": "group",
+        "label": "priority",
+        "train_cases": 7
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 5,
+        "families": 19,
+        "kind": "group",
+        "label": "quick",
+        "train_cases": 14
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 6,
+        "families": 22,
+        "kind": "group",
+        "label": "routine",
+        "train_cases": 16
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 1,
+        "families": 2,
+        "kind": "group",
+        "label": "ui-substantial",
+        "train_cases": 1
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 2,
+        "families": 10,
+        "kind": "target_model",
+        "label": "claude-opus-5-5",
+        "train_cases": 8
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 5,
+        "families": 19,
+        "kind": "target_model",
+        "label": "deepseek-flash",
+        "train_cases": 14
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 5,
+        "families": 21,
+        "kind": "target_model",
+        "label": "glm-5.3",
+        "train_cases": 16
+      },
+      {
+        "both_sides_supported": true,
+        "eval_cases": 5,
+        "families": 18,
+        "kind": "target_model",
+        "label": "gpt-6.1-sol",
+        "train_cases": 13
+      }
+    ],
+    "eval_cases": 17,
+    "eval_families": [
+      "accessible-mobile-navigation-menu",
+      "accessible-settings-toast-notifications",
+      "archive-extraction-path-containment",
+      "customer-seed-city-spelling",
+      "offline-document-sync-protocol",
+      "order-details-endpoint",
+      "order-fixture-json-format",
+      "payment-status-read-retries",
+      "primary-button-color",
+      "profile-avatar-response-field",
+      "python-requests-version-pin",
+      "registration-cpf-validation",
+      "request-local-permission-cache-invalidation",
+      "responsive-analytics-page",
+      "user-timezone-backfill"
+    ],
+    "eval_group_support": {
+      "bounded": 2,
+      "difficult": 1,
+      "priority": 2,
+      "quick": 5,
+      "routine": 6,
+      "ui-substantial": 1
+    },
+    "eval_model_support": {
+      "claude-opus-5-5": 2,
+      "deepseek-flash": 5,
+      "glm-5.3": 5,
+      "gpt-6.1-sol": 5
+    },
+    "family_count_adjusted_for_coverage": false,
+    "manifest_sha256": "421732317afd82b13bdd6ce797774203757956b88253304b20c2442c4a6e0d50",
+    "method": "coverage-constrained explicit semantic families, sha256 tie order",
+    "realized_eval_case_fraction": 0.25,
+    "realized_eval_family_fraction": 0.25862068965517243,
+    "requested_eval_families": 15,
+    "requested_eval_fraction": 0.25,
+    "seed": "teacher-eval-v1",
+    "train_cases": 51,
+    "train_families": [
+      "accessible-onboarding-redesign",
+      "authentication-session-tenant-isolation-review",
+      "bidirectional-audit-keyset-pagination",
+      "build-output-ignore-rules",
+      "cross-service-payment-idempotency-incident",
+      "date-parser-doc-comment",
+      "deployment-cli-dry-run",
+      "distributed-job-lease-ownership-race",
+      "empty-cart-checkout-rendering-fix",
+      "export-stream-cancellation-coordination",
+      "go-postgres-development-containers",
+      "go-symbol-renames",
+      "go-workflow-version-pin",
+      "health-check-redirect-following",
+      "invoice-helper-unit-tests",
+      "invoice-tenant-query-filter",
+      "json-export-missing-import",
+      "mail-sender-interface-refactor",
+      "mechanical-api-migration",
+      "monthly-report-latest-status-query",
+      "nested-boolean-filter-parser",
+      "nullable-profile-phone-fix",
+      "offset-pagination-off-by-one",
+      "order-handler-request-id-log",
+      "order-status-api-filter",
+      "payment-worker-failover-shutdown-deadlock",
+      "postgres-ci-integration-tests",
+      "postgres-csv-import",
+      "postgres-development-host-port",
+      "product-image-upload-component",
+      "projects-list-empty-error-states",
+      "react-shared-state-architecture",
+      "readme-installation-typo",
+      "recursive-module-type-inference",
+      "report-date-range-validation",
+      "responsive-invoice-table",
+      "returns-repository-orm-transaction-migration",
+      "search-box-interaction-tests",
+      "secure-session-cookie-setting",
+      "sidebar-menu-entry-visibility",
+      "signup-button-copy",
+      "smoke-test-server-port",
+      "storage-multi-region-failover-design"
+    ],
+    "train_group_support": {
+      "bounded": 6,
+      "difficult": 7,
+      "priority": 7,
+      "quick": 14,
+      "routine": 16,
+      "ui-substantial": 1
+    },
+    "train_model_support": {
+      "claude-opus-5-5": 8,
+      "deepseek-flash": 14,
+      "glm-5.3": 16,
+      "gpt-6.1-sol": 13
+    },
+    "unsupported_singleton_strata": []
+  },
+  "target": "primary model choice and task depth, before economy or escalation",
+  "teacher": "luna"
+}

@@ -1,0 +1,186 @@
+package dashboard
+
+import (
+	"strconv"
+
+	"github.com/MarioGK/AI-Router/internal/pin"
+)
+
+// threadFilter re-reads the first page of threads when a filter changes.
+var threadFilter = templ.Attributes{"data-indicator": "_loading", "data-on:change": "@get('/dashboard/sse/threads')"}
+
+templ threadsPage(f frame, v threadsView, models []string) {
+	@shell(f) {
+		<div data-signals={ signals(map[string]any{"model": v.Query.Model}) }>
+			@heading("Threads", "Every pinned thread, most recently active first") {
+				<div class="flex flex-wrap items-center gap-2">
+					@choice("model", "All models", v.Query.Model, modelOptions(models), threadFilter)
+				</div>
+			}
+			@threadsTable(v)
+		</div>
+	}
+}
+
+templ threadsTable(v threadsView) {
+	<section id="threads-table" class="overflow-hidden rounded-xl border border-line bg-surface transition-opacity" data-class:opacity-60="$_loading">
+		if v.Err != nil {
+			<div class="border-b border-line p-4">
+				@problem(v.Err)
+			</div>
+		}
+		<div class="overflow-x-auto">
+			<table class="block w-full text-left text-[13px] md:table">
+				<thead class="hidden border-b border-line md:table-header-group">
+					<tr>
+						@th("Thread", "")
+						@th("Model", "")
+						@th("Decider", "")
+						@th("Choice", "")
+						@th("Created", "hidden lg:table-cell")
+						@th("Last used", "")
+						@th("Requests", "text-right")
+						@th("Cost", "text-right")
+						@th("Changes", "")
+					</tr>
+				</thead>
+				<tbody class="block divide-y divide-line md:table-row-group">
+					if len(v.Threads) == 0 && v.Err == nil {
+						<tr class="block md:table-row">
+							<td colspan="9" class="block md:table-cell">
+								if v.Query.Model != "" {
+									@blank("search", "No threads match", "No pinned thread matches these filters.") {
+										<a href="/dashboard/threads" class="mt-2 text-xs font-medium text-fg-2 underline-offset-2 hover:text-fg hover:underline">Clear filters</a>
+									}
+								} else {
+									@blank("inbox", "No pinned threads yet", "A thread is pinned on its first request for the auto model.")
+								}
+							</td>
+						</tr>
+					}
+					for _, t := range v.Threads {
+						@threadRow(t)
+					}
+				</tbody>
+			</table>
+		</div>
+		@pager(v)
+	</section>
+}
+
+// threadRow is one thread: a table row from md up, below it the key and
+// model over a line of details. The whole row links to the thread.
+templ threadRow(t pin.Thread) {
+	<tr class="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2.5 hover:bg-raised/60 md:table-row md:p-0">
+		<td class="md:px-4 md:py-2">
+			<a href={ threadURL(t.Key) } class="font-mono text-xs font-medium text-fg after:absolute after:inset-0 hover:underline" title={ t.Key }>{ shortKey(t.Key) }</a>
+		</td>
+		<td class="justify-self-end md:px-4 md:py-2">
+			<span class="inline-flex items-center gap-1.5">
+				@badge(t.Model)
+				@effortTag(t.Level, "Reasoning level")
+			</span>
+		</td>
+		<td class="hidden px-4 py-2 whitespace-nowrap text-fg-2 md:table-cell">
+			if t.Decision != nil {
+				{ t.Decision.Decider }
+			} else {
+				<span class="text-fg-3">—</span>
+			}
+		</td>
+		<td class="hidden px-4 py-2 md:table-cell">
+			if t.Decision != nil {
+				@choiceOf(*t.Decision)
+			} else {
+				<span class="text-fg-3">—</span>
+			}
+		</td>
+		<td class="hidden px-4 py-2 text-fg-2 lg:table-cell">
+			@when(t.CreatedAt)
+		</td>
+		<td class="hidden px-4 py-2 text-fg-2 md:table-cell">
+			@when(t.LastUsedAt)
+		</td>
+		<td class="hidden px-4 py-2 text-right font-mono text-xs tabular-nums md:table-cell">{ number(t.Requests) }</td>
+		<td class="hidden px-4 py-2 text-right font-mono text-xs text-fg-2 tabular-nums md:table-cell" title={ tokenSummary(t.Tokens) }>{ money(t.Cost) }</td>
+		<td class="relative z-10 hidden px-4 py-2 md:table-cell">
+			@pinFlags(t.Pin)
+		</td>
+		<td class="col-span-2 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-fg-3 md:hidden">
+			if t.Decision != nil {
+				<span class="whitespace-nowrap">{ t.Decision.Decider }</span>
+			} else {
+				<span class="whitespace-nowrap">no decision</span>
+			}
+			<span aria-hidden="true">·</span>
+			@when(t.LastUsedAt)
+			@separated(counted(t.Requests, "request"))
+			if t.Cost > 0 {
+				@separated(money(t.Cost))
+			}
+			if t.Decision != nil && t.Decision.Escalated {
+				@marker("arrow-up", "escalated", "Escalated up the ladder to "+t.Decision.Model)
+			}
+			if t.Decision != nil && t.Decision.Consulted() {
+				@marker("question", "2nd opinion", explanation(*t.Decision))
+			}
+			@pinFlags(t.Pin)
+		</td>
+	</tr>
+}
+
+// choiceOf is a decider's own choice with marks for escalation and doubt.
+templ choiceOf(decision pin.Event) {
+	<span class="inline-flex items-center gap-1.5 whitespace-nowrap">
+		if decision.Choice != "" {
+			<span class="font-mono text-xs text-fg-2">{ decision.Choice }</span>
+		} else {
+			<span class="text-fg-3">default</span>
+		}
+		if decision.Escalated {
+			<span class="relative z-10">
+				@marker("arrow-up", "escalated", "Escalated up the ladder to "+decision.Model)
+			</span>
+		}
+		if decision.Consulted() {
+			<span class="relative z-10">
+				@marker("question", "2nd opinion", explanation(decision))
+			</span>
+		}
+	</span>
+}
+
+templ pager(v threadsView) {
+	<div class="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3 text-xs text-fg-3">
+		<span class="tabular-nums">
+			if len(v.Threads) > 0 {
+				{ number(v.first()) }–{ number(v.last()) } of { counted(v.Total, "thread") }
+			} else {
+				No threads
+			}
+		</span>
+		if v.pages() > 1 {
+			<div class="flex items-center gap-3">
+				<span class="tabular-nums">Page { strconv.Itoa(v.Query.Page) } of { strconv.Itoa(v.pages()) }</span>
+				<div class="flex items-center gap-1">
+					@pageButton("chevron-left", "Previous page", v.Query.Page-1, v.Query.Page > 1)
+					@pageButton("chevron-right", "Next page", v.Query.Page+1, v.Query.Page < v.pages())
+				</div>
+			</div>
+		}
+	</div>
+}
+
+templ pageButton(glyph, name string, page int, enabled bool) {
+	<button
+		type="button"
+		aria-label={ name }
+		title={ name }
+		disabled?={ !enabled }
+		data-indicator="_loading"
+		data-on:click={ "@get('" + pageURL(page) + "')" }
+		class="grid size-7 place-items-center rounded-md border border-line text-fg-2 hover:border-line-strong hover:text-fg disabled:pointer-events-none disabled:opacity-40"
+	>
+		@icon(glyph, "size-4")
+	</button>
+}

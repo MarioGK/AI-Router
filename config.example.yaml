@@ -1,0 +1,463 @@
+# ai-router configuration (the HomeLab deployment on alpha). The router
+# serves Claude Code only.
+listen: ":8080"
+database: /var/lib/ai-router/router.db
+# OpenBao-materialized dotenv files: the CLIProxy client and management keys,
+# the Jev key, and the independent dashboard password hash.
+secrets_files:
+  - /secrets/cliproxy.env
+  - /secrets/jev.env
+  - /secrets/dashboard.env
+log_level: info
+catalog_interval: 5m
+# How long the request log keeps a request (pins and decisions stay forever).
+log_retention: 720h
+# How long decisions keep their prompts and the deciders' raw replies (the
+# decisions stay, and a reviewed decision keeps everything); unset keeps
+# them as long as the decisions.
+# prompt_retention: 2160h
+# How long a stopping router lets streaming responses finish; a second
+# signal stops it at once.
+shutdown_grace: 1m
+
+upstream:
+  base_url: "http://10.11.99.1:8317"
+  api_key_env: CLIPROXYAPI_API_KEY
+  # A request CLIProxy sends nothing for this long (no response headers, or
+  # no chunk mid-stream) is ended with 504, freeing its concurrency slot.
+  idle_timeout: 10m
+# Dashboard credentials are separate from CLIProxy API keys. Store only the
+# bcrypt hash in a secrets file or environment; an absent hash disables login.
+dashboard:
+  username: mariogk
+  password_hash_env: TS_ROUTER_DASHBOARD_PASSWORD_HASH
+# CLIProxy's ChatGPT and Claude subscription accounts. Every interval the
+# router reads, through the management API, the quota CLIProxy saw on the
+# last response each account served (it never calls the providers itself,
+# so reading often is free); CLIProxy fills one account at a time, so an
+# account with exhausted quota uses available provider credits behind
+# accounts with included quota, or gets limited_priority until its window
+# resets. A model no account can serve is left out of new
+# decisions and failovers. GLM and DeepSeek are API-key upstreams and always
+# stay available.
+accounts:
+  management_key_env: CLIPROXYAPI_MGMT_KEY
+  interval: 1m
+  providers: [claude, codex]
+  limited_priority: -10
+# Concurrency caps per model. GLM 5.3 is flat-rate but Z.AI answers too
+# many parallel requests with 429 code 1302, a limit it changes with load,
+# and an overloaded model with 429 code 1305. Requests over the cap wait in
+# line (queue_timeout); a 1302 or 1305 shrinks the cap to the requests still
+# running and retries from the queue instead of failing the thread over;
+# the cap grows back by one every recovery. While
+# GLM is full, new threads decided for it spill to Sol, which is as capable,
+# when a ChatGPT account can serve it.
+limits:
+  # Conservative operator cap for the new foreground Flash tier, not a
+  # provider promise. Background calls use this same adaptive gate.
+  glm-5.3-flash:
+    concurrency: 3
+    throttle_codes: ["1302", "1305"]
+    recovery: 1m
+    queue_timeout: 5m
+    retries: 4
+    spill: gpt-6.1-sol
+  glm-5.3:
+    concurrency: 6
+    throttle_codes: ["1302", "1305"]
+    recovery: 1m
+    queue_timeout: 5m
+    retries: 4
+    spill: gpt-6.1-sol
+
+auto:
+  model_id: auto
+  # Used when every decider fails, for requests without a thread id, and for
+  # side requests (count_tokens, compaction) of threads that have no pin yet.
+  default_model: gpt-6.1-sol
+  # Claude Code background calls (x-claude-code-request-class: auxiliary).
+  aux_model: glm-5.3-flash
+  # Without the cost economy below: escalate one tier when the stronger
+  # candidates hold >= 10% together.
+  escalation_threshold: 0.10
+  # When a verdict is in doubt (it would move up), ask the same decider to
+  # choose between its choice and the step up, and take that answer; move
+  # up when it cannot answer pairs or the pair question fails.
+  doubt: pair
+  # The cost economy: take the ladder step with the least expected cost to
+  # get the task done, rather than escalate by the threshold. A step's
+  # expected cost is its cost per task, plus, for every stronger step the
+  # verdict puts probability on, that probability times the stronger step's
+  # cost times (1 + miss): a task sent to a model too weak for it is done
+  # again on the right one, and the failed attempt and the user's time come
+  # on top. A doubt about the next step settles at the break-even
+  # probability instead of one half; a verdict spread over several steps
+  # goes straight to the cheapest suitable tier. Free or cheaper stronger
+  # tiers still require majority task fit. GLM handles small routine work;
+  # Sol handles substantive implementation, higher priority and tricky work; Opus
+  # handles high difficulty and substantial UI changes. The cost per task
+  # is learned from the threads of the last `window` (at most log_retention):
+  # how big each reasoning level's tasks are and how verbose each model is
+  # against the others at the same levels (a
+  # session counts at most twenty typical tasks; both shrink towards the
+  # fleet as if `weight` more threads agreed), priced at `prices` times the
+  # candidate's `cost_factor`. A model at its concurrency cap is priced as
+  # its spill model, where the thread would go. Recent 1302/1305 replies
+  # also spill new threads for one recovery interval, even when external
+  # clients caused the saturation and this router has no active requests.
+  # The same threads also teach how each model at each level fared: how
+  # long a task keeps it busy and how often its threads moved up to a
+  # stronger step (an operator re-pin or a redecision; a failover tells of
+  # the upstream, not the task), both shrunk towards the fleet like the cost. Once a model
+  # at a level has 5 such threads, its miss rate against the fleet's
+  # scales `miss` for it (at most 4x either way). `time_value` prices an
+  # hour of a task's time in dollars, so a slower model pays for it; 0
+  # leaves time out.
+  cost:
+    enabled: true
+    miss: 3
+    window: 720h
+    weight: 20
+    time_value: 0
+  # A settled thread on the lighter half of the ladder that ran more than
+  # `long` regular turns, or one on the heavier half that stayed within
+  # `tiny` (token counts, compactions and background calls not counted),
+  # is a sign its decision was wrong: the Decisions tab queues it for review.
+  outcomes:
+    long: 200
+    tiny: 3
+  # The router only sees how the step it chose fared, never whether a
+  # cheaper one would have done, so learned miss rates can only push
+  # decisions up. `explore` (0 to 0.2; 0 is off) routes that share of
+  # borderline automatic decisions one ladder step cheaper: those where the
+  # economy scored the step below within `explore_margin` of the step it
+  # chose, relative to its score, for a non-xhigh task, a step below that
+  # serves the request and a thread that never moved up the ladder. The
+  # decision records the probability of what it did, so learning can weigh
+  # explored threads fairly.
+  # With `enabled` (on unless false) every settled thread labels where its
+  # task belonged (an operator's review or re-pin down, a move up, a thread
+  # that sufficed or stayed tiny on a heavy step), and a new thread's
+  # decision blends in
+  # what the `neighbours` labelled first prompts most like its own suggest,
+  # before the economy, by a weight the history earns on its own labels:
+  # 0 until 20 of them can be replayed, at most 0.8.
+  learn:
+    explore: 0
+    explore_margin: 0.25
+    enabled: true
+    neighbours: 20
+  # A 429 (no account has quota left) fails a thread over at once; a server
+  # error only once its model answered failover_trip of them in a row, so a
+  # passing overload goes back to Claude Code, which retries it on the same
+  # model and account and keeps the prompt cache.
+  failover_statuses: [429, 500, 502, 503, 504, 529]
+  failover_trip: 3
+  strip_tags: [system-reminder, environment_context, user_instructions]
+  state_max_chars: 12000
+  # Keep each decision's prompts with its trail (on unless false): the
+  # thread's first prompt as the user wrote it, and the decider input as
+  # judged. Operators review decisions against them on the dashboard, and
+  # the reviews download as bench cases.
+  record_prompts: true
+  decide_timeout: 30s
+  # A decider that fails this many turns in a row sits out decider_rest
+  # (its turns are skipped), so a Jev outage does not delay every new thread
+  # by its timeout; the first turn after the rest tries it again.
+  decider_trip: 3
+  decider_rest: 1m
+  # Decide a thread again on a new prompt from the user (never on a tool
+  # result, so never mid tool loop) where its prompt cache is cold anyway:
+  # after `idle` without a request (0: never) or right after a compaction.
+  # The new decision judges the new prompt and may move the thread up or
+  # down the ladder; it is recorded in the thread's history as a
+  # redecision. A thread pinned below the top of the ladder that made
+  # `grow_requests` requests since its last decision (0: never) is decided
+  # again at its next cold point even with `idle` at 0, where a compaction
+  # is its only cold point. A thread an operator re-pinned keeps its pin.
+  redecide:
+    idle: 5m
+    grow_requests: 60
+  # The reasoning chooser: beside the model, the deciders judge how much
+  # reasoning a new thread needs (Jev answers a score question over these
+  # levels, lightest first, in the same request; the LLM judge a probability
+  # per level). The thread keeps, for good, the lightest level at which the
+  # probability, summed lightest first, passes one half, and runs on each
+  # model at the nearest effort in the model's `efforts`. Each level id is a
+  # CLIProxy effort; its description and examples are the criteria.
+  reasoning:
+    levels:
+      - id: low
+        description: >-
+          Straightforward factual questions, explanations or translations
+          needing only a short, direct answer, and mechanical work with the
+          change spelled out: exact edits, renames, config values, copy and
+          formatting, and bulk changes that follow a clear rule however many
+          files they touch. Nothing to investigate or decide.
+        examples:
+          - Bump the request timeout in config/app.yaml from 30s to 60s.
+          - Troque todas as chamadas de log.Printf por slog.Info nos handlers, mantendo as mensagens.
+      - id: medium
+        description: >-
+          Everyday work with a clear path: a routine feature, endpoint or
+          component, tests for existing code, a bug with a clear symptom and an
+          obvious place to look, a small refactor. Some reading of the code and
+          few decisions.
+        examples:
+          - Add a GET /api/projects/{id}/members endpoint like the existing handlers, with tests.
+          - The avatar upload rejects PNG files over 2 MB although the limit is 5 MB; fix the size check.
+      - id: high
+        description: >-
+          Nontrivial reasoning: bounded but tricky problems (concurrency,
+          algorithms, subtle state or data bugs, security checks, integrations),
+          bugs requiring nontrivial investigation to find the cause, features
+          across several parts with design decisions.
+        examples:
+          - The nightly export sometimes misses rows written while it runs; find the cause and make it consistent.
+          - Implementar bloqueio otimista na edição de documentos e resolver os conflitos no editor.
+      - id: xhigh
+        description: >-
+          Deep, open-ended reasoning: architecture and system design,
+          production problems of unknown cause across services, hard
+          distributed, performance or security problems, large designs whose
+          decisions depend on each other.
+        examples:
+          - Design how to shard the events table across regions without downtime, and plan the migration.
+          - Workers grow in memory until they are killed every few days and nobody knows why; investigate and fix it.
+  # Escalation ladder, lightest first: deepseek-flash, glm-5.3-flash,
+  # glm-5.3, gpt-6.1-sol, claude-opus-5-5. DeepSeek handles quick, straightforward prompts and tiny
+  # explicit edits. GLM Flash handles small coding and visual tasks; GLM
+  # handles broader routine text-only changes that can wait, with
+  # no marginal usage charge and a concurrency cap. Sol runs at high effort
+  # for substantive coordinated features, higher priority or tricky work. High difficulty and substantial UI changes go to
+  # Opus regardless of urgency.
+  # `description`, `not_for` and `examples` are the criteria the deciders
+  # weigh; Jev reads them as one structured object per candidate, and the
+  # examples act as few-shot requests (keep them distinct from bench cases).
+  # Candidate IDs are arbitrary CLIProxy model IDs, including private models.
+  # Optional expected_latency (e.g. 750ms) is an operator estimate from
+  # comparable requests, used as evidence for the dashboard's speed priority;
+  # leave it unset when unknown. Model names do not imply speed.
+  # `efforts` are the reasoning levels a candidate accepts, lightest first;
+  # CLIProxy applies the effort as a `model(effort)` suffix, which overrides
+  # the client's own. `reasoning` is the effort when the chooser picked no
+  # level (every decider failed, or none answered the reasoning question);
+  # empty keeps the client's setting. `cost_factor` is what a dollar of the
+  # candidate's list price costs (1 unless set). `auto` advertises the
+  # smallest context and output.
+  candidates:
+    - id: deepseek-flash
+      context: 1000000
+      output: 384000
+      vision: true
+      reasoning: high
+      efforts: [low, medium, high]
+      description: >-
+        Only short factual answers or fully specified mechanical edits with
+        negligible ambiguity: an exact replacement in a named file or a few
+        obvious matching spots. Do not infer triviality from prompt length.
+        A short request to add, fix or hide something without an exact code
+        location and change belongs at least on GLM Flash. Typos, renames,
+        config values, known
+        one-line fixes, UI copy, a single style value, removing a named link.
+        Running an existing test to verify a supplied exact correction does
+        not turn that correction into investigation or writing a test suite.
+        Stays here even when urgent.
+      not_for: >-
+        Ambiguous short requests, locating code, routine implementation,
+        investigation, finding where an unspecified change belongs, features
+        beyond tiny explicit edits, test suites, refactors beyond tiny explicit
+        renames, or bulk changes.
+      examples:
+        - Explain what HTTP 204 means in one sentence.
+        - Change the page title in src/app/layout.tsx from "Acme" to "Acme Portal".
+        - No arquivo config/settings.py, mude TIMEOUT de 30 para 60.
+        - Rename the function getUsr to getUser in lib/users.ts and its two call sites.
+        - Corrige o texto do botão "Salvar" para "Salvar alterações" em Profile.vue, é urgente.
+    # Native multimodal, tool use and always-on reasoning, per Z.AI docs.
+    # Coding Plan accepts low/medium/high/xhigh; medium maps to high,
+    # xhigh maps to max. FlashX's advertised 200 tokens/s is a different
+    # model and is not available on this plan.
+    - id: glm-5.3-flash
+      context: 1048576
+      output: 131072
+      vision: true
+      reasoning: high
+      efforts: [low, medium, high, xhigh]
+      cost_factor: 0
+      description: >-
+        Efficient included-plan model for small routine coding changes,
+        code lookup, a local bug with a clear symptom, focused tests and
+        scripts, and visual tasks: read a receipt or screenshot, adjust
+        an existing component from a mockup, inspect a rendered result,
+        or implement local form feedback using established components.
+        Native image understanding, tool calling and structured output.
+        Prefer it over text-only GLM for these visual tasks. Reasoning is
+        always enabled; choose low for simple extraction and medium for
+        routine implementation. No explicit urgency is needed. A short
+        ambiguous change request is routine coding, not an exact Flash edit.
+      not_for: >-
+        Pure factual replies or fully specified single-value edits; broader
+        text-only maintenance or large mechanical migrations (GLM 5.3);
+        substantive coordinated API/database/UI features, urgent production
+        fixes, subtle concurrency or algorithms (Sol 6.1); whole new pages,
+        major visual redesigns, architecture or open-ended hard investigations
+        (Opus). Its name alone is not evidence of end-to-end speed.
+      examples:
+        - Fix the disabled save button after a user corrects the form field, with a component test.
+        - Adjust this existing address form to the attached screenshot, preserving its fields and validation.
+        - Read the printed total from the attached receipt and return only that amount.
+        - Add a small script to normalize whitespace in these names and test empty inputs.
+    - id: glm-5.3
+      context: 1000000
+      output: 131072
+      vision: false
+      reasoning: xhigh
+      efforts: [medium, high, xhigh]
+      # Included usage has no marginal charge. Concurrency remains scarce;
+      # the gate spills new tasks to Sol when all slots are in use.
+      cost_factor: 0
+      description: >-
+        The stronger text-only included-plan model for broader routine backend
+        maintenance, endpoint work, tests across a module and mechanical bulk
+        changes. GLM Flash handles small local coding and visual tasks. Included usage
+        is free but concurrency is limited. Best for
+        routine bounded work without urgency or high priority: debugging with
+        a clear symptom across backend layers, tests across a module, routine
+        refactors, or multi-component text-only UI maintenance with established
+        patterns. Small local form, menu or component changes go to GLM Flash. Also
+        long non-urgent bulk work with clear rules: mechanical refactors,
+        migrations, many tests.
+      not_for: >-
+        Fully specified tiny edits; small local coding or screenshot-driven work
+        well suited to GLM Flash; urgent or high-priority work; complete
+        features spanning persistence, API and UI, or several coordinated
+        behavior changes even without urgency; bounded but tricky
+        problems (concurrency, algorithms, subtle bugs), including recursive
+        parsers and bidirectional keyset pagination with ordering invariants,
+        even when the grammar or schema is already settled; substantial UI design;
+        the most complex tasks.
+      examples:
+        - Refactor the report permission checks across middleware and query helpers to the established allowlist, with handler tests. No rush.
+        - Add pagination to the /api/invoices endpoint and cover it with tests.
+        - Fill in the missing tests across the date and currency helper modules using documented input-output examples.
+        - Migrate all 40 API handlers from the old logger to slog; same messages, no behavior change. No rush.
+        - The export CSV button downloads an empty file when filters are applied; find and fix it.
+    - id: gpt-6.1-sol
+      context: 1050000
+      output: 128000
+      vision: true
+      reasoning: high
+      efforts: [high]
+      description: >-
+        The efficient default workhorse for substantive implementation and
+        multi-file debugging, including complete features with persistence,
+        API, UI and integration tests, or several coordinated behavior
+        changes. Prefer it for this work even without urgency: efficient
+        completion matters more than minimizing the per-token list price.
+        Also explicitly high-priority backend or frontend work,
+        urgent production fixes, imminent deadlines and blocked teams. Also
+        trickier bounded debugging, algorithms, concurrency and integrations
+        even without urgency. Includes recursive expression parsers with
+        precedence and escapes, and bidirectional cursors requiring ordering
+        predicates and consistency under concurrent inserts. Also bounded
+        request-stream cancellation cleanup and library migrations that must
+        preserve known transaction boundaries and retry semantics. A settled
+        spec does not make these algorithms routine. Runs at high reasoning effort. Routine features,
+        tests, refactors, bulk migrations and UI components come here when
+        timely completion is a stated priority.
+      not_for: >-
+        Quick, straightforward prompts or tiny explicit edits even if urgent;
+        a single small routine change that can wait; purely mechanical bulk
+        changes with complete instructions and no deadline; high-difficulty architecture,
+        distributed, security or durability problems and open-ended
+        investigations across services; substantial UI changes such as whole
+        new pages, multi-screen flows, major redesigns and frontend architecture.
+      examples:
+        - Add an invoice status endpoint with handler tests before today's partner demo; this is the team's top priority.
+        - Migrate all 40 API handlers from the old logger to slog before today's release freeze; same messages, no behavior change.
+        - Build an accessible product upload component with previews and progress for today's launch; the design is already settled.
+        - "Production is down: the payments webhook rejects valid payloads after the last deploy's decoder change. Reproduce the regression in that handler and fix it now."
+        - Add saved report filters across the database, Go API and existing React panel, with integration coverage.
+        - Implement per-API-key rate limiting with a sliding window in Redis that tolerates clock skew.
+        - Search results are sometimes duplicated when paging quickly; find the race in the cursor logic and fix it.
+    - id: claude-opus-5-5
+      context: 1000000
+      output: 128000
+      vision: true
+      reasoning: high
+      efforts: [high, xhigh]
+      description: >-
+        Reserved for high-difficulty tasks and substantial UI changes where
+        visual and interaction quality matter: whole new pages or screens,
+        multi-screen flows, page-level layouts and major responsive redesigns,
+        substantial frontend architecture or state management designs.
+        High-difficulty tasks of any kind: deep architecture, difficult
+        production problems requiring open-ended investigation, especially
+        leaks, corruption or intermittent failures across services, and hard
+        distributed or security problems. Unknown deadlocks involving lock
+        ordering, transaction lifetimes and cancellation across modules are
+        high difficulty even when the affected modules are named.
+      not_for: >-
+        Quick answers, tiny explicit edits, routine single components and
+        small or mechanical UI changes; everyday backend work, routine tests
+        and refactors, mechanical bulk changes, and debugging or integrations
+        below high difficulty, including bounded request-stream cancellation
+        cleanup or preserving known transaction semantics during a library
+        migration. These do not become open-ended investigations merely
+        because they involve concurrency or transactions. Urgency alone does not qualify.
+      examples:
+        - Design and build a new 5-step onboarding wizard with a polished responsive layout and animations.
+        - "Redesenhe a área de configurações: nova navegação, layout de 6 páginas, componentes consistentes, mobile first."
+        - Plan and implement tenant data isolation across our services, with a migration strategy and a security review.
+        - Under load the sync worker and the API sometimes corrupt data; nobody knows why. Investigate end to end and fix it.
+  # One switch per thread, ever, when the pinned model is out of quota or down.
+  # A fallback no account can serve gives way to the default model. A
+  # request carrying images only fails over to a model that reads them: when
+  # the fallback cannot, it goes to the nearest vision candidate.
+  fallback:
+    # Move existing Sonnet pins to the workhorse on their next request.
+    claude-sonnet-5-5: gpt-6.1-sol
+    deepseek-flash: glm-5.3-flash
+    glm-5.3-flash: gpt-6.1-sol
+    gpt-6.1-sol: glm-5.3
+    glm-5.3: gpt-6.1-sol
+    # Another provider: Claude's models share one subscription quota.
+    claude-opus-5-5: gpt-6.1-sol
+  # Models taken out of service: a thread pinned to one moves at its next
+  # request to its fallback, else the default, keeping its reasoning level.
+  retired: [claude-sonnet-5-5]
+
+# List prices in US dollars per million tokens (cache_read and cache_write
+# default to input). The dashboard prices every request and thread with
+# them; subscription upstreams spend quota roughly in proportion.
+prices:
+  deepseek-flash: {input: 0.30, output: 1.20, cache_read: 0.006}
+  # Z.AI published API list prices; included-plan cost factors above are
+  # separate from list-price usage accounting. Flash is not universally free.
+  glm-5.3-flash: {input: 0.15, output: 0.50, cache_read: 0.03}
+  glm-5.3: {input: 1.40, output: 4.40, cache_read: 0.26}
+  gpt-6.1-sol: {input: 2.00, output: 10.00, cache_read: 0.10, cache_write: 2.50}
+  claude-opus-5-5: {input: 4.00, output: 20.00, cache_read: 0.20, cache_write: 5.00}
+  claude-haiku-4-5-20251001: {input: 1.00, output: 5.00, cache_read: 0.10, cache_write: 1.25}
+
+# Tried in order on a thread's first prompt; the first valid verdict wins.
+deciders:
+  - name: jev
+    type: systemone
+    url: "https://api.typesafe.ai/v1/systemone"
+    model: jev-latest
+    api_key_env: JEV_API_KEY
+    # Each decider may carry its own timeout, positive and at most
+    # auto.decide_timeout, which applies to one that sets none. Jev answers
+    # in about 0.35s, so 5s is generous and a slow Jev is not worth waiting
+    # for.
+    timeout: 5s
+  # The last resort, asked only when Jev fails: cheap, and spends no
+  # subscription quota. It averaged 8.7s live, so 12s cuts the rare stall
+  # well before decide_timeout while most answers still land.
+  - name: deepseek
+    type: llm
+    model: deepseek-flash
+    timeout: 12s

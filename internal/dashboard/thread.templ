@@ -1,0 +1,674 @@
+package dashboard
+
+import (
+	"net/url"
+	"time"
+
+	"github.com/MarioGK/AI-Router/internal/decide"
+	"github.com/MarioGK/AI-Router/internal/pin"
+)
+
+templ threadPage(f frame, t pin.ThreadDetail, effort string, j judged, repin repinView, review reviewView) {
+	@shell(f) {
+		@crumbs(t.Key)
+		<div class="mb-6 flex flex-wrap items-center gap-3">
+			<h1 class="font-mono text-xl font-semibold tracking-tight">{ shortKey(t.Key) }</h1>
+			@badge(t.Model)
+			@effortTag(effort, "Reasoning effort the pinned model runs at")
+			@pinFlags(t.Pin)
+		</div>
+		<div class="grid items-start gap-4 lg:grid-cols-3">
+			<div class="grid min-w-0 gap-4">
+				@facts(t, effort)
+				@repinCard(repin)
+			</div>
+			<div class="grid min-w-0 gap-4 lg:col-span-2">
+				@decisionCard(t.Decision, j)
+				if t.Decision != nil {
+					@reviewCard(review)
+					@inputCard(t.Decision, t.Policy)
+				}
+				@historyCard(t.Events)
+			</div>
+		</div>
+		<section id="requests" class="mt-4 overflow-hidden rounded-xl border border-line bg-surface">
+			<div class="border-b border-line px-5 py-4">
+				<h2 class="text-[13px] font-semibold">Requests</h2>
+				<p class="mt-0.5 text-xs text-fg-3">The thread's latest logged requests, newest first</p>
+			</div>
+			<div class="overflow-x-auto">
+				<table class="block w-full text-left text-[13px] md:table">
+					@requestHead(threadColumns)
+					@requestRows("thread-requests", requestTable{Rows: t.Requests}, threadColumns, "This thread has no requests in the log.")
+				</table>
+			</div>
+		</section>
+	}
+}
+
+templ crumbs(key string) {
+	<nav class="mb-4 flex items-center gap-1.5 text-xs text-fg-3" aria-label="Breadcrumb">
+		<a href="/dashboard/threads" class="hover:text-fg">Threads</a>
+		@icon("chevron-right", "size-3.5")
+		<span class="font-mono text-fg-2">{ shortKey(key) }</span>
+	</nav>
+}
+
+templ facts(t pin.ThreadDetail, effort string) {
+	@card("pin", "min-w-0") {
+		@cardHead("Pin", "The model every request of the thread goes to")
+		<dl class="divide-y divide-line px-5 pt-2 pb-2 text-[13px]">
+			@fact("Pinned model") {
+				@badge(t.Model)
+			}
+			if t.Decided != t.Model {
+				@fact("Decided model") {
+					@badge(t.Decided)
+				}
+			}
+			@fact("Reasoning") {
+				switch {
+					case t.Level != "" && effort != t.Level:
+						<span class="font-mono text-xs">{ t.Level }</span>
+						<span class="ml-1 text-xs text-fg-3">runs at { dash(effort) }</span>
+					case t.Level != "":
+						<span class="font-mono text-xs">{ t.Level }</span>
+					case effort != "":
+						<span class="font-mono text-xs">{ effort }</span>
+						<span class="ml-1 text-xs text-fg-3">fixed</span>
+					default:
+						<span class="text-fg-3">client's own</span>
+				}
+			}
+			@fact("Decider") {
+				if t.Decision != nil {
+					{ t.Decision.Decider }
+				} else {
+					<span class="text-fg-3">—</span>
+				}
+			}
+			@fact("Created") {
+				@when(t.CreatedAt)
+			}
+			@fact("Last used") {
+				@when(t.LastUsedAt)
+			}
+			@fact("Requests") {
+				<span class="font-mono text-xs tabular-nums">{ number(t.Thread.Requests) }</span>
+			}
+			@fact("Tokens") {
+				<span class="font-mono text-xs tabular-nums">{ tokenSummary(t.Thread.Tokens) }</span>
+			}
+			@fact("Cost") {
+				<span class="font-mono text-xs tabular-nums" title="List-price estimate of the logged requests; subscriptions spend quota in proportion">{ money(t.Thread.Cost) }</span>
+			}
+			@fact("Failover") {
+				@yes(t.FailedOver)
+			}
+			@fact("Capability upgrade") {
+				@yes(t.Upgraded)
+			}
+			if t.Parent != "" {
+				@fact("Subagent of") {
+					<a href={ threadURL(t.Parent) } class="font-mono text-xs text-fg-2 hover:text-fg hover:underline" title={ t.Parent }>{ shortKey(t.Parent) }</a>
+				}
+			}
+			if len(t.Agents) > 0 {
+				@fact("Subagents") {
+					<span class="inline-flex flex-wrap justify-end gap-x-2">
+						for _, agent := range t.Agents {
+							<a href={ threadURL(agent) } class="font-mono text-xs text-fg-2 hover:text-fg hover:underline" title={ agent }>{ shortKey(agent) }</a>
+						}
+					</span>
+				}
+			}
+			<div class="py-3">
+				<dt class="text-fg-3">Key</dt>
+				<dd class="mt-1 font-mono text-xs break-all text-fg-2 select-all">{ t.Key }</dd>
+			</div>
+		</dl>
+	}
+}
+
+// reviewCard judges the thread's decision: the model and reasoning level
+// its task should have had, which the Decisions tab tallies and exports as
+// bench cases.
+templ reviewCard(v reviewView) {
+	@card("review", "min-w-0") {
+		@cardHead("Review", "Was this the right model and reasoning for the task?")
+		{{ post := "@post(" + jsString("/dashboard/sse/threads/"+url.PathEscape(v.Key)+"/review") + ")" }}
+		<div class="space-y-3 px-5 pt-3 pb-5" data-signals={ signals(map[string]any{"reviewModel": v.Model, "reviewLevel": v.Level, "reviewNote": v.Note, "reviewForget": false}) }>
+			if v.Review != nil {
+				{{ model, level := v.right() }}
+				<div class="flex flex-wrap items-center gap-2 text-[13px]">
+					if model && level {
+						<span class="inline-flex items-center gap-1 text-good">
+							@icon("check", "size-3.5")
+							Right
+						</span>
+					} else {
+						<span class="inline-flex items-center gap-1 text-critical">
+							@icon("x", "size-3.5")
+							Should have been
+						</span>
+						@badge(v.Review.Model)
+						@effortTag(v.Review.Level, "Reasoning level it should have had")
+					}
+					<span class="text-xs text-fg-3">
+						reviewed
+						@when(v.Review.At)
+					</span>
+				</div>
+				if v.Review.Note != "" {
+					<p class="text-xs text-fg-2 italic">“{ v.Review.Note }”</p>
+				}
+			} else {
+				<p class="text-xs text-fg-3">Not reviewed yet. Judge it by the first prompt and how the thread went.</p>
+			}
+			<div class="flex flex-wrap items-center gap-2">
+				@pick("reviewModel", "Right model", v.Model, v.Models, nil)
+				if len(v.Levels) > 0 {
+					@choice("reviewLevel", "Fixed effort", v.Level, v.Levels, nil)
+				}
+			</div>
+			<input
+				type="text"
+				data-bind="reviewNote"
+				maxlength="2000"
+				placeholder="Why, for whoever tunes the criteria (optional)"
+				aria-label="Review note"
+				class="block h-8 w-full rounded-md border border-line bg-canvas px-3 text-[13px] text-fg placeholder:text-fg-3 focus:border-fg-3 focus:outline-none"
+			/>
+			<div class="flex flex-wrap items-center gap-2">
+				if v.CanAgree {
+					<button
+						type="button"
+						data-indicator="_reviewing"
+						data-attr:disabled="$_reviewing"
+						data-on:click={ "$reviewModel = " + jsString(v.Decided) + "; $reviewLevel = " + jsString(v.DecidedLevel) + "; " + post }
+						class="flex h-8 items-center gap-1.5 rounded-md border border-line px-3 text-[13px] font-medium text-fg-2 hover:border-line-strong hover:text-fg disabled:opacity-40"
+					>
+						@icon("check", "size-3.5")
+						Right as decided
+					</button>
+				}
+				<button
+					type="button"
+					data-indicator="_reviewing"
+					data-attr:disabled="$_reviewing"
+					data-on:click={ post }
+					class="flex h-8 items-center rounded-md bg-fg px-3 text-[13px] font-medium text-canvas hover:opacity-90 disabled:opacity-40"
+				>
+					Save review
+				</button>
+				if v.Review != nil {
+					<button
+						type="button"
+						data-indicator="_reviewing"
+						data-attr:disabled="$_reviewing"
+						data-on:click={ "$reviewForget = true; " + post }
+						class="ml-auto text-xs text-fg-3 hover:text-fg"
+					>
+						Forget the review
+					</button>
+				}
+			</div>
+			@reviewProblem(v.Problem)
+		</div>
+	}
+}
+
+// reviewProblem is why a review failed; empty before one.
+templ reviewProblem(text string) {
+	<p id="review-problem" class="text-xs text-critical">{ text }</p>
+}
+
+// repinCard lets an operator move a thread to another model and reasoning
+// level, recorded in its history; failover and upgrade stay available.
+templ repinCard(v repinView) {
+	@card("repin", "min-w-0") {
+		@cardHead("Re-pin", "Move the thread by hand; its history records it")
+		<div class="space-y-3 px-5 pt-3 pb-5" data-signals={ signals(map[string]any{"repinModel": v.Model, "repinLevel": v.Level}) }>
+			<div class="flex flex-wrap items-center gap-2">
+				@pick("repinModel", "Model", v.Model, v.Models, nil)
+				if len(v.Levels) > 0 {
+					@choice("repinLevel", "Fixed effort", v.Level, v.Levels, nil)
+				}
+				<button
+					type="button"
+					data-indicator="_repinning"
+					data-attr:disabled="$_repinning"
+					data-on:click={ "@post(" + jsString("/dashboard/sse/threads/"+url.PathEscape(v.Key)+"/pin") + ")" }
+					class="ml-auto flex h-8 items-center rounded-md bg-fg px-3 text-[13px] font-medium text-canvas hover:opacity-90 disabled:opacity-40"
+				>
+					Re-pin
+				</button>
+			</div>
+			@repinProblem("")
+		</div>
+	}
+}
+
+// repinProblem is why a re-pin failed; empty before one.
+templ repinProblem(text string) {
+	<p id="repin-problem" class="text-xs text-critical">{ text }</p>
+}
+
+templ fact(name string) {
+	<div class="flex items-center justify-between gap-4 py-2.5">
+		<dt class="shrink-0 text-fg-3">{ name }</dt>
+		<dd class="min-w-0 text-right">
+			{ children... }
+		</dd>
+	</div>
+}
+
+templ yes(done bool) {
+	if done {
+		<span>Yes</span>
+	} else {
+		<span class="text-fg-3">No</span>
+	}
+}
+
+// decisionCard shows how the deciders judged the thread's first prompt: why
+// the model was chosen, each candidate's probability along the ladder and
+// every decider's attempt.
+templ decisionCard(decision *pin.Event, j judged) {
+	@card("decision", "min-w-0") {
+		if decision == nil {
+			@cardHead("Decision", "")
+			@blank("inbox", "No decision", "No decider ran for this thread: its pin came from before the router served Claude Code alone.")
+		} else {
+			@cardHead("Decision", "By "+decision.Decider+" in "+duration(decision.Latency)) {
+				<span class="text-xs text-fg-3">
+					@when(decision.At)
+				</span>
+			}
+			<div class="px-5 pt-5 pb-5">
+				@decisionWhy(*decision, j)
+			</div>
+			if len(decision.Attempts) > 0 {
+				@attempts(decision.Attempts)
+			}
+		}
+	}
+}
+
+// decisionWhy is why a decision pinned its model, step by step, each
+// candidate's probability along the ladder and, with the reasoning chooser
+// on, each reasoning level's.
+templ decisionWhy(decision pin.Event, j judged) {
+	<h3 class="text-xs font-medium text-fg-2">Why { decision.Model }</h3>
+	<ol class="mt-2 space-y-2">
+		for _, s := range explain(decision) {
+			<li class="flex gap-2 text-[13px] text-fg-2">
+				@icon(s.Glyph, "mt-0.5 size-3.5 text-fg-3")
+				<span class="min-w-0">
+					{ s.Text }.
+					if s.Reason != "" {
+						<span class="mt-0.5 block text-xs text-fg-3 italic">“{ s.Reason }”</span>
+					}
+				</span>
+			</li>
+		}
+	</ol>
+	if len(j.Candidates) > 0 {
+		<div id="odds" class="mt-5 space-y-3 border-t border-line pt-4">
+			for _, c := range j.Candidates {
+				<div class="grid grid-cols-[minmax(0,1fr)_3rem] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[minmax(0,15rem)_1fr_3rem]">
+					<div class="flex min-w-0 items-center gap-2">
+						<span class={ "size-2 shrink-0 rounded-full", swatch(c.Model) }></span>
+						<span class={ "truncate font-mono text-xs", templ.KV("font-semibold text-fg", c.Model == decision.Choice), templ.KV("text-fg-2", c.Model != decision.Choice) }>{ c.Model }</span>
+						if c.Model == decision.Choice {
+							@tag("choice")
+						}
+						if decision.Escalated && c.Model == decision.Model {
+							@tag("pinned")
+						}
+						if done, ok := j.Done[c.Model]; ok {
+							<span class="text-[11px] whitespace-nowrap text-fg-3" title="Expected cost to get the task done, counting the risk of a miss">{ money(done) } to done</span>
+						}
+					</div>
+					<div class="col-span-2 row-start-2 h-2 rounded-full bg-raised sm:col-span-1 sm:row-start-auto">
+						<div class={ "h-full rounded-full", swatch(c.Model) } style={ width(c.Probability) }></div>
+					</div>
+					<div class="text-right font-mono text-xs text-fg tabular-nums">{ probability(c.Probability) }</div>
+					if note := stepNote(j.Costs, c.Model); note != "" {
+						<p class="col-span-full text-[11px] text-fg-3">{ note }</p>
+					}
+				</div>
+			}
+		</div>
+	}
+	if len(j.Levels) > 0 {
+		<div id="levels" class="mt-5 space-y-3 border-t border-line pt-4">
+			<h3 class="text-xs font-medium text-fg-2">Reasoning, lightest first</h3>
+			for _, l := range j.Levels {
+				<div class="grid grid-cols-[minmax(0,1fr)_3rem] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[minmax(0,15rem)_1fr_3rem]">
+					<div class="flex min-w-0 items-center gap-2">
+						@icon("gauge", "size-3.5 text-fg-3")
+						<span class={ "truncate font-mono text-xs", templ.KV("font-semibold text-fg", l.Model == decision.Level), templ.KV("text-fg-2", l.Model != decision.Level) }>{ l.Model }</span>
+						if l.Model == decision.Level {
+							@tag("level")
+						}
+					</div>
+					<div class="col-span-2 row-start-2 h-2 rounded-full bg-raised sm:col-span-1 sm:row-start-auto">
+						<div class="h-full rounded-full bg-fg-3" style={ width(l.Probability) }></div>
+					</div>
+					<div class="text-right font-mono text-xs text-fg tabular-nums">{ probability(l.Probability) }</div>
+				</div>
+			}
+		</div>
+	}
+}
+
+// exchangeList shows, per decider, the exact request it was sent and its
+// raw reply.
+templ exchangeList(list []exchange) {
+	<div class="space-y-2">
+		for _, e := range list {
+			<details class="group rounded-lg border border-line">
+				<summary class="flex cursor-pointer flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2 text-xs select-none hover:bg-raised/60">
+					@icon("chevron-right", "size-3.5 text-fg-3 transition-transform group-open:rotate-90")
+					<span class="font-medium text-fg">{ e.Info.Name }</span>
+					if e.Info.Kind != "" {
+						<span class="text-fg-3">{ e.Info.Kind } · <span class="font-mono">{ e.Info.Model }</span></span>
+					}
+					if len(e.Attempt.Pair) == 2 {
+						@tag(e.Attempt.Pair[0] + " vs " + e.Attempt.Pair[1])
+					}
+					@tag(e.Attempt.Outcome)
+					<span class="ml-auto font-mono text-fg-3 tabular-nums">{ duration(time.Duration(e.Attempt.LatencyMS) * time.Millisecond) }</span>
+				</summary>
+				<div class="grid gap-3 border-t border-line p-3 lg:grid-cols-2">
+					<div class="min-w-0">
+						<div class="mb-1.5 text-[11px] font-medium tracking-wide text-fg-3 uppercase">Sent</div>
+						switch {
+							case e.Attempt.Outcome == decide.Skipped:
+								<p class="text-xs text-fg-3">Nothing: the decider was resting and was not asked.</p>
+							case e.Rebuilt:
+								if e.Drifted {
+									<p class="mb-1.5 text-xs text-serious">Rebuilt with today's request format, which has changed since: not the exact bytes sent.</p>
+								}
+								<pre class="max-h-96 overflow-auto rounded-md bg-raised p-3 font-mono text-xs break-words whitespace-pre-wrap text-fg-2">{ e.Sent }</pre>
+							default:
+								<p class="text-xs text-fg-3">Not shown: the prompt or the policy of this decision was not recorded.</p>
+						}
+					</div>
+					<div class="min-w-0">
+						<div class="mb-1.5 text-[11px] font-medium tracking-wide text-fg-3 uppercase">Received</div>
+						if e.Attempt.Outcome == decide.Failed || e.Attempt.Outcome == decide.Skipped {
+							<pre class="max-h-96 overflow-auto rounded-md bg-critical/10 p-3 font-mono text-xs break-words whitespace-pre-wrap text-fg-2">{ e.Attempt.Error }</pre>
+						} else if e.Attempt.Response != "" {
+							<pre class="max-h-96 overflow-auto rounded-md bg-raised p-3 font-mono text-xs break-words whitespace-pre-wrap text-fg-2">{ pretty([]byte(e.Attempt.Response)) }</pre>
+						} else {
+							<p class="text-xs text-fg-3">The raw reply was not recorded for this decision.</p>
+						}
+					</div>
+				</div>
+			</details>
+		}
+	</div>
+}
+
+// attempts lists every decider's turn in a decision.
+templ attempts(list []decide.Attempt) {
+	<div class="overflow-x-auto border-t border-line">
+		<table class="w-full text-left text-[13px]">
+			<thead class="border-b border-line">
+				<tr>
+					@th("Decider", "")
+					@th("Outcome", "")
+					@th("Choice", "")
+					@th("Stronger", "text-right")
+					@th("Tokens", "hidden text-right sm:table-cell")
+					@th("Latency", "text-right")
+				</tr>
+			</thead>
+			<tbody class="divide-y divide-line">
+				for _, a := range list {
+					<tr>
+						<td class="px-4 py-2 whitespace-nowrap">
+							<span class="text-fg">{ a.Decider }</span>
+							if a.Model != "" {
+								<span class="ml-1 font-mono text-xs text-fg-3">{ a.Model }</span>
+							}
+							if len(a.Pair) == 2 {
+								<span class="ml-1 text-xs text-fg-3">pair</span>
+							}
+						</td>
+						<td class="px-4 py-2">
+							@tag(a.Outcome)
+						</td>
+						<td class="px-4 py-2 whitespace-nowrap">
+							if a.Outcome == decide.Failed || a.Outcome == decide.Skipped {
+								<span class="block max-w-72 truncate text-xs text-fg-2" title={ a.Error }>{ a.Error }</span>
+							} else {
+								<span class="font-mono text-xs text-fg-2">{ a.Choice }</span>
+								if a.Confidence > 0 {
+									<span class="ml-1 text-xs text-fg-3" title="The decider's own confidence">{ probability(a.Confidence) }</span>
+								}
+								<span class="ml-1.5">
+									@effortTag(a.Level, "Reasoning level the decider chose")
+								</span>
+							}
+						</td>
+						<td class="px-4 py-2 text-right font-mono text-xs text-fg-2 tabular-nums" title="Probability on stronger ladder models">
+							if a.Outcome != decide.Failed && a.Outcome != decide.Skipped {
+								{ probability(a.Above) }
+							}
+						</td>
+						<td class="hidden px-4 py-2 text-right font-mono text-xs text-fg-3 tabular-nums sm:table-cell">
+							if a.InputTokens+a.OutputTokens > 0 {
+								{ compact(int(a.InputTokens)) } in · { compact(int(a.OutputTokens)) } out
+							}
+						</td>
+						<td class="px-4 py-2 text-right font-mono text-xs text-fg-2 tabular-nums">{ duration(time.Duration(a.LatencyMS) * time.Millisecond) }</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+// inputCard shows what a decision was based on: the prompt the deciders
+// judged, the candidates offered and the policy in force.
+templ inputCard(decision *pin.Event, policy *decide.Policy) {
+	@card("input", "min-w-0") {
+		@cardHead("Decision input", "What the deciders judged")
+		{{ basis := decision.Basis }}
+		<dl class="grid gap-x-6 px-5 pt-2 pb-2 text-[13px] sm:grid-cols-2">
+			@fact("Prompt") {
+				if basis.PromptChars > 0 {
+					<span class="font-mono text-xs tabular-nums">{ counted(basis.PromptChars, "char") }</span>
+					if basis.Truncated {
+						<span class="ml-1 text-xs text-fg-3">cut to fit</span>
+					}
+				} else {
+					<span class="text-fg-3">—</span>
+				}
+			}
+			@fact("Images") {
+				@yes(basis.Images)
+			}
+			@fact("Threshold") {
+				<span class="font-mono text-xs tabular-nums">{ probability(basis.Threshold) }</span>
+				if basis.Doubt != "" {
+					<span class="ml-1 text-xs text-fg-3">{ basis.Doubt }</span>
+				}
+			}
+			@fact("Request") {
+				if basis.Kind != "" {
+					{ label(basis.Kind) }
+				} else {
+					<span class="text-fg-3">—</span>
+				}
+			}
+			@fact("Policy") {
+				<span class="font-mono text-xs text-fg-2">{ dash(basis.Policy) }</span>
+			}
+			@fact("Router build") {
+				<span class="font-mono text-xs text-fg-2">{ dash(basis.Version) }</span>
+			}
+		</dl>
+		if len(basis.Candidates) > 0 || len(basis.Withheld) > 0 || basis.UserAgent != "" {
+			<div class="space-y-3 border-t border-line px-5 py-4 text-[13px]">
+				if len(basis.Candidates) > 0 {
+					<div>
+						<div class="text-fg-3">Candidates offered</div>
+						<div class="mt-1.5 flex flex-wrap gap-1.5">
+							for _, model := range basis.Candidates {
+								@badge(model)
+							}
+						</div>
+					</div>
+				}
+				if len(basis.Withheld) > 0 {
+					<div>
+						<div class="text-fg-3">Withheld: not served, or every account at its limit</div>
+						<div class="mt-1.5 flex flex-wrap gap-1.5">
+							for _, model := range basis.Withheld {
+								@badge(model)
+							}
+						</div>
+					</div>
+				}
+				if basis.UserAgent != "" {
+					<div>
+						<div class="text-fg-3">Claude Code</div>
+						<div class="mt-1 font-mono text-xs break-all text-fg-2">{ basis.UserAgent }</div>
+					</div>
+				}
+			</div>
+		}
+		if decision.FirstPrompt != "" {
+			<div class="border-t border-line px-5 py-4">
+				<details class="group" open>
+					<summary class="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-fg-2 select-none hover:text-fg">
+						@icon("chevron-right", "size-3.5 transition-transform group-open:rotate-90")
+						First prompt, as the user wrote it
+					</summary>
+					<pre class="mt-3 max-h-96 overflow-auto rounded-md bg-raised p-3 font-mono text-xs break-words whitespace-pre-wrap text-fg-2">{ decision.FirstPrompt }</pre>
+				</details>
+			</div>
+		}
+		<div class="border-t border-line px-5 py-4">
+			if decision.Prompt != "" {
+				<details class="group">
+					<summary class="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-fg-2 select-none hover:text-fg">
+						@icon("chevron-right", "size-3.5 transition-transform group-open:rotate-90")
+						Prompt as judged
+					</summary>
+					<pre class="mt-3 max-h-96 overflow-auto rounded-md bg-raised p-3 font-mono text-xs break-words whitespace-pre-wrap text-fg-2">{ decision.Prompt }</pre>
+				</details>
+			} else {
+				<p class="text-xs text-fg-3">The prompt was not recorded for this decision.</p>
+			}
+		</div>
+		if len(decision.Attempts) > 0 {
+			<div class="border-t border-line px-5 py-4">
+				<h3 class="mb-2 text-xs font-medium text-fg-2">Sent to the deciders</h3>
+				@exchangeList(exchanges(policy, *decision))
+			</div>
+		}
+	}
+}
+
+// historyCard is the pin's event log, oldest first.
+templ historyCard(events []pin.Event) {
+	@card("history", "min-w-0") {
+		@cardHead("History", "Every change to the pin, oldest first")
+		if len(events) == 0 {
+			@blank("inbox", "No events", "The decision log has no entries for this thread.")
+		} else {
+			<ol class="px-5 pt-5 pb-5">
+				for i, e := range events {
+					<li class="relative flex gap-3 pb-6 last:pb-0">
+						if i < len(events)-1 {
+							<span class="absolute top-7 bottom-1 left-3 w-px bg-line" aria-hidden="true"></span>
+						}
+						<span class={ "relative grid size-6 shrink-0 place-items-center rounded-full border", eventTone(e.Kind) }>
+							@icon(eventGlyph(e.Kind), "size-3.5")
+						</span>
+						<div class="min-w-0 flex-1 pt-0.5">
+							<div class="flex flex-wrap items-center gap-1.5 text-[13px]">
+								@eventTitle(e)
+							</div>
+							{{ about := eventAbout(e) }}
+							<div class="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-fg-3">
+								@when(e.At)
+								if about != "" {
+									<span aria-hidden="true">·</span>
+									<span>{ about }</span>
+								}
+							</div>
+						</div>
+					</li>
+				}
+			</ol>
+		}
+	}
+}
+
+templ eventTitle(e pin.Event) {
+	switch e.Kind {
+		case pin.Decision:
+			<span>Decided</span>
+			@badge(e.Model)
+			@effortTag(e.Level, "Reasoning level")
+			<span class="text-fg-2">by { e.Decider }</span>
+		case pin.Failover:
+			<span>Failed over</span>
+			@badge(e.Previous)
+			@icon("arrow-right", "size-3.5 text-fg-3")
+			@badge(e.Model)
+		case pin.CapabilityUpgrade:
+			<span>Upgraded</span>
+			@badge(e.Previous)
+			@icon("arrow-right", "size-3.5 text-fg-3")
+			@badge(e.Model)
+		case pin.Migration:
+			<span>Moved</span>
+			@badge(e.Previous)
+			@icon("arrow-right", "size-3.5 text-fg-3")
+			@badge(e.Model)
+		case pin.Redecision:
+			<span>Decided again</span>
+			@badge(e.Previous)
+			@icon("arrow-right", "size-3.5 text-fg-3")
+			@badge(e.Model)
+			@effortTag(e.Level, "Reasoning level")
+			<span class="text-fg-2">by { e.Decider }</span>
+		case pin.Override:
+			<span>Re-pinned</span>
+			@badge(e.Previous)
+			@icon("arrow-right", "size-3.5 text-fg-3")
+			@badge(e.Model)
+			@effortTag(e.Level, "Reasoning level")
+		default:
+			<span>{ label(e.Kind) }</span>
+			@badge(e.Model)
+	}
+}
+
+templ threadMissing(f frame, key string, err error) {
+	@shell(f) {
+		@crumbs(key)
+		<div class="rounded-xl border border-line bg-surface">
+			if err != nil {
+				<div class="p-5">
+					@problem(err)
+				</div>
+			} else {
+				@blank("search", "No such thread", "No pinned thread has this key. Pins are never deleted, so the link is likely mistyped.")
+			}
+			<div class="border-t border-line px-5 py-3 text-xs">
+				<a href="/dashboard/threads" class="inline-flex items-center gap-1 font-medium text-fg-2 hover:text-fg">
+					@icon("chevron-left", "size-3.5")
+					All threads
+				</a>
+			</div>
+		</div>
+	}
+}

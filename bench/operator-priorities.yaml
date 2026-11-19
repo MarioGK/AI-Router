@@ -1,0 +1,86 @@
+# Development boundaries for the operator's 2026-10-01 five-model policy.
+# GLM Flash foreground and native-vision labels revised before this evaluation.
+# These are policy checks, not independent downstream quality measurements.
+cases:
+  - name: exact/named-copy
+    group: exact
+    expect: [deepseek-flash]
+    reasoning: [low]
+    prompt: In src/Profile.vue change only the Save button label to Save changes.
+  - name: exact/config-value
+    group: exact
+    expect: [deepseek-flash]
+    reasoning: [low]
+    prompt: In config/dev.yaml replace request_timeout 30s with 45s. Run the existing config test.
+  - name: short/unspecified-save
+    group: routine
+    expect: [glm-5.3-flash]
+    reasoning: [medium]
+    prompt: The profile save button stays disabled after I correct a field. Find and fix it.
+  - name: short/pt-hide-menu
+    group: routine
+    expect: [glm-5.3-flash]
+    reasoning: [medium]
+    prompt: Esconda o menu de relatórios para usuários sem permissão.
+  - name: short/form-validation
+    group: routine
+    expect: [glm-5.3-flash]
+    reasoning: [medium]
+    prompt: Add the existing 40-character limit to the nickname form field, with a test. No rush.
+  - name: small/pattern-endpoint
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    prompt: Add GET /api/orders/{id} following the existing customer handler and repository pattern, including a 404 test. The table exists and this can wait.
+  - name: bulk/mechanical
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [low]
+    prompt: Replace imports of OldButton with Button in all 80 components. The APIs are identical. Run existing tests. No deadline.
+  - name: substantive/saved-search
+    group: substantive
+    expect: [gpt-6.1-sol]
+    reasoning: [medium, high]
+    prompt: Implement saved searches end to end with a database table, authenticated API and an existing dashboard panel. Add pending and failure feedback, restore searches after reload, and cover persistence and API/UI integration. There is no deadline.
+  - name: substantive/pt-notifications
+    group: substantive
+    expect: [gpt-6.1-sol]
+    reasoning: [medium, high]
+    prompt: Adicione preferências de notificações completas com persistência, endpoints, controles na tela existente, estado de erro e testes de integração. Sem urgência.
+  - name: substantive/library-migration
+    group: substantive
+    expect: [gpt-6.1-sol]
+    reasoning: [high]
+    prompt: Migrate the database client across repositories and service code while preserving transaction boundaries, cancellation and retry semantics. Add integration regression coverage. The release date is flexible.
+  - name: urgent/routine-feature
+    group: substantive
+    expect: [gpt-6.1-sol]
+    reasoning: [medium]
+    prompt: Add workspace owner filtering to the API and its tests before this afternoon's customer demo. Follow the projects endpoint pattern. This is the team's top priority.
+  - name: difficult/distributed-durability
+    group: difficult
+    expect: [claude-opus-5-5]
+    reasoning: [xhigh]
+    prompt: Design a cross-region durable job queue that survives split brain without duplicate payments. Define the failure model, recovery protocol and safe migration plan.
+  - name: vision/printed-total
+    group: visual
+    expect: [glm-5.3-flash]
+    reasoning: [low]
+    images: true
+    prompt: Read the clearly printed total on this receipt image and reply only with the amount.
+  - name: vision/existing-field-feedback
+    group: visual
+    expect: [glm-5.3-flash]
+    reasoning: [medium]
+    images: true
+    prompt: Adjust the existing address form's error borders and inline messages to match this screenshot, preserving its fields. Reuse current components and add an interaction test. No rush.
+  - name: broader/module-tests
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    prompt: Fill in the missing unit tests across all 45 invoice helpers. The rules are documented and the existing table-driven pattern covers the same cases. This is a larger routine backlog task with no deadline.
+  - name: broader/local-refactor
+    group: routine
+    expect: [glm-5.3]
+    reasoning: [medium]
+    prompt: Refactor the mail module to accept the existing Sender interface, update all callers and test failures with a fake. Preserve behavior and retry rules. Take the time needed; it follows an established local pattern.

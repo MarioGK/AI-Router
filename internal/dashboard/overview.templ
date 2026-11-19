@@ -1,0 +1,420 @@
+package dashboard
+
+import (
+	"slices"
+	"strconv"
+	"strings"
+
+	"github.com/MarioGK/AI-Router/internal/catalog"
+	"github.com/MarioGK/AI-Router/internal/limit"
+)
+
+// feedStream opens the overview's live stream, which reconnects after the
+// router restarts.
+const feedStream = "@get('/dashboard/sse/feed', {retry: 'always', retryMaxCount: 100})"
+
+templ overviewPage(f frame, day stats, mix mixView, feed requestTable, accounts *accountsView, gates []limit.Stats) {
+	@shell(f) {
+		@heading("Overview", "Claude Code's routing and traffic over the last 24 hours")
+		@kpis(day)
+		<div class="mt-4 grid gap-4 lg:grid-cols-3">
+			@timelineCard(day.Timeline)
+			@mixPanel(mix)
+		</div>
+		if accounts != nil {
+			@accountsCard(accounts)
+		}
+		<div class="mt-4 grid items-start gap-4 lg:grid-cols-3">
+			@feedCard(feed)
+			<div class="grid gap-4">
+				@costCard(day)
+				if len(gates) > 0 {
+					@limitsCard(gates, day.Queue)
+				}
+				@catalogCard(day)
+				@decidersCard(day)
+			</div>
+		</div>
+	}
+}
+
+templ kpis(day stats) {
+	<div id="kpis">
+		if day.Err != nil {
+			<div class="mb-4">
+				@problem(day.Err)
+			</div>
+		}
+		<div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+			for _, k := range day.kpis() {
+				<div class="min-w-0 rounded-xl border border-line bg-surface px-4 py-3.5">
+					<div class="text-xs text-fg-3">{ k.Label }</div>
+					<div class="mt-1.5 text-2xl font-semibold tracking-tight">{ k.Value }</div>
+					<div class="mt-1 flex items-start gap-1.5 text-xs text-pretty text-fg-3">
+						if k.Tone != "" {
+							<span class={ "mt-[5px] size-1.5 shrink-0 rounded-full", k.Tone }></span>
+						}
+						<span class="min-w-0">{ k.Note }</span>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+}
+
+templ timelineCard(t timeline) {
+	@card("timeline", "flex min-w-0 flex-col lg:col-span-2") {
+		@cardHead("Requests per hour", "Last 24 hours, stacked by model") {
+			@legend(t.Legend)
+		}
+		<div class="flex flex-1 flex-col px-5 pt-5 pb-5">
+			if t.empty() {
+				@blank("inbox", "No requests in the last 24 hours", "Requests show up here as Claude Code uses the router.")
+			} else {
+				@chart(t)
+				@timelineTable(t)
+			}
+		</div>
+	}
+}
+
+templ legend(series []share) {
+	<ul class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-fg-2">
+		for _, s := range series {
+			<li class="flex items-center gap-1.5" title={ strings.Join(s.Folded, ", ") }>
+				<span class={ "size-2 rounded-[2px]", swatches[s.Hue] }></span>
+				<span class="font-mono">{ s.Label }</span>
+			</li>
+		}
+	</ul>
+}
+
+// chart draws the timeline's stacked columns on a hairline grid; each
+// column shows its figures beside it on hover and focus.
+templ chart(t timeline) {
+	<div class="flex min-h-56 flex-1 gap-3">
+		<div class="relative mb-6 w-8 shrink-0 text-right text-[11px] text-fg-3 tabular-nums" aria-hidden="true">
+			for _, value := range t.Ticks {
+				<span class="absolute right-0 translate-y-1/2 leading-none" style={ t.bottom(value) }>{ compact(value) }</span>
+			}
+		</div>
+		<div class="flex min-w-0 flex-1 flex-col">
+			<div class="relative flex-1">
+				for _, value := range t.Ticks {
+					<div class={ "absolute inset-x-0 border-t", templ.KV("border-line-strong", value == 0), templ.KV("border-line", value != 0) } style={ t.bottom(value) }></div>
+				}
+				<div class="absolute inset-0 flex items-end gap-[2px]">
+					for i, c := range t.Columns {
+						<div
+							class="group relative flex h-full min-w-0 flex-1 items-end justify-center rounded-t-sm hover:bg-raised focus:bg-raised focus:outline-none"
+							tabindex="0"
+							aria-label={ c.span() + ": " + number(c.Requests) + " requests" }
+						>
+							if c.Requests > 0 {
+								<div class="flex w-full max-w-6 flex-col-reverse gap-[2px]" style={ t.height(c.Requests) }>
+									for _, s := range c.Segments {
+										<div class={ "min-h-px basis-0 last:rounded-t-[4px]", swatches[s.Hue] } style={ grow(s.Count) }></div>
+									}
+								</div>
+							}
+							@tooltip(c, i >= len(t.Columns)/2)
+						</div>
+					}
+				</div>
+			</div>
+			<div class="relative mt-2 flex h-4 gap-[2px] text-[11px] text-fg-3 tabular-nums" aria-hidden="true">
+				for _, c := range t.Columns {
+					<div class="relative min-w-0 flex-1">
+						if c.labelled() {
+							<span class="absolute left-0 whitespace-nowrap">{ c.Start.Local().Format("15:04") }</span>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+}
+
+// tooltip lists a column's figures; left of the column when right is set.
+templ tooltip(c column, right bool) {
+	<div
+		class={ "pointer-events-none absolute top-0 z-20 hidden w-56 rounded-lg border border-line-strong bg-surface p-3 text-xs group-hover:block group-focus:block",
+			templ.KV("right-full mr-2", right), templ.KV("left-full ml-2", !right) }
+		role="tooltip"
+	>
+		<div class="flex items-baseline justify-between gap-3">
+			<span class="text-sm font-semibold text-fg">{ number(c.Requests) }<span class="ml-1 text-xs font-normal text-fg-3">requests</span></span>
+			<span class="text-fg-3 tabular-nums">{ c.span() }</span>
+		</div>
+		if len(c.Segments) > 0 {
+			<ul class="mt-2 space-y-1">
+				for _, s := range c.Segments {
+					<li class="flex items-center gap-2">
+						<span class={ "h-0.5 w-3 shrink-0 rounded-full", swatches[s.Hue] }></span>
+						<span class="min-w-0 flex-1 truncate font-mono text-fg-2">{ s.Label }</span>
+						<span class="font-medium text-fg tabular-nums">{ number(s.Count) }</span>
+					</li>
+				}
+			</ul>
+		}
+		<div class="mt-2 border-t border-line pt-2 text-fg-3">{ number(c.Decisions) } new decisions</div>
+	</div>
+}
+
+// timelineTable is the chart's figures as a table.
+templ timelineTable(t timeline) {
+	<details class="mt-4">
+		<summary class="w-fit cursor-pointer text-xs text-fg-3 select-none hover:text-fg-2">Show as table</summary>
+		<div class="mt-3 max-h-72 overflow-auto rounded-lg border border-line">
+			<table class="w-full text-left text-xs tabular-nums">
+				<thead class="sticky top-0 border-b border-line bg-surface">
+					<tr>
+						@th("Hour", "")
+						for _, s := range t.Legend {
+							@th(s.Label, "text-right normal-case")
+						}
+						@th("Total", "text-right")
+						@th("Decisions", "text-right")
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-line">
+					for _, c := range t.Columns {
+						<tr>
+							<td class="px-4 py-1.5 text-fg-2">{ c.span() }</td>
+							for _, s := range t.Legend {
+								<td class="px-4 py-1.5 text-right">{ number(c.count(s.Label)) }</td>
+							}
+							<td class="px-4 py-1.5 text-right font-medium">{ number(c.Requests) }</td>
+							<td class="px-4 py-1.5 text-right text-fg-2">{ number(c.Decisions) }</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</details>
+}
+
+templ mixPanel(v mixView) {
+	@card("mix", "min-w-0") {
+		@cardHead("Model mix", "Who got the decisions and the traffic") {
+			<div class="flex rounded-lg border border-line p-0.5 text-xs" role="group" aria-label="Period">
+				@rangeButton("24h", "24h", v.Range)
+				@rangeButton("7d", "7 days", v.Range)
+			</div>
+		}
+		<div class="space-y-6 px-5 pt-5 pb-5 transition-opacity" data-class:opacity-50="$_mixing">
+			if v.Err != nil {
+				@problem(v.Err)
+			}
+			@mixBlock("Decisions", "decisions", v.Decisions)
+			@mixBlock("Requests", "requests", v.Requests)
+		</div>
+	}
+}
+
+templ rangeButton(value, name, current string) {
+	<button
+		type="button"
+		data-indicator:_mixing
+		data-on:click={ "@get('/dashboard/sse/mix?range=" + value + "')" }
+		aria-pressed={ strconv.FormatBool(value == current) }
+		class={ "rounded-md px-2.5 py-1 font-medium",
+			templ.KV("bg-raised text-fg", value == current), templ.KV("text-fg-3 hover:text-fg", value != current) }
+	>
+		{ name }
+	</button>
+}
+
+templ mixBlock(title, unit string, series []share) {
+	<div>
+		<div class="flex items-baseline justify-between gap-3">
+			<h3 class="text-xs font-medium text-fg-2">{ title }</h3>
+			<span class="text-xs text-fg-3 tabular-nums">{ number(count(series)) } { unit }</span>
+		</div>
+		if len(series) == 0 {
+			<div class="mt-3 h-2 rounded-full bg-raised"></div>
+			<p class="mt-3 text-xs text-fg-3">None in this period.</p>
+		} else {
+			<div class="mt-3 flex h-2 gap-[2px] overflow-hidden rounded-full">
+				for _, s := range series {
+					<div class={ "min-w-0.5 basis-0", swatches[s.Hue] } style={ grow(s.Count) } title={ s.Label + ": " + number(s.Count) }></div>
+				}
+			</div>
+			<ul class="mt-3 space-y-1.5">
+				for _, s := range series {
+					<li class="flex items-center gap-2 text-xs">
+						<span class={ "size-2 shrink-0 rounded-[2px]", swatches[s.Hue] }></span>
+						<span class="min-w-0 flex-1 truncate font-mono text-fg" title={ strings.Join(s.Folded, ", ") }>{ s.Label }</span>
+						<span class="text-fg-2 tabular-nums">{ number(s.Count) }</span>
+						<span class="w-10 text-right text-fg-3 tabular-nums">{ percent(s.Count, count(series)) }</span>
+					</li>
+				}
+			</ul>
+		}
+	</div>
+}
+
+templ feedCard(v requestTable) {
+	<section id="feed" class="min-w-0 overflow-hidden rounded-xl border border-line bg-surface lg:col-span-2" data-indicator:_live data-init={ feedStream }>
+		<div class="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
+			<div>
+				<h2 class="text-[13px] font-semibold">Live requests</h2>
+				<p class="mt-0.5 text-xs text-fg-3">The latest { strconv.Itoa(tailSize) } requests, newest first</p>
+			</div>
+			<div class="flex items-center gap-4">
+				@livePill("$_live ? 'Live' : 'Offline'")
+				<a href="/dashboard/logs" class="flex items-center gap-1 text-xs font-medium text-fg-2 hover:text-fg">
+					Logs
+					@icon("arrow-right", "size-3.5")
+				</a>
+			</div>
+		</div>
+		<div class="max-h-[34rem] overflow-auto">
+			<table class="block w-full text-left text-[13px] md:table">
+				@requestHead(feedColumns)
+				@feedRows(v)
+			</table>
+		</div>
+	</section>
+}
+
+templ feedRows(v requestTable) {
+	@requestRows("feed-rows", v, feedColumns, "Requests show up here the moment the router handles them.")
+}
+
+// costCard is the cost per task: what each model's pinned threads cost on
+// average in the last day, at list price.
+templ costCard(day stats) {
+	@card("cost", "") {
+		@cardHead("Cost per task", "List-price estimate per pinned thread, last 24 hours") {
+			<span class="font-mono text-xs text-fg-2 tabular-nums" title="Subscriptions spend quota roughly in proportion">{ money(day.Cost) } total</span>
+		}
+		<div class="px-5 pt-3 pb-4">
+			if len(day.Models) == 0 {
+				<p class="text-xs text-fg-3">No requests in 24h.</p>
+			} else {
+				<div class="grid grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-x-4 gap-y-2 text-xs">
+					<span class="text-[11px] tracking-wide text-fg-3 uppercase">Model</span>
+					<span class="text-right text-[11px] tracking-wide text-fg-3 uppercase">Threads</span>
+					<span class="text-right text-[11px] tracking-wide text-fg-3 uppercase">Per task</span>
+					<span class="text-right text-[11px] tracking-wide text-fg-3 uppercase">Total</span>
+					for _, m := range day.Models {
+						<span class="flex min-w-0 items-center gap-2" title={ tokenSummary(m.Tokens) }>
+							<span class={ "size-2 shrink-0 rounded-full", swatch(m.Model) }></span>
+							<span class="truncate font-mono">{ m.Model }</span>
+						</span>
+						<span class="text-right text-fg-2 tabular-nums">{ number(m.Threads) }</span>
+						<span class="text-right font-mono text-fg tabular-nums">
+							if m.Threads > 0 {
+								{ money(m.PerThread()) }
+							} else {
+								<span class="text-fg-3">—</span>
+							}
+						</span>
+						<span class="text-right font-mono text-fg-2 tabular-nums">{ money(m.Cost) }</span>
+					}
+				</div>
+			}
+		</div>
+	}
+}
+
+templ catalogCard(day stats) {
+	@card("catalog", "") {
+		@cardHead("CLIProxy catalog", "The models the configuration routes to") {
+			@health(day.Catalog)
+		}
+		<div class="px-5 pt-3 pb-4">
+			if day.Catalog.Error != "" {
+				<p class="mb-3 rounded-md bg-raised px-3 py-2 font-mono text-xs break-words text-fg-2">{ day.Catalog.Error }</p>
+			}
+			<ul class="divide-y divide-line">
+				for _, model := range day.Required {
+					<li class="flex items-center gap-2 py-2">
+						<span class={ "size-2 shrink-0 rounded-full", swatch(model) }></span>
+						<span class="min-w-0 flex-1 truncate font-mono text-xs">{ model }</span>
+						@served(day.Catalog, model)
+					</li>
+				}
+			</ul>
+			if !day.Catalog.CheckedAt.IsZero() {
+				<p class="mt-2 text-xs text-fg-3">Checked <span class="text-fg-2">@when(day.Catalog.CheckedAt)</span></p>
+			}
+		</div>
+	}
+}
+
+templ decidersCard(day stats) {
+	@card("deciders", "") {
+		@cardHead("Decisions by source", "Who decided, and at what reasoning")
+		<div class="space-y-5 px-5 pt-4 pb-5">
+			if len(day.Deciders) > 0 {
+				<div>
+					<h3 class="mb-2 text-xs font-medium text-fg-2">Chain, in order</h3>
+					<ul class="space-y-1.5">
+						for _, h := range day.Deciders {
+							<li class="flex items-center gap-2 text-xs">
+								<span class={ "size-1.5 shrink-0 rounded-full", deciderDot(h) }></span>
+								<span class="min-w-0 flex-1 truncate text-fg-2">{ h.Name }</span>
+								<span class="text-fg-3">{ deciderState(h) }</span>
+							</li>
+						}
+					</ul>
+				</div>
+			}
+			@breakdown("Decider", ranked(day.Summary.Deciders, func(name string) string { return name }))
+			if len(day.Summary.Levels) > 0 {
+				@breakdown("Reasoning", ranked(day.Summary.Levels, func(level string) string { return level }))
+			}
+		</div>
+	}
+}
+
+templ breakdown(title string, ranks []rank) {
+	<div>
+		<h3 class="mb-2 text-xs font-medium text-fg-2">{ title }</h3>
+		if len(ranks) == 0 {
+			<p class="text-xs text-fg-3">No decisions in 24h.</p>
+		}
+		<ul class="space-y-2">
+			for _, r := range ranks {
+				<li class="grid grid-cols-[6.5rem_1fr_3rem] items-center gap-3 text-xs" title={ probability(r.Share) }>
+					<span class="truncate text-fg-2">{ r.Name }</span>
+					<span class="h-1.5 rounded-full bg-raised">
+						<span class="block h-full rounded-full bg-fg-3" style={ width(r.Share) }></span>
+					</span>
+					<span class="text-right text-fg tabular-nums">{ number(r.Count) }</span>
+				</li>
+			}
+		</ul>
+	</div>
+}
+
+templ health(status catalog.Status) {
+	{{ h := healthOf(status) }}
+	<span class="inline-flex items-center gap-1.5 rounded-full border border-line px-2 py-0.5 text-xs font-medium whitespace-nowrap text-fg-2">
+		<span class={ "size-1.5 rounded-full", h.Dot }></span>
+		{ h.Text }
+	</span>
+}
+
+templ served(status catalog.Status, model string) {
+	switch {
+		case !status.Loaded:
+			<span class="text-xs text-fg-3">unknown</span>
+		case slices.Contains(status.Missing, model):
+			<span class="inline-flex items-center gap-1 text-xs text-fg-2">
+				<span class="text-critical">
+					@icon("x", "size-3.5")
+				</span>
+				missing
+			</span>
+		default:
+			<span class="inline-flex items-center gap-1 text-xs text-fg-3">
+				<span class="text-good">
+					@icon("check", "size-3.5")
+				</span>
+				served
+			</span>
+	}
+}

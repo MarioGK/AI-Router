@@ -1,0 +1,537 @@
+package dashboard
+
+import (
+	"strconv"
+
+	"github.com/MarioGK/AI-Router/internal/decide"
+	"github.com/MarioGK/AI-Router/internal/learn"
+	"github.com/MarioGK/AI-Router/internal/pin"
+)
+
+// decisionFilter re-reads the first page of decisions when a filter changes.
+var decisionFilter = templ.Attributes{"data-indicator": "_loading", "data-on:change": "@get('/dashboard/sse/decisions')"}
+
+templ decisionsPage(f frame, v decisionsPageView) {
+	@shell(f) {
+		@heading("Decisions", "How auto classifies prompts: what goes to each model, what the deciders are sent and what they answer")
+		@mixSection(v.Mix, v.MixErr)
+		<div class="mt-4 grid items-start gap-4 xl:grid-cols-2">
+			<div class="min-w-0 xl:sticky xl:top-4 xl:order-last">
+				@tryCard()
+			</div>
+			@classifierCard(v.Policy, v.Costs)
+		</div>
+		<div class="mt-8" data-signals={ signals(map[string]any{"model": v.Table.Query.Model, "decider": v.Table.Query.Decider, "review": v.Table.Query.Review, "search": v.Table.Query.Search, "searchDraft": v.Table.Query.Search}) }>
+			<div class="mb-3 flex flex-wrap items-end justify-between gap-3">
+				<div>
+					<h2 class="text-[15px] font-semibold tracking-tight">Every decision</h2>
+					<p class="mt-0.5 text-xs text-fg-3">Newest first; open one for its trail and the exact requests</p>
+				</div>
+				<div class="flex flex-wrap items-center gap-2">
+					@promptSearch("decisions-search", v.Table.Query.Search, "$search = $searchDraft; @get('/dashboard/sse/decisions')", "$search = ''; $searchDraft = ''; @get('/dashboard/sse/decisions')")
+					@choice("model", "All models", v.Table.Query.Model, modelOptions(v.Models), decisionFilter)
+					@choice("decider", "All deciders", v.Table.Query.Decider, modelOptions(v.Deciders), decisionFilter)
+					@choice("review", "All reviews", v.Table.Query.Review, reviewOptions, decisionFilter)
+				</div>
+			</div>
+			@reviewSummary(v.Reviews, v.ReviewErr)
+			@learningSummary(v.Learning)
+			@misrouted(v.Queue)
+			@decisionsTable(v.Table)
+		</div>
+	}
+}
+
+// mixSection is one card per candidate: its share of the last 30 days of
+// decisions, what the policy sends it and the latest prompts it got.
+templ mixSection(mix []modelMix, err error) {
+	<section id="mix" aria-label="Decisions per model">
+		if err != nil {
+			@problem(err)
+		} else {
+			<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+				for _, m := range mix {
+					@card("", "flex min-w-0 flex-col") {
+						<div class="flex items-start justify-between gap-3 px-5 pt-5">
+							<div class="min-w-0">
+								@badge(m.Model)
+								if m.Efforts != "" {
+									<span class="ml-1 text-[11px] text-fg-3">{ m.Efforts } effort</span>
+								}
+							</div>
+							<div class="text-right">
+								<div class="font-mono text-lg font-semibold tabular-nums">{ number(m.Count) }</div>
+								<div class="text-[11px] text-fg-3 tabular-nums">{ probability(m.Share) } · 30 days</div>
+							</div>
+						</div>
+						<div class="mx-5 mt-3 h-1.5 rounded-full bg-raised">
+							<div class={ "h-full rounded-full", swatch(m.Model) } style={ width(m.Share) }></div>
+						</div>
+						if m.Description != "" {
+							<p class="mx-5 mt-3 line-clamp-4 text-xs text-fg-3" title={ m.Description }>{ m.Description }</p>
+						}
+						<div class="mt-4 flex-1 border-t border-line px-5 py-3">
+							<div class="mb-2 text-[11px] font-medium tracking-wide text-fg-3 uppercase">Latest prompts</div>
+							if len(m.Examples) == 0 {
+								<p class="text-xs text-fg-3">None recorded yet.</p>
+							} else {
+								<ul class="space-y-2">
+									for _, e := range m.Examples {
+										<li>
+											<a href={ decisionURL(e.Key) } class="line-clamp-3 text-[13px] break-words text-fg-2 hover:text-fg" title={ firstPrompt(e) }>{ firstPrompt(e) }</a>
+										</li>
+									}
+								</ul>
+							}
+						</div>
+					}
+				}
+			</div>
+		}
+	</section>
+}
+
+// classifierCard is what a new thread's first prompt is judged with: the
+// decider chain, the instructions and each candidate's description, which
+// Jev receives as the criterion of its choice.
+templ classifierCard(policy decide.Policy, cost costView) {
+	@card("classifier", "min-w-0") {
+		@cardHead("Classifier", "What the deciders are asked, for a new thread")
+		<dl class="grid gap-x-6 px-5 pt-2 pb-2 text-[13px] sm:grid-cols-2">
+			@fact("Threshold") {
+				<span class="font-mono text-xs tabular-nums">{ probability(policy.Threshold) }</span>
+				<span class="ml-1 text-xs text-fg-3">{ policy.Doubt }</span>
+			}
+			@fact("Policy") {
+				<span class="font-mono text-xs text-fg-2">{ policy.Fingerprint() }</span>
+			}
+		</dl>
+		<div class="border-t border-line px-5 py-4">
+			<h3 class="mb-2 text-xs font-medium text-fg-2">Deciders, in order</h3>
+			<ol class="space-y-1.5 text-[13px]">
+				for i, info := range policy.Deciders {
+					<li class="flex flex-wrap items-center gap-x-2">
+						<span class="font-mono text-xs text-fg-3 tabular-nums">{ strconv.Itoa(i + 1) }.</span>
+						<span class="text-fg">{ info.Name }</span>
+						<span class="text-xs text-fg-3">{ info.Kind } · <span class="font-mono">{ info.Model }</span></span>
+					</li>
+				}
+			</ol>
+		</div>
+		<div class="border-t border-line px-5 py-4">
+			<h3 class="mb-2 text-xs font-medium text-fg-2">Instructions</h3>
+			<dl class="space-y-2 rounded-md bg-raised p-3 text-xs">
+				@instruction("question", policy.Instructions.Question)
+				@instruction("focus", policy.Instructions.Focus)
+				@instruction("probabilities", policy.Instructions.Probabilities)
+				if policy.Doubt == decide.DoubtPair {
+					@instruction("when in doubt", pairQuestionText(policy.PairQuestion))
+				}
+			</dl>
+		</div>
+		if r := policy.Reasoning; r != nil {
+			<div class="border-t border-line px-5 py-4">
+				<h3 class="text-xs font-medium text-fg-2">Reasoning, lightest first</h3>
+				<p class="mt-0.5 text-xs text-fg-3">Asked beside the model question; the thread runs at the weighted level, on each model at the nearest effort it accepts</p>
+				<dl class="mt-2 space-y-2 rounded-md bg-raised p-3 text-xs">
+					@instruction("question", r.Instructions.Question)
+					@instruction("focus", r.Instructions.Focus)
+				</dl>
+				<ul class="mt-2 divide-y divide-line">
+					for _, level := range r.Levels {
+						<li class="py-2.5">
+							@effortTag(level.ID, "Reasoning level")
+							<p class="mt-1 text-xs text-fg-2">{ level.Description }</p>
+							if len(level.Examples) > 0 {
+								<ul class="mt-1 space-y-0.5 text-xs text-fg-3">
+									for _, example := range level.Examples {
+										<li class="flex gap-1.5"><span aria-hidden="true">›</span><span class="min-w-0">{ example }</span></li>
+									}
+								</ul>
+							}
+						</li>
+					}
+				</ul>
+			</div>
+		}
+		@costSection(cost)
+		<div class="border-t border-line">
+			<h3 class="px-5 pt-4 text-xs font-medium text-fg-2">Candidates, cheapest first</h3>
+			<p class="px-5 pt-0.5 text-xs text-fg-3">Each description is the criterion Jev weighs, and the judge's model list</p>
+			<ul class="mt-2 divide-y divide-line">
+				for _, c := range policy.Candidates {
+					<li class="px-5 py-3">
+						<div class="flex flex-wrap items-center gap-2">
+							@badge(c.ID)
+							if c.Specialist {
+								@tag("specialist")
+							}
+						</div>
+						<p class="mt-1.5 text-xs text-fg-2">{ c.Description }</p>
+						if c.NotFor != "" {
+							<p class="mt-1 text-xs text-fg-3"><span class="font-medium text-fg-2">Not for:</span> { c.NotFor }</p>
+						}
+						if len(c.Examples) > 0 {
+							<ul class="mt-1.5 space-y-0.5 text-xs text-fg-3">
+								for _, example := range c.Examples {
+									<li class="flex gap-1.5"><span aria-hidden="true">›</span><span class="min-w-0">{ example }</span></li>
+								}
+							</ul>
+						}
+					</li>
+				}
+			</ul>
+		</div>
+	}
+}
+
+// costSection is what a task is expected to cost on each candidate at each
+// reasoning level, which decisions weigh when the economy is on.
+templ costSection(v costView) {
+	if len(v.Rows) > 0 {
+		<div class="border-t border-line px-5 py-4">
+			<h3 class="text-xs font-medium text-fg-2">Expected cost per task</h3>
+			<p class="mt-0.5 text-xs text-fg-3">
+				if v.Weighed {
+					Decisions take the ladder step with the least expected cost to get the task done; a miss costs the redo on the right model and { multiple(v.Miss) } that on top.
+				} else {
+					Shown only: decisions escalate by the threshold.
+				}
+				Learned from { counted(v.Threads, "settled thread") }: how big each reasoning level's tasks are and how verbose each model is, priced at list price times the model's cost factor.
+				if v.Learning {
+					Under each cost, how long a task keeps the model busy and how often its threads moved up to a stronger model; a step that moves up more often than the fleet has its miss penalty scaled by the ratio once it has 5 such threads.
+					if v.TimeValue > 0 {
+						Each hour of a task's time counts { money(v.TimeValue) } on top of its cost.
+					}
+				}
+			</p>
+			<div class="mt-2 overflow-x-auto">
+				<table class="w-full text-left text-xs">
+					<thead class="border-b border-line text-fg-3">
+						<tr>
+							<th class="py-1.5 pr-3 font-medium">Model</th>
+							for _, level := range v.Levels {
+								<th class="py-1.5 pr-3 text-right font-medium">{ level }</th>
+							}
+							if len(v.Levels) == 0 {
+								<th class="py-1.5 pr-3 text-right font-medium">Per task</th>
+							}
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-line">
+						for _, row := range v.Rows {
+							<tr>
+								<td class="py-1.5 pr-3">
+									@badge(row.Model)
+								</td>
+								for i, cell := range row.Cells {
+									if i < len(row.Learned) {
+										<td class="py-1.5 pr-3 text-right font-mono tabular-nums text-fg-2" title={ costNote(cell) + ". " + learnedNote(row.Learned[i], v.Miss) }>
+											{ money(cell.Cost) }
+											<span class="block text-[11px] text-fg-3">{ learnedLine(row.Learned[i]) }</span>
+										</td>
+									} else {
+										<td class="py-1.5 pr-3 text-right font-mono tabular-nums text-fg-2" title={ costNote(cell) }>{ money(cell.Cost) }</td>
+									}
+								}
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	}
+}
+
+// instruction is one named field of the instructions the deciders get.
+templ instruction(name, text string) {
+	if text != "" {
+		<div>
+			<dt class="font-medium text-fg-3">{ name }</dt>
+			<dd class="mt-0.5 text-fg-2">{ text }</dd>
+		</div>
+	}
+}
+
+// tryCard decides a prompt on demand, the way a new thread would be, and
+// shows the exact exchange with each decider.
+templ tryCard() {
+	@card("try", "min-w-0") {
+		<div data-signals={ signals(map[string]any{"prompt": "", "images": false}) }>
+			@cardHead("Try a prompt", "Runs the deciders on it without pinning anything")
+			<div class="space-y-3 px-5 pt-3 pb-5">
+				<textarea
+					data-bind="prompt"
+					rows="6"
+					placeholder="Paste a first prompt, e.g. Ocultar a opção Query Subscription do nav menu"
+					aria-label="Prompt to classify"
+					class="block w-full resize-y rounded-md border border-line bg-canvas px-3 py-2 text-[13px] text-fg placeholder:text-fg-3 focus:border-fg-3 focus:outline-none"
+				></textarea>
+				<div class="flex flex-wrap items-center gap-3">
+					<label class="flex items-center gap-2 text-[13px] text-fg-2">
+						<input type="checkbox" data-bind="images" class="size-4 rounded border-line"/>
+						Carries images
+					</label>
+					<button
+						type="button"
+						data-indicator="_trying"
+						data-attr:disabled="$_trying || !$prompt.trim()"
+						data-on:click="@post('/dashboard/sse/try')"
+						class="ml-auto flex h-8 items-center gap-2 rounded-md bg-fg px-3 text-[13px] font-medium text-canvas hover:opacity-90 disabled:opacity-40"
+					>
+						<span data-show="!$_trying">Classify</span>
+						<span data-show="$_trying" style="display: none">Classifying…</span>
+					</button>
+				</div>
+				@trialResult(nil, decide.Policy{}, judged{}, "")
+			</div>
+		</div>
+	}
+}
+
+// trialResult is a trial's decision with its exchanges and the effort its
+// model would run at; empty before one.
+templ trialResult(decision *pin.Event, policy decide.Policy, j judged, effort string) {
+	<div id="trial" class="space-y-4">
+		if decision != nil {
+			<div class="flex flex-wrap items-center gap-2 border-t border-line pt-4 text-[13px]">
+				<span class="text-fg-2">Would pin</span>
+				@badge(decision.Model)
+				@effortTag(effort, "Reasoning effort the model would run at")
+				<span class="text-xs text-fg-3">
+					by { decision.Decider } in { duration(decision.Latency) }
+					if decision.Basis.Truncated {
+						· cut to fit
+					}
+				</span>
+			</div>
+			@decisionWhy(*decision, j)
+			if len(decision.Attempts) > 0 {
+				<div>
+					<h3 class="mb-2 text-xs font-medium text-fg-2">Sent to the deciders</h3>
+					@exchangeList(exchanges(&policy, *decision))
+				</div>
+			}
+		}
+	</div>
+}
+
+templ decisionsTable(v decisionsView) {
+	<section id="decisions-table" class="overflow-hidden rounded-xl border border-line bg-surface transition-opacity" data-class:opacity-60="$_loading">
+		if v.Err != nil {
+			<div class="border-b border-line p-4">
+				@problem(v.Err)
+			</div>
+		}
+		<div class="overflow-x-auto">
+			<table class="block w-full text-left text-[13px] md:table">
+				<thead class="hidden border-b border-line md:table-header-group">
+					<tr>
+						@th("When", "")
+						@th("Prompt", "w-full")
+						@th("Decider", "")
+						@th("Choice", "")
+						@th("Model", "")
+						@th("Review", "")
+					</tr>
+				</thead>
+				<tbody class="block divide-y divide-line md:table-row-group">
+					if len(v.Decisions) == 0 && v.Err == nil {
+						<tr class="block md:table-row">
+							<td colspan="6" class="block md:table-cell">
+								@blank("inbox", "No decisions", "A decision is made on a new thread's first request for auto.")
+							</td>
+						</tr>
+					}
+					for _, e := range v.Decisions {
+						@decisionRow(e)
+					}
+				</tbody>
+			</table>
+		</div>
+		@decisionsPager(v)
+	</section>
+}
+
+// decisionRow is one decision: a table row from md up, below it the prompt
+// and model over a line of details. The whole row links to the thread.
+templ decisionRow(e pin.Event) {
+	<tr class="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2.5 hover:bg-raised/60 md:table-row md:p-0">
+		<td class="hidden px-4 py-2 whitespace-nowrap text-fg-2 md:table-cell">
+			@when(e.At)
+		</td>
+		<td class="min-w-0 md:max-w-0 md:px-4 md:py-2">
+			<a href={ decisionURL(e.Key) } class="block truncate text-fg after:absolute after:inset-0 hover:underline" title={ firstPrompt(e) }>
+				if firstPrompt(e) != "" {
+					{ firstPrompt(e) }
+				} else {
+					<span class="text-fg-3">Prompt not recorded</span>
+				}
+			</a>
+		</td>
+		<td class="hidden px-4 py-2 whitespace-nowrap text-fg-2 md:table-cell">{ e.Decider }</td>
+		<td class="hidden px-4 py-2 md:table-cell">
+			@choiceOf(e)
+		</td>
+		<td class="justify-self-end md:px-4 md:py-2">
+			<span class="inline-flex items-center gap-1.5">
+				@badge(e.Model)
+				@effortTag(e.Level, "Reasoning level")
+			</span>
+		</td>
+		<td class="hidden px-4 py-2 md:table-cell">
+			@reviewMark(e)
+		</td>
+		<td class="col-span-2 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-fg-3 md:hidden">
+			@when(e.At)
+			@separated(e.Decider)
+			@reviewMark(e)
+			if e.Escalated {
+				@marker("arrow-up", "escalated", "Escalated up the ladder to "+e.Model)
+			}
+			if e.Consulted() {
+				@marker("question", "2nd opinion", explanation(e))
+			}
+		</td>
+	</tr>
+}
+
+// reviewMark is a decision's review at a glance.
+templ reviewMark(e pin.Event) {
+	if r := e.Review; r == nil {
+		<span class="text-xs text-fg-3">—</span>
+	} else if model, level := r.Right(e); model && level {
+		<span class="relative z-10 inline-flex items-center gap-1 text-xs whitespace-nowrap text-good" title={ reviewNote(e) }>
+			@icon("check", "size-3.5")
+			right
+		</span>
+	} else {
+		<span class="relative z-10 inline-flex items-center gap-1 text-xs whitespace-nowrap text-critical" title={ reviewNote(e) }>
+			@icon("x", "size-3.5")
+			{ r.Model }
+		</span>
+	}
+}
+
+// reviewSummary is how the reviewed decisions fared, with the reviews to
+// download as bench cases.
+templ reviewSummary(s pin.ReviewSummary, err error) {
+	<div id="reviews" class="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-line bg-surface px-4 py-3 text-xs text-fg-2">
+		if err != nil {
+			@problem(err)
+		} else if s.Reviewed == 0 {
+			<span>No decision reviewed yet: open one, judge it by its first prompt, and its review lands here.</span>
+			<span class="text-fg-3">{ counted(s.Unreviewed, "decision") } with a recorded prompt to review</span>
+		} else {
+			<span><span class="font-medium text-fg tabular-nums">{ number(s.Reviewed) }</span> reviewed</span>
+			<span>model right <span class="font-medium text-fg tabular-nums">{ percent(s.RightModel, s.Reviewed) }</span></span>
+			<span>reasoning right <span class="font-medium text-fg tabular-nums">{ percent(s.RightLevel, s.Reviewed) }</span></span>
+			if len(s.Misses) > 0 {
+				<span>most missed: <span class="font-mono">{ busiest(s.Misses) }</span></span>
+			}
+			<span class="text-fg-3">{ number(s.Unreviewed) } waiting</span>
+			<a href="/dashboard/decisions/cases.yaml" class="ml-auto inline-flex items-center gap-1 font-medium text-fg-2 hover:text-fg hover:underline">
+				Download as bench cases
+			</a>
+		}
+	</div>
+}
+
+// learningSummary is what routing learned from its own history: the
+// labels settled threads left, by kind, and the weight the similar-prompt
+// prior earned against the deciders for the model and the reasoning.
+templ learningSummary(s learn.Summary) {
+	<div id="learning" class="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-line bg-surface px-4 py-3 text-xs text-fg-2">
+		if !s.Enabled {
+			<span>Learning from history is off: decisions are the deciders' alone.</span>
+		} else {
+			<span class="font-medium text-fg">{ counted(s.Labels, "labelled thread") }</span>
+			<span class="text-fg-3">{ labelKinds(s) }</span>
+			<span>history weighs <span class="font-medium text-fg tabular-nums">{ weightText(s.Fit) }</span> on the model</span>
+			<span><span class="font-medium text-fg tabular-nums">{ weightText(s.LevelFit) }</span> on the reasoning</span>
+			if s.Replays < s.MinLabels {
+				<span class="text-fg-3">no weight until { number(s.MinLabels) } labelled decisions can be replayed ({ number(s.Replays) } so far)</span>
+			}
+			if !s.Refreshed.IsZero() {
+				<span class="ml-auto text-fg-3">
+					refit
+					@when(s.Refreshed)
+					in { number(int(s.TookMS)) } ms
+				</span>
+			}
+		}
+	</div>
+}
+
+// misrouted is the unreviewed decisions whose threads went worst, the
+// strongest sign of a misroute first, each linking to its review.
+templ misrouted(q queueView) {
+	if q.Enabled {
+		<section id="misrouted" aria-label="Likely misrouted" class="mb-3 rounded-xl border border-line bg-surface">
+			<div class="flex flex-wrap items-baseline justify-between gap-2 px-4 pt-3">
+				<h3 class="text-xs font-medium text-fg-2">Likely misrouted</h3>
+				<span class="text-xs text-fg-3">{ counted(q.Queued, "unreviewed decision") } with a sign of a misroute among { counted(q.Threads, "settled thread") }</span>
+			</div>
+			if len(q.Items) == 0 {
+				<p class="px-4 pt-1 pb-3 text-xs text-fg-3">No settled thread was re-pinned, failed over, ran long on a light model or stayed tiny on a heavy one without a review.</p>
+			} else {
+				<ol class="divide-y divide-line">
+					for _, o := range q.Items {
+						<li class="relative px-4 py-2.5 hover:bg-raised/60">
+							<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+								@badge(o.Model)
+								if o.Level != "" {
+									<span class="font-mono text-fg-3">{ o.Level }</span>
+								}
+								<span class="text-fg-3">{ spent(o) }</span>
+								<a href={ threadURL(o.Key) + "#review" } class="ml-auto font-medium text-fg-2 after:absolute after:inset-0 hover:text-fg hover:underline">Review</a>
+							</div>
+							<ul class="mt-1 space-y-0.5 text-xs text-fg-2">
+								for _, s := range o.Signals {
+									if s.Strength > 0 {
+										<li>{ s.Text }.</li>
+									}
+								}
+							</ul>
+						</li>
+					}
+				</ol>
+			}
+		</section>
+	}
+}
+
+templ decisionsPager(v decisionsView) {
+	<div class="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3 text-xs text-fg-3">
+		<span class="tabular-nums">
+			if len(v.Decisions) > 0 {
+				{ number(v.first()) }–{ number(v.last()) } of { counted(v.Total, "decision") }
+			} else {
+				No decisions
+			}
+		</span>
+		if v.pages() > 1 {
+			<div class="flex items-center gap-3">
+				<span class="tabular-nums">Page { strconv.Itoa(v.Query.Page) } of { strconv.Itoa(v.pages()) }</span>
+				<div class="flex items-center gap-1">
+					@decisionsPageButton("chevron-left", "Previous page", v.Query.Page-1, v.Query.Page > 1)
+					@decisionsPageButton("chevron-right", "Next page", v.Query.Page+1, v.Query.Page < v.pages())
+				</div>
+			</div>
+		}
+	</div>
+}
+
+templ decisionsPageButton(glyph, name string, page int, enabled bool) {
+	<button
+		type="button"
+		aria-label={ name }
+		title={ name }
+		disabled?={ !enabled }
+		data-indicator="_loading"
+		data-on:click={ "@get('/dashboard/sse/decisions?page=" + strconv.Itoa(page) + "')" }
+		class="grid size-7 place-items-center rounded-md border border-line text-fg-2 hover:border-line-strong hover:text-fg disabled:pointer-events-none disabled:opacity-40"
+	>
+		@icon(glyph, "size-4")
+	</button>
+}

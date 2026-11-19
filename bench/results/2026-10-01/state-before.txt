@@ -1,0 +1,18 @@
+goos: linux
+goarch: amd64
+pkg: github.com/MarioGK/AI-Router/internal/decide
+cpu: Intel(R) Xeon(R) CPU E5-2660 v4 @ 2.00GHz
+BenchmarkStateUnmatchedDelimiters/backticks-46         	     363	   3806459 ns/op	  26.27 MB/s	 1142821 B/op	      20 allocs/op
+BenchmarkStateUnmatchedDelimiters/backticks-46         	     391	   3256433 ns/op	  30.71 MB/s	 1142761 B/op	      20 allocs/op
+BenchmarkStateUnmatchedDelimiters/backticks-46         	     385	   2662397 ns/op	  37.57 MB/s	 1142961 B/op	      20 allocs/op
+BenchmarkStateUnmatchedDelimiters/distinct_runs-46     	     984	   1148971 ns/op	  70.16 MB/s	  733532 B/op	      47 allocs/op
+BenchmarkStateUnmatchedDelimiters/distinct_runs-46     	    1034	   1439422 ns/op	  56.00 MB/s	  733355 B/op	      47 allocs/op
+BenchmarkStateUnmatchedDelimiters/distinct_runs-46     	    1137	   1431740 ns/op	  56.30 MB/s	  733457 B/op	      48 allocs/op
+BenchmarkStateUnmatchedDelimiters/escaped_quotes-46    	     628	   1960479 ns/op	  45.91 MB/s	  747352 B/op	      33 allocs/op
+BenchmarkStateUnmatchedDelimiters/escaped_quotes-46    	     524	   1987617 ns/op	  45.29 MB/s	  747291 B/op	      34 allocs/op
+BenchmarkStateUnmatchedDelimiters/escaped_quotes-46    	     708	   1983438 ns/op	  45.38 MB/s	  747316 B/op	      34 allocs/op
+BenchmarkStateUnmatchedDelimiters/wrapper_tildes-46    	    1371	    931339 ns/op	 107.44 MB/s	     172 B/op	       7 allocs/op
+BenchmarkStateUnmatchedDelimiters/wrapper_tildes-46    	    1306	    932359 ns/op	 107.32 MB/s	     173 B/op	       7 allocs/op
+BenchmarkStateUnmatchedDelimiters/wrapper_tildes-46    	    1293	   1097712 ns/op	  91.15 MB/s	     173 B/op	       7 allocs/op
+PASS
+ok  	github.com/MarioGK/AI-Router/internal/decide	15.695s
